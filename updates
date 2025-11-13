@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Updates — Impossible Fibers</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="styles.css"> <!-- optional if you have a stylesheet -->
+</head>
+<body>
+
+  <header>
+    <h1>Updates</h1>
+  </header>
+
+  <main>
+    <section id="updates" class="updates-section">
+      <p>No updates yet — check back soon.</p>
+    </section>
+  </main>
+
+</body>
+</html>
