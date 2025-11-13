@@ -1,22 +1,186 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Updates — Impossible Fibers</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="styles.css"> <!-- optional if you have a stylesheet -->
+  <meta charset="UTF-8" />
+  <title>Updates- Impossible Fibers </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+   body {
+  margin: 0;
+font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;  color: #111827;
+  background: #F2F0EC;
+  line-height: 1.7;
+  font-size: 16px;
+}
+
+    /* Top nav*/
+    header {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid #E5E7EB;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+    }
+
+    .logo-img {
+      height: 32px;
+      width: auto;
+      display: block;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+
+    nav a {
+      text-decoration: none;
+      font-size: 0.85rem;
+      color: #374151;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    nav a:hover {
+      color: #111827;
+    }
+
+    /* Main content column */
+    main {
+      max-width: 720px;           /* narrower like 1cFE */
+      margin: 2.5rem auto 3.5rem;
+      padding: 0 1.25rem;
+    }
+
+    h1 {
+      font-size: 2.25rem;
+      margin: 0.5rem 0 1rem;
+    }
+
+    h2 {
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: #0E7C7B;
+      margin: 0 0 0.5rem;
+    }
+
+    .tagline {
+      font-size: 1.05rem;
+      max-width: 650px;
+      margin: 0 0 2rem;
+    }
+
+    .highlight {
+      color: #EA580C;  /* orange, similar strength to 1cFE accent */
+      font-weight: 600;
+    }
+
+    .section {
+  margin-top: 2.5rem;
+  padding: 1.75rem 0;
+  border-top: 1px solid #D8D6D2;
+  background: #FFFFFF;        /* white content panels */
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  border-radius: 10px;
+}
+
+    .section p {
+      margin: 0 0 0.75rem;
+    }
+
+    a {
+      color: #0E7C7B;
+    }
+
+    a:hover {
+      color: #0B4F4E;
+    }
+
+    footer {
+      border-top: 1px solid #E5E7EB;
+      padding: 1.25rem 1.5rem;
+      font-size: 0.8rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #6B7280;
+    }
+
+    footer a {
+      color: inherit;
+      text-decoration: none;
+      margin-left: 1rem;
+    }
+
+    footer a:hover {
+      color: #111827;
+    }
+
+    @media (max-width: 640px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+
+      nav {
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      h1 {
+        font-size: 1.9rem;
+      }
+    }
+  </style>
 </head>
 <body>
-
   <header>
-    <h1>Updates</h1>
+    <div class="logo">
+      <img src="img/logo.png" alt="Impossible Fibers Logo" class="logo-img">
+      <span>IMPOSSIBLE FIBERS</span>
+    </div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="updates.html">Updates</a>
+      <a href="/contact">Contact</a>
+    </nav>
   </header>
 
   <main>
+    <h2>Updates</h2>
+  
+
     <section id="updates" class="updates-section">
       <p>No updates yet — check back soon.</p>
     </section>
+ 
   </main>
 
+  <footer>
+    <div>&copy; 2025 Impossible Fibers</div>
+    <div>
+      <span>Navigation:</span>
+      <a href="/">Home</a>
+      <a href="/contact">Contact</a>
+    </div>
+  </footer>
 </body>
-</html>
