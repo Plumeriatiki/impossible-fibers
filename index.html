@@ -19,32 +19,43 @@
     }
 
     header {
-      background: #FFFFFF;
-      border-bottom: 1px solid #E9ECEF;
-      padding: 1rem 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
+  background: #FFFFFF;
+  border-bottom: 1px solid #E9ECEF;
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;  /* keeps logo left, nav right */
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
 
+.logo-img {
+  height: 32px;
+  width: auto;
+  display: block;
+}
     .logo {
       font-weight: 700;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       font-size: 0.9rem;
     }
-
+nav {
+  display: flex;
+  align-items: center;
+  margin-left: auto;   /* pushes nav fully to the right */
+  gap: 1.5rem;         /* spacing between links */
+}
     nav a {
-      margin-left: 1.5rem;
-      text-decoration: none;
-      font-size: 0.85rem;
-      color: #1A1C1E;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
+  text-decoration: none;
+  font-size: 0.85rem;
+  color: #1A1C1E;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
 
     nav a:hover {
       border-bottom: 1px solid #FF7A1A;
@@ -159,8 +170,10 @@
 </head>
 <body>
   <header>
-    <div class="logo">IMPOSSIBLE FIBERS</div>
-    <nav>
+    <div class="logo">
+  <img src="img/logo.png" alt="Impossible Fibers Logo" class="logo-img">
+  <span>IMPOSSIBLE FIBERS</span>
+</div>
       <a href="/">Home</a>
       <a href="/updates">Updates</a>
       <a href="/join">Join</a>
