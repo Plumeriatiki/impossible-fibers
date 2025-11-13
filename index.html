@@ -4,111 +4,106 @@
   <meta charset="UTF-8" />
   <title>Impossible Fibers</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     * {
       box-sizing: border-box;
     }
 
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
-      color: #1A1C1E;
-      background: #F5F7FA; /* softer than pure white */
-      line-height: 1.6;
-      font-size: 16px;
+   body {
+  margin: 0;
+font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;  color: #111827;
+  background: #F2F0EC;
+  line-height: 1.7;
+  font-size: 16px;
+}
+
+    /* Top nav, similar to 1cFE */
+    header {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid #E5E7EB;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
 
-    header {
-  background: #FFFFFF;
-  border-bottom: 1px solid #E9ECEF;
-  padding: 1rem 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;  /* keeps logo left, nav right */
-}
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-}
-
-.logo-img {
-  height: 32px;
-  width: auto;
-  display: block;
-}
     .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
       font-weight: 700;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
     }
-nav {
-  display: flex;
-  align-items: center;
-  margin-left: auto;   /* pushes nav fully to the right */
-  gap: 1.5rem;         /* spacing between links */
-}
+
+    .logo-img {
+      height: 32px;
+      width: auto;
+      display: block;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+
     nav a {
-  text-decoration: none;
-  font-size: 0.85rem;
-  color: #1A1C1E;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
+      text-decoration: none;
+      font-size: 0.85rem;
+      color: #374151;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
 
     nav a:hover {
-      border-bottom: 1px solid #FF7A1A;
+      color: #111827;
     }
 
+    /* Main content column */
     main {
-      max-width: 900px;
-      margin: 3rem auto 4rem;
-      padding: 0 1.5rem;
+      max-width: 720px;           /* narrower like 1cFE */
+      margin: 2.5rem auto 3.5rem;
+      padding: 0 1.25rem;
     }
 
     h1 {
-      font-size: 2.6rem;
-      margin-bottom: 0.75rem;
+      font-size: 2.25rem;
+      margin: 0.5rem 0 1rem;
     }
 
     h2 {
       font-size: 0.95rem;
       text-transform: uppercase;
-      letter-spacing: 0.14em;
+      letter-spacing: 0.18em;
       color: #0E7C7B;
-      margin-bottom: 0.5rem;
+      margin: 0 0 0.5rem;
     }
 
     .tagline {
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       max-width: 650px;
-      margin-bottom: 2.25rem;
+      margin: 0 0 2rem;
     }
 
     .highlight {
-      color: #FF7A1A;
+      color: #EA580C;  /* orange, similar strength to 1cFE accent */
       font-weight: 600;
     }
 
     .section {
-      margin-top: 2.75rem;
-      border-top: 1px solid #E9ECEF;
-      padding-top: 1.75rem;
-      background: #FFFFFF;
-      border-radius: 10px;
-      padding-bottom: 1.75rem;
-      padding-left: 1.5rem;
-      padding-right: 1.5rem;
-      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
-    }
-
-    .section:first-of-type {
-      margin-top: 1.5rem;
-    }
+  margin-top: 2.5rem;
+  padding: 1.75rem 0;
+  border-top: 1px solid #D8D6D2;
+  background: #FFFFFF;        /* white content panels */
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  border-radius: 10px;
+}
 
     .section p {
-      margin-top: 0.4rem;
+      margin: 0 0 0.75rem;
     }
 
     a {
@@ -116,17 +111,17 @@ nav {
     }
 
     a:hover {
-      color: #095F5E;
+      color: #0B4F4E;
     }
 
     footer {
-      border-top: 1px solid #E9ECEF;
-      padding: 1.5rem 2rem;
+      border-top: 1px solid #E5E7EB;
+      padding: 1.25rem 1.5rem;
       font-size: 0.8rem;
       display: flex;
       justify-content: space-between;
-      color: #6C757D;
-      background: #FFFFFF;
+      align-items: center;
+      color: #6B7280;
     }
 
     footer a {
@@ -136,34 +131,23 @@ nav {
     }
 
     footer a:hover {
-      color: #0E7C7B;
+      color: #111827;
     }
 
-    @media (max-width: 700px) {
+    @media (max-width: 640px) {
       header {
-        padding: 0.75rem 1.25rem;
         flex-direction: column;
         align-items: flex-start;
         gap: 0.5rem;
       }
 
-      nav a {
-        margin-left: 0;
-        margin-right: 1rem;
-      }
-
-      main {
-        margin-top: 2rem;
-        padding: 0 1.25rem 3rem;
+      nav {
+        gap: 1rem;
+        flex-wrap: wrap;
       }
 
       h1 {
-        font-size: 2rem;
-      }
-
-      .section {
-        padding-left: 1.1rem;
-        padding-right: 1.1rem;
+        font-size: 1.9rem;
       }
     }
   </style>
@@ -171,37 +155,31 @@ nav {
 <body>
   <header>
     <div class="logo">
-  <img src="img/logo.png" alt="Impossible Fibers Logo" class="logo-img">
-  <span>IMPOSSIBLE FIBERS</span>
-</div>
+      <img src="img/logo.png" alt="Impossible Fibers Logo" class="logo-img">
+      <span>IMPOSSIBLE FIBERS</span>
+    </div>
+    <nav>
       <a href="/">Home</a>
       <a href="/updates">Updates</a>
-      <a href="/join">Join</a>
       <a href="/contact">Contact</a>
     </nav>
   </header>
 
   <main>
-    <h2>Programmable Soft Matter</h2>
-    <h1>From Proteins to Hierarchical Fibers</h1>
+    <h2>Manufacturing Programmable Matter</h2>
+    <h1>Our Mission</h1>
     <p class="tagline">
-      Impossible Fibers is building a <span class="highlight">universal fiber fabricator</span>:
-      leveraging advances in protein design, soft-matter physics, microfluidics, and fiber spinning,
-      we are creating next-generation manufacturing technology that can transform billion-dollar industries.
+      We are reimagining fiber spinning by combining the manufacturing lessons of biology with new forms of matter, creating fibers that neither nature nor industry have been able to make. We are building a <span class="highlight">universal fiber fabricator</span>:
+      that leverages advances in protein design, soft-matter physics, microfluidics, and fiber spinning. We beleive that changing how we make our materials can fundamentally transform billion-dollar industries.
     </p>
 
     <div class="section">
-      <h2>What We Do</h2>
+      <h2>Why it Matters</h2>
       <p>
-        We are developing new spinning pathways and molecular assembly mechanisms inspired by biology&mdash;from vesicle-based
-        dopes to multi-phase coacervates&mdash;and pairing them with advanced characterization and manufacturing modeling to
-        bridge <strong>sequence → structure → performance</strong>.
-      </p>
-      <p>
-        Our work spans lab-scale rigs, digital-twin modeling, and collaborations with partners around the world to advance
-        fiber technology that we believe will result in highly dexterous robotics and biomedical devices, advanced sensing
-        and responsive textiles, and computational fibers that offer novel AI capabilities.
-      </p>
+        Nature has evolved fibers that are strong, flexible, self-assembling, and encoded with dense structural information rivaling our own microchips. Industry has tried to catch up using petroleum chemistry and extrusion, producing abundance but also brittleness: global supply chains that snap under stress, capital equipment that can't adapt, and switiching costs so high that new materials never escape the lab.
+        Reimagining fiber spinning lets us borrow nature's elegance without being constrained by it, unlocking materials that are high-performance without the usual trade-offs. 
+        Our technology is aimed at enabling the next generation of fiber technologies, from new actuators for highly dextrous robots, to gradient fibers for biomedical tissue replacement, to computational fibers with capabilities that push beyond today's materials and into entirely new domains.
+        
     </div>
 
     <div class="section">
@@ -211,8 +189,7 @@ nav {
         protein-based fibers, soft robotics, and bio-inspired manufacturing.
       </p>
       <p>
-        To explore collaboration, visit the <a href="/contact">Contact</a> page or see <a href="/join">Join</a>
-        for open collaboration areas.
+        To explore collaboration, visit the <a href="/contact">Contact</a> page.
       </p>
     </div>
   </main>
@@ -220,8 +197,9 @@ nav {
   <footer>
     <div>&copy; 2025 Impossible Fibers</div>
     <div>
-      <span>Contact:</span>
-      <a href="/contact">Get in touch</a>
+      <span>Navigation:</span>
+      <a href="/">Home</a>
+      <a href="/contact">Contact</a>
     </div>
   </footer>
 </body>
