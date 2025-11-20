@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cable-Driven vs. Traditional Arm Torque (2D)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Define common styles and variables */
+        :root {
+            --base-motor-max-torque: 3.0;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1f2937;
+            color: #f3f4f6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+        .gauge-container {
+            height: 150px;
+            width: 100%;
+            background-color: #374151;
+            border-radius: 0.5rem;
+            position: relative;
+        }
+        .gauge-fill {
+            transition: height 0.2s ease-out, background-color 0.2s ease-out;
+            border-radius: 0.5rem;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background-color: #3b82f6;
+        }
+        #arm-canvas {
+            background-color: #2c3540;
+            border-radius: 0.5rem;
+            max-width: 100%;
+        }
+        /* Ensure the canvas container is flexible */
+        .canvas-wrapper {
+            background-color: #2c3540;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 450px; /* Ensure visibility */
+        }
+    </style>
+</head>
+<body class="p-4">
+    <div class="p-4 bg-gray-900 rounded-lg shadow-xl mb-4 flex flex-col md:flex-row items-center justify-between">
+        <h1 class="text-xl sm:text-2xl font-extrabold text-blue-400 text-center md:text-left">
+            Torque Savings Visualization (Weight Centralization)
+        </h1>
+        <div class="text-sm font-mono mt-2 md:mt-0 text-yellow-300">
+            Base Motor Max Capacity: <span id="max-torque" class="font-bold">3.00 N·m</span>
+        </div>
+    </div>
+
+    <div class="flex flex-col lg:flex-row flex-grow gap-4">
+        <!-- 2D Canvas for Arm Visualization --><div class="lg:w-3/5 w-full canvas-wrapper shadow-inner">
+            <canvas id="arm-canvas"></canvas>
+        </div>
+
+        <!-- Torque Gauges and Status Panel --><div class="lg:w-2/5 w-full flex flex-col gap-4">
+            <div class="bg-gray-800 p-4 rounded-lg shadow-md">
+                <h3 class="text-lg font-semibold mb-2 text-center">J1 Required Torque (N·m)</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <!-- Traditional Arm Gauge --><div class="flex flex-col items-center">
+                        <p class="text-sm font-bold text-red-400 mb-1">TRADITIONAL (Joint Motors)</p>
+                        <div class="gauge-container border-2 border-red-500">
+                            <div id="gauge-traditional" class="gauge-fill"></div>
+                            <div class="absolute top-0 left-0 right-0 h-0.5 bg-yellow-300" style="top: calc(150px - (150px * var(--base-motor-max-torque) / 3.5));"></div>
+                             <div class="absolute top-0 right-1 text-xs text-yellow-300 font-bold z-10" style="top: calc(150px - (150px * var(--base-motor-max-torque) / 3.5) - 10px);">MAX</div>
+                        </div>
+                        <p id="torque-traditional-value" class="font-mono text-lg mt-1 text-red-300">0.00</p>
+                    </div>
+                    <!-- Cable-Driven Arm Gauge --><div class="flex flex-col items-center">
+                        <p class="text-sm font-bold text-green-400 mb-1">CABLE-DRIVEN (Base Motors)</p>
+                        <div class="gauge-container border-2 border-green-500">
+                            <div id="gauge-cable" class="gauge-fill"></div>
+                            <div class="absolute top-0 left-0 right-0 h-0.5 bg-yellow-300" style="top: calc(150px - (150px * var(--base-motor-max-torque) / 3.5));"></div>
+                             <div class="absolute top-0 right-1 text-xs text-yellow-300 font-bold z-10" style="top: calc(150px - (150px * var(--base-motor-max-torque) / 3.5) - 10px);">MAX</div>
+                        </div>
+                        <p id="torque-cable-value" class="font-mono text-lg mt-1 text-green-300">0.00</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controls and Status --><div class="bg-gray-800 p-4 rounded-lg shadow-md">
+                <div class="mb-4">
+                    <label for="angle-slider" class="block text-sm font-medium text-gray-300 mb-1">
+                        Base Joint Angle ($\theta$ from Vertical): <span id="angle-value" class="font-mono text-green-400">45°</span>
+                    </label>
+                    <input type="range" id="angle-slider" min="0" max="90" value="45" step="1" class="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer">
+                </div>
+                
+                <div class="mb-4">
+                    <label for="payload-slider" class="block text-sm font-medium text-gray-300 mb-1">
+                        External Payload Mass (m): <span id="payload-value" class="font-mono text-purple-400">0.40 kg</span>
+                    </label>
+                    <input type="range" id="payload-slider" min="0" max="1" value="0.4" step="0.05" class="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer">
+                </div>
+
+                <div class="text-md font-bold border-t pt-3 border-gray-700">
+                    Status: <span id="status-message" class="text-gray-300 font-normal">Ready. Adjust the angle and payload.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // --- Firebase Setup (Dummy for Canvas Environment) ---
+        // Necessary imports and variables for the Canvas environment, though not used in this physics visualization.
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+
+        // --- 2D Simulation Logic ---
+
+        // Constants from the user prompt and CSS variables
+        const MAX_TORQUE = 3.0;
+        const ARM_LENGTH_M = 0.3; // Physical length for calculation
+        let ARM_LENGTH_PX = 120; // Visual length in pixels per link (REDUCED!)
+        const GRAVITY = 9.8; // m/s^2
+
+        // Fixed Arm Masses (simplified model)
+        const M_ARM_BASE = 0.5; // Mass of the J1-J2 link
+        const M_ACTUATOR = 0.4; // Mass of 4 distal actuators (0.1 kg * 4)
+        const M_ARM_LINK = 0.2; // Mass of the J2-EE link (non-actuator weight)
+        const GAUGE_MAX_VALUE = 3.5; // Set the gauge scale slightly above MAX_TORQUE for visualization headroom
+
+        // Canvas setup
+        const canvas = document.getElementById('arm-canvas');
+        const ctx = canvas.getContext('2d');
+        let CANVAS_WIDTH, CANVAS_HEIGHT;
+        let CENTER_X, CENTER_Y;
+
+        // UI elements
+        const angleSlider = document.getElementById('angle-slider');
+        const angleValueDisplay = document.getElementById('angle-value');
+        const payloadSlider = document.getElementById('payload-slider');
+        const payloadValueDisplay = document.getElementById('payload-value');
+        const statusMessage = document.getElementById('status-message');
+        const gaugeTraditional = document.getElementById('gauge-traditional');
+        const gaugeCable = document.getElementById('gauge-cable');
+        const torqueTraditionalValue = document.getElementById('torque-traditional-value');
+        const torqueCableValue = document.getElementById('torque-cable-value');
+
+        function resizeCanvas() {
+            const container = canvas.parentElement;
+            CANVAS_WIDTH = container.clientWidth;
+            CANVAS_HEIGHT = Math.max(container.clientHeight, 400); 
+            canvas.width = CANVAS_WIDTH;
+            canvas.height = CANVAS_HEIGHT;
+            CENTER_Y = CANVAS_HEIGHT * 0.9;
+            CENTER_X = CANVAS_WIDTH / 2;
+
+            // Dynamically adjust visual arm length based on canvas width if needed
+            // This ensures arms fit on very narrow screens while maintaining proportion
+            const desiredArmSpan = ARM_LENGTH_PX * 4 + 150; // Total width for two arms and gap
+            if (desiredArmSpan > CANVAS_WIDTH * 0.9) { // If it's too wide, scale down
+                ARM_LENGTH_PX = (CANVAS_WIDTH * 0.9 - 150) / 4;
+            } else { // Reset to default if wider
+                ARM_LENGTH_PX = 120; // Default smaller size
+            }
+            redraw();
+        }
+
+        function calculateTorque(angleRad, m_payload, isTraditional) {
+            const angleFromVertical = angleRad;
+            const cosTheta = Math.cos(angleFromVertical);
+
+            const tau_link1 = M_ARM_BASE * GRAVITY * (ARM_LENGTH_M / 2) * cosTheta;
+            const tau_link2 = M_ARM_LINK * GRAVITY * (ARM_LENGTH_M + ARM_LENGTH_M / 2) * cosTheta;
+            const tau_payload = m_payload * GRAVITY * (2 * ARM_LENGTH_M) * cosTheta;
+
+            let tau_actuator_mass = 0;
+            if (isTraditional) {
+                tau_actuator_mass = M_ACTUATOR * GRAVITY * ARM_LENGTH_M * cosTheta;
+            }
+            return tau_link1 + tau_link2 + tau_payload + tau_actuator_mass;
+        }
+
+        function drawRoundedRect(ctx, x, y, width, height, radius, color) {
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        function drawArm(x, angleRad, color, isTraditional, m_payload) {
+            ctx.save();
+            ctx.translate(x, CENTER_Y);
+
+            // Base Unit (Housing)
+            drawRoundedRect(ctx, -35, -5, 70, 30, 8, '#4b5563'); // Dark gray base housing
+            if (!isTraditional) { // Cable-driven base
+                drawRoundedRect(ctx, -30, 5, 60, 20, 5, '#34d399'); // Green centralized motor housing
+                ctx.fillStyle = '#1f2937';
+                ctx.font = '9px Inter';
+                ctx.textAlign = 'center';
+                ctx.fillText('Motors', 0, 19);
+            }
+
+
+            // J1 Pivot (Shoulder) - main joint
+            ctx.translate(0, -10); // Adjust pivot point slightly up from base
+            ctx.rotate(-angleRad); // Rotate arm
+
+            // Link 1 (J1 to J2)
+            drawRoundedRect(ctx, -8, 0, 16, -ARM_LENGTH_PX, 5, color);
+            
+            // J2 Pivot (Elbow)
+            const elbowX = 0;
+            const elbowY = -ARM_LENGTH_PX;
+
+            // Traditional Actuator Mass (Yellow/Gold) at J2
+            if (isTraditional) {
+                ctx.fillStyle = '#facc15';
+                ctx.beginPath();
+                ctx.rect(elbowX - 20, elbowY - 20, 40, 40); // Square motor block
+                ctx.fill();
+                ctx.fillStyle = '#1f2937';
+                ctx.font = '9px Inter';
+                ctx.textAlign = 'center';
+                ctx.fillText('Motors', elbowX, elbowY);
+            }
+            
+            // Draw J2 Pivot (larger circle)
+            ctx.fillStyle = '#4b5563';
+            ctx.beginPath();
+            ctx.arc(elbowX, elbowY, 12, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.translate(elbowX, elbowY); // Move to J2 pivot
+
+            // Link 2 (J2 to EE)
+            drawRoundedRect(ctx, -7, 0, 14, -ARM_LENGTH_PX, 4, color + 'B3'); // Slightly transparent
+            
+            // End Effector (EE)
+            const eeX = 0;
+            const eeY = -ARM_LENGTH_PX;
+            ctx.translate(eeX, eeY); // Move to EE
+
+            // Payload Sphere with subtle gradient
+            const payloadRadius = 12 + m_payload * 8; // Scale radius with payload
+            const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, payloadRadius);
+            gradient.addColorStop(0, m_payload > 0 ? '#a78bfa' : '#e5e7eb'); // Lighter center
+            gradient.addColorStop(1, m_payload > 0 ? '#9333ea' : '#f3f4f6'); // Darker edge
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(0, 0, payloadRadius, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Cable Visualization (only for cable-driven arm)
+            if (!isTraditional) {
+                // Calculate position of J2 in canvas coordinates (relative to original canvas 0,0)
+                ctx.restore(); // Restore to initial canvas state
+                ctx.save();
+                ctx.translate(x, CENTER_Y - 10); // Start from the base of the arm
+                ctx.rotate(-angleRad); // Rotate to arm's angle
+
+                const cableStart = { x: 0, y: ARM_LENGTH_PX / 2 }; // Origin point for cables relative to J1
+                const cableEnd = { x: 0, y: -ARM_LENGTH_PX }; // J2 position relative to J1
+
+                // Simulate cables going from base to J2
+                ctx.beginPath();
+                ctx.strokeStyle = '#60a5fa';
+                ctx.lineWidth = 3;
+                ctx.setLineDash([8, 4]); // Dashed line for cable
+
+                // Draw cable to the elbow (J2)
+                ctx.moveTo(0, 0); // Start at J1 pivot (origin of this transformed context)
+                ctx.lineTo(elbowX - 10, elbowY + 15); // Draw to J2 on one side
+                ctx.moveTo(0, 0);
+                ctx.lineTo(elbowX + 10, elbowY + 15); // Draw to J2 on other side
+                
+                ctx.stroke();
+                ctx.setLineDash([]); // Reset line dash
+            }
+            
+            ctx.restore(); // Restore original canvas state
+        }
+
+        function updateGauges(tau, isTraditional) {
+            const ratio = tau / GAUGE_MAX_VALUE;
+            const percentage = Math.min(100, ratio * 100);
+            
+            const fillElement = isTraditional ? gaugeTraditional : gaugeCable;
+            const valueElement = isTraditional ? torqueTraditionalValue : torqueCableValue;
+            
+            let colorClass = 'bg-blue-500'; // Normal
+            if (tau > MAX_TORQUE) {
+                colorClass = 'bg-red-600'; // Overload
+            } else if (tau / MAX_TORQUE > 0.75) {
+                colorClass = 'bg-yellow-500'; // High
+            } else {
+                colorClass = 'bg-green-500'; // Optimized
+            }
+            
+            fillElement.style.height = `${percentage}%`;
+            fillElement.className = `gauge-fill ${colorClass}`;
+            valueElement.textContent = `${tau.toFixed(2)} N·m`;
+
+            // Update color of the text value based on status
+            valueElement.className = `font-mono text-lg mt-1 ${tau > MAX_TORQUE ? 'text-red-400' : 'text-green-300'}`;
+        }
+
+        function redraw() {
+            ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+            ctx.font = '14px Inter';
+            ctx.textAlign = 'center';
+            
+            const angleDeg = parseFloat(angleSlider.value);
+            const angleRad = (angleDeg * Math.PI) / 180;
+            const payloadMass = parseFloat(payloadSlider.value);
+
+            angleValueDisplay.textContent = `${angleDeg}°`;
+            payloadValueDisplay.textContent = `${payloadMass.toFixed(2)} kg`;
+
+            const tauT = calculateTorque(angleRad, payloadMass, true);
+            const tauC = calculateTorque(angleRad, payloadMass, false);
+
+            const offset = (ARM_LENGTH_PX * 2) + (CANVAS_WIDTH * 0.05); // Adjust offset to fit both arms + gap
+
+            // Traditional Arm (Red) - Left side
+            drawArm(CENTER_X - offset/2, angleRad, '#ef4444', true, payloadMass);
+            ctx.fillStyle = '#ef4444';
+            ctx.fillText('Traditional Arm', CENTER_X - offset/2, CENTER_Y + 50);
+            
+            // Cable-Driven Arm (Green) - Right side
+            drawArm(CENTER_X + offset/2, angleRad, '#10b981', false, payloadMass);
+            ctx.fillStyle = '#10b981';
+            ctx.fillText('Cable-Driven Arm', CENTER_X + offset/2, CENTER_Y + 50);
+
+            updateGauges(tauT, true);
+            updateGauges(tauC, false);
+
+            let hasTraditionalOverload = tauT > MAX_TORQUE;
+            let hasCableOverload = tauC > MAX_TORQUE;
+
+            if (hasTraditionalOverload && hasCableOverload) {
+                statusMessage.innerHTML = '<span class="text-red-400 font-bold">CRITICAL:</span> Both arms are overloaded! Reduce payload or angle.';
+            } else if (hasTraditionalOverload) {
+                const availableCapacity = (MAX_TORQUE - tauC).toFixed(2);
+                statusMessage.innerHTML = `<span class="text-yellow-300 font-bold">TRADITIONAL OVERLOAD:</span> Cable-driven arm still works and has <span class="text-green-400">${availableCapacity} N·m</span> capacity remaining.`;
+            } else if (hasCableOverload) {
+                 statusMessage.innerHTML = '<span class="text-red-400 font-bold">CRITICAL:</span> Payload is too heavy, even cable-driven arm is overloaded.';
+            } else {
+                const diff = (tauT - tauC).toFixed(2);
+                const percentSaved = ((tauT - tauC) / MAX_TORQUE * 100).toFixed(1);
+                statusMessage.innerHTML = `Torque Savings: <span class="text-green-400 font-bold">${diff} N·m</span> (${percentSaved}% capacity saved)`;
+            }
+        }
+
+        // Event Listeners
+        angleSlider.addEventListener('input', redraw);
+        payloadSlider.addEventListener('input', redraw);
+        window.addEventListener('resize', resizeCanvas);
+
+        // Initial setup
+        window.onload = () => {
+            document.documentElement.style.setProperty('--base-motor-max-torque', MAX_TORQUE.toFixed(2));
+            
+            const maxTorqueDisplay = document.getElementById('max-torque');
+            if (maxTorqueDisplay) maxTorqueDisplay.textContent = `${MAX_TORQUE.toFixed(2)} N·m`;
+
+            resizeCanvas(); // Initial resize and draw
+        };
+        
+    </script>
+</body>
+</html>
