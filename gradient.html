@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Byssal Thread Visualizer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1e293b; /* Slate 800 */
+            color: #f1f5f9;
+        }
+
+        /* refined slider */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: #94a3b8; /* Slate 400 */
+            border: 2px solid #f1f5f9;
+            cursor: pointer;
+            margin-top: -6px;
+            transition: background 0.2s;
+        }
+        input[type=range]::-webkit-slider-thumb:hover {
+            background: #cbd5e1;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #334155;
+            border-radius: 2px;
+        }
+        
+        .panel {
+            background: #0f172a; /* Slate 900 */
+            border: 1px solid #334155;
+        }
+
+        canvas {
+            background-color: #0f172a;
+            border-radius: 0.5rem;
+            border: 1px solid #334155;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-4">
+
+    <!-- Main Container -->
+    <div class="w-full max-w-4xl relative">
+        
+        <!-- Header -->
+        <div class="flex justify-between items-end mb-4 px-2">
+            <div>
+                <h1 class="text-2xl font-semibold text-slate-200 tracking-tight">
+                    Gradient Mechanics
+                </h1>
+                <p class="text-slate-400 text-sm">Comparative Failure Analysis</p>
+            </div>
+            <div class="text-right">
+                <div class="text-xs text-slate-500 uppercase tracking-wider font-semibold">Applied Load</div>
+                <div class="text-3xl font-light text-slate-200" id="stress_display">0 MPa</div>
+            </div>
+        </div>
+
+        <!-- Canvas Container -->
+        <div class="relative w-full h-[400px] mb-6">
+            <canvas id="byssalCanvas" class="w-full h-full"></canvas>
+        </div>
+
+        <!-- Controls Bar -->
+        <div class="panel rounded-xl p-6 flex flex-col md:flex-row gap-8 items-center justify-between shadow-lg">
+            
+            <!-- Gradient Sharpness Control -->
+            <div class="w-full md:w-1/2 space-y-3">
+                <div class="flex justify-between text-xs uppercase tracking-wider text-slate-500 font-semibold">
+                    <label for="stiffness_ratio">Gradient Ratio (Stiffness)</label>
+                    <span class="text-slate-300" id="ratio_display">1:20</span>
+                </div>
+                <input type="range" id="stiffness_ratio" min="1" max="50" value="20" step="1">
+            </div>
+
+            <!-- Load Control -->
+            <div class="w-full md:w-1/2 space-y-3">
+                <div class="flex justify-between text-xs uppercase tracking-wider text-slate-500 font-semibold">
+                    <label for="sigma_applied">Applied Load (Stress)</label>
+                    <!-- Markers for failure zones -->
+                    <div class="flex space-x-1">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500" title="Safe"></span>
+                        <span class="w-2 h-2 rounded-full bg-yellow-500" title="Yielding"></span>
+                        <span class="w-2 h-2 rounded-full bg-red-500" title="Failure"></span>
+                    </div>
+                </div>
+                <input type="range" id="sigma_applied" min="0" max="40" value="10" step="0.5">
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // --- Physics Constants ---
+            const L = 100; 
+            const SEGMENTS = 100; 
+            
+            // Thresholds
+            const UNIFORM_FAIL_STRESS = 25; // MPa - Uniform breaks here
+            const YIELD_START = 15; // MPa - Where gradient starts yielding
+            
+            // --- DOM Elements ---
+            const canvas = document.getElementById('byssalCanvas');
+            const ctx = canvas ? canvas.getContext('2d') : null;
+            const ratioInput = document.getElementById('stiffness_ratio');
+            const sigmaInput = document.getElementById('sigma_applied');
+            const ratioDisplay = document.getElementById('ratio_display');
+            const stressDisplay = document.getElementById('stress_display');
+
+            // --- Physics Logic ---
+
+            const getE = (x, E_prox, E_dist) => {
+                const t = x / L;
+                return E_prox - (E_prox - E_dist) * t;
+            };
+
+            const calculate = () => {
+                if (!ratioInput || !sigmaInput) return;
+
+                const ratio = parseFloat(ratioInput.value);
+                const sigma = parseFloat(sigmaInput.value);
+                
+                stressDisplay.textContent = `${sigma.toFixed(1)} MPa`;
+                ratioDisplay.textContent = `1:${ratio}`;
+
+                // Material Properties
+                const E_dist = 50; 
+                const E_prox = 50 * ratio; 
+                const E_avg = (E_prox + E_dist) / 2;
+
+                // --- Gradient Fiber Calculation ---
+                let gradDisplacement = 0;
+                const gradPoints = [];
+                const dx = L / SEGMENTS;
+                
+                // Dynamic Failure Threshold
+                // If Ratio is 1, it behaves exactly like uniform (breaks at 25).
+                // As Ratio increases, toughness increases (simulated by raising fail limit).
+                const gradFailLimit = UNIFORM_FAIL_STRESS + (ratio - 1); 
+                
+                // State check
+                const gradBroken = sigma >= gradFailLimit;
+                const gradYielding = sigma >= YIELD_START;
+
+                for(let i=0; i<=SEGMENTS; i++) {
+                    const x = i * dx;
+                    const E_local = getE(x, E_prox, E_dist);
+                    const strain = sigma / E_local;
+                    gradDisplacement += strain * dx;
+                    
+                    const stiffnessNorm = (E_local - E_dist) / (E_prox - E_dist || 1); 
+                    
+                    gradPoints.push({
+                        disp: gradDisplacement, 
+                        stiffness: stiffnessNorm
+                    });
+                }
+
+                // --- Uniform Fiber Calculation ---
+                const uniformStrain = sigma / E_avg;
+                const uniformTotalDisp = uniformStrain * L;
+                const uniformBroken = sigma >= UNIFORM_FAIL_STRESS;
+
+                return {
+                    gradPoints,
+                    gradTotalDisp: gradDisplacement,
+                    uniformTotalDisp,
+                    gradBroken,
+                    gradYielding,
+                    uniformBroken,
+                    sigma,
+                    ratio
+                };
+            };
+
+            // --- Drawing Logic ---
+
+            const draw = () => {
+                if (!ctx || !canvas) return;
+                
+                const width = canvas.width;
+                const height = canvas.height;
+                const data = calculate();
+                if (!data) return;
+
+                ctx.clearRect(0, 0, width, height);
+
+                const MAX_VISUAL_STRETCH_PX = width * 0.4;
+                const MAX_PHYSICAL_DISP = 300; 
+                const scaleFactor = MAX_VISUAL_STRETCH_PX / MAX_PHYSICAL_DISP;
+
+                const BASE_LEN_PX = width * 0.45;
+                const START_X = (width - BASE_LEN_PX - MAX_VISUAL_STRETCH_PX) / 2;
+
+                const Y_GRADIENT = height * 0.35;
+                const Y_UNIFORM = height * 0.7;
+
+                // 1. Gradient Fiber
+                drawFiber(
+                    ctx, 
+                    data.gradPoints, 
+                    data.gradTotalDisp * scaleFactor, 
+                    START_X, 
+                    Y_GRADIENT, 
+                    BASE_LEN_PX, 
+                    true, // isGradient
+                    data.gradBroken,
+                    data.gradYielding,
+                    data.ratio
+                );
+                
+                drawLabels(ctx, START_X, Y_GRADIENT, "GRADIENT THREAD", data.gradBroken ? "FAILURE" : (data.gradYielding ? "YIELDING (SAFE)" : "ELASTIC"));
+
+                // 2. Uniform Fiber
+                // Fake points for uniform
+                const uniformPoints = [];
+                for(let i=0; i<=SEGMENTS; i++) {
+                    uniformPoints.push({
+                        disp: (i/SEGMENTS) * data.uniformTotalDisp, // Linear displacement
+                        stiffness: 0.5 
+                    });
+                }
+
+                drawFiber(
+                    ctx,
+                    uniformPoints,
+                    data.uniformTotalDisp * scaleFactor,
+                    START_X,
+                    Y_UNIFORM,
+                    BASE_LEN_PX,
+                    false, // isGradient
+                    data.uniformBroken,
+                    false,
+                    data.ratio
+                );
+                
+                drawLabels(ctx, START_X, Y_UNIFORM, "UNIFORM THREAD", data.uniformBroken ? "CATASTROPHIC FAILURE" : "ELASTIC");
+
+                requestAnimationFrame(draw);
+            };
+
+            function drawFiber(ctx, points, totalVisualDisp, startX, y, baseLen, isGradient, isBroken, isYielding, ratio) {
+                const segmentLenPx = baseLen / SEGMENTS;
+                
+                ctx.lineCap = "round";
+                ctx.lineWidth = 10;
+
+                // If broken, we simulate a gap in the middle
+                const breakIndex = Math.floor(points.length / 2);
+                const gapSize = isBroken ? 40 : 0;
+
+                let prevX = startX;
+
+                for(let i=0; i<points.length; i++) {
+                    const p = points[i];
+
+                    // Calculate X Position
+                    // Base position + Stretch position
+                    const normalizedBase = (i / points.length) * baseLen;
+                    
+                    // Stretch is proportional to p.disp relative to total disp
+                    const maxDisp = points[points.length-1].disp || 1;
+                    const stretchPx = (p.disp / maxDisp) * totalVisualDisp;
+
+                    let nextX = startX + normalizedBase + stretchPx;
+
+                    // Add gap if broken and past break point
+                    if (isBroken && i > breakIndex) {
+                        nextX += gapSize;
+                    }
+
+                    if (i > 0) {
+                        // Skip drawing the segment that spans the break
+                        if (isBroken && i === breakIndex + 1) {
+                            prevX = nextX;
+                            continue;
+                        }
+
+                        ctx.beginPath();
+                        ctx.moveTo(prevX, y);
+                        ctx.lineTo(nextX, y);
+                        
+                        // Color Logic
+                        if (isBroken) {
+                            ctx.strokeStyle = "#ef4444"; // Red for broken
+                        } else if (isGradient) {
+                            if (ratio === 1) {
+                                // If ratio is 1, mimic uniform color structure
+                                ctx.strokeStyle = "#2dd4bf"; // Just use distal color uniformally 
+                            } else {
+                                // Matte Gradient
+                                const t = p.stiffness; // 1=Prox, 0=Dist
+                                
+                                let r, g, b;
+                                
+                                if (isYielding && t < 0.4) {
+                                    // Yielding zone (Distal) - Amber/Orange
+                                    r = 245; g = 158; b = 11; 
+                                } else {
+                                    // Prox (1): #f472b6 (Pink-400) matte
+                                    // Dist (0): #2dd4bf (Teal-400) matte
+                                    r = Math.floor(244 * t + 45 * (1-t));
+                                    g = Math.floor(114 * t + 212 * (1-t));
+                                    b = Math.floor(182 * t + 191 * (1-t));
+                                }
+                                ctx.strokeStyle = `rgb(${r},${g},${b})`;
+                            }
+                        } else {
+                            // Uniform
+                            ctx.strokeStyle = "#64748b"; // Slate 500
+                        }
+                        
+                        ctx.stroke();
+                    }
+                    prevX = nextX;
+                }
+
+                // Draw Anchors (Fixed)
+                ctx.fillStyle = "#475569";
+                ctx.fillRect(startX - 6, y - 12, 6, 24); // Left Anchor
+                
+                // Right Anchor (Moves with end of fiber)
+                const rightAnchorX = prevX; 
+                ctx.fillRect(rightAnchorX, y - 12, 6, 24); 
+            }
+
+            function drawLabels(ctx, x, y, title, status) {
+                ctx.font = "600 10px Inter";
+                ctx.fillStyle = "#94a3b8"; // Slate 400
+                ctx.fillText(title, x, y - 20);
+
+                // Status Label
+                let color = "#10b981"; // Emerald (Safe)
+                if (status.includes("FAILURE")) color = "#ef4444";
+                if (status.includes("YIELDING")) color = "#f59e0b"; // Amber
+
+                ctx.fillStyle = color;
+                ctx.fillText(status, x + 100, y - 20);
+            }
+
+            // --- Initialization ---
+            
+            const init = () => {
+                if (canvas) {
+                    canvas.width = canvas.offsetWidth;
+                    canvas.height = canvas.offsetHeight;
+                }
+                
+                if (ratioInput) ratioInput.addEventListener('input', draw);
+                if (sigmaInput) sigmaInput.addEventListener('input', draw);
+                
+                window.addEventListener('resize', () => {
+                    if (canvas) {
+                        canvas.width = canvas.offsetWidth;
+                        canvas.height = canvas.offsetHeight;
+                    }
+                    draw();
+                });
+
+                draw();
+            };
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
+
+        })();
+    </script>
+</body>
+</html>
