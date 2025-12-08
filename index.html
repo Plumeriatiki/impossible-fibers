@@ -10,13 +10,33 @@
       box-sizing: border-box;
     }
 
-   body {
-  margin: 0;
-font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;  color: #111827;
-  background: #F2F0EC;
-  line-height: 1.7;
-  font-size: 16px;
-}
+    body {
+      margin: 0;
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #111827;
+      background: #F2F0EC;
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    /* Particle background canvas */
+    #particle-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;          /* keep it behind all content */
+      display: block;
+      pointer-events: none; /* so clicks pass through */
+    }
+
+    /* Ensure content sits above the canvas */
+    header,
+    main,
+    footer {
+      position: relative;
+      z-index: 1;
+    }
 
     /* Top nav*/
     header {
@@ -25,6 +45,8 @@ font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Hel
       display: flex;
       align-items: center;
       justify-content: space-between;
+      background: rgba(242, 240, 236, 0.9);
+      backdrop-filter: blur(6px);
     }
 
     .logo {
@@ -93,14 +115,15 @@ font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Hel
     }
 
     .section {
-  margin-top: 2.5rem;
-  padding: 1.75rem 0;
-  border-top: 1px solid #D8D6D2;
-  background: #FFFFFF;        /* white content panels */
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
-  border-radius: 10px;
-}
+      margin-top: 2.5rem;
+      padding: 1.75rem 0;
+      border-top: 1px solid #D8D6D2;
+      background: #FFFFFF;        /* white content panels */
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.03);
+    }
 
     .section p {
       margin: 0 0 0.75rem;
@@ -121,7 +144,7 @@ font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Hel
       display: flex;
       justify-content: space-between;
       align-items: center;
-      color: #6B7280;
+      color: #E5E7EB;
       background: #1c1b1b; 
     }
 
@@ -154,6 +177,9 @@ font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Hel
   </style>
 </head>
 <body>
+  <!-- Particle background -->
+  <canvas id="particle-canvas"></canvas>
+
   <header>
     <div class="logo">
       <img src="img/logo.png" alt="Impossible Fibers Logo" class="logo-img">
@@ -164,7 +190,6 @@ font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Hel
       <a href="about.html">About</a>
       <a href="updates.html">Updates</a>
       <a href="contact.html">Contact</a>
-      
     </nav>
   </header>
 
@@ -173,24 +198,22 @@ font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Hel
     <h1>Impossible Fibers Mission</h1>
     <p class="tagline">
       We are on a mission to create the future of materials manufacturing. Our name signals an audacious belief that fibers can do far more when we learn from how nature builds. Spider silk shows a level of structural complexity that rivals a computer chip, and byssal threads demonstrate self-healing behavior that has no equivalent in our own materials. By harnessing the principles of nature's fiber assembly, we aim to create a manufacturing platform that expands the boundaries of what we imagine is possible.
- 
-    
     </p>
 
     <div class="section">
       <h2>Manufacturing Defines Human Epochs</h2>
       <p>
-       Our ability to manufacture a material reliably and economically is key to changing civilization. Smelting, casting, and forging redefined what was possible, enabling breakthroughs that reshaped societies, warfare, agriculture, and trade. Photolithography, etching, and clean-room fabrication opened the door to the information age. Today, we stand on the cusp of the next great wave of manufacturing, one rooted in the physics and chemistry we find in biological systems. This is not an incremental improvement, but a fundamental reimagining of how we make things.
-         </p>
-         </div>
+        Our ability to manufacture a material reliably and economically is key to changing civilization. Smelting, casting, and forging redefined what was possible, enabling breakthroughs that reshaped societies, warfare, agriculture, and trade. Photolithography, etching, and clean-room fabrication opened the door to the information age. Today, we stand on the cusp of the next great wave of manufacturing, one rooted in the physics and chemistry we find in biological systems. This is not an incremental improvement, but a fundamental reimagining of how we make things.
+      </p>
+    </div>
 
     <div class="section">
       <h2>Collaborate with Us</h2>
       <p>
-          We are building a <span class="highlight">multi-scale materials manufacturing platform</span>
-      that leverages advances in protein design, soft-matter physics, microfluidics, and new fiber spinning techniques.
-      We partner with researchers, industrial teams, and funding organizations interested in the future of
-      fibers, and bio-inspired manufacturing.
+        We are building a <span class="highlight">multi-scale materials manufacturing platform</span>
+        that leverages advances in protein design, soft-matter physics, microfluidics, and new fiber spinning techniques.
+        We partner with researchers, industrial teams, and funding organizations interested in the future of
+        fibers, and bio-inspired manufacturing.
       </p>
       <p>
         Let's <a href="/contact">connect</a>.
@@ -208,5 +231,123 @@ font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Hel
       <a href="contact.html">Contact</a>
     </div>
   </footer>
+
+  <!-- Particle field script -->
+  <script>
+    const canvas = document.getElementById("particle-canvas");
+    const ctx = canvas.getContext("2d");
+
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    const particles = [];
+    const NUM_PARTICLES = 110;     // adjust for density
+    const MAX_DISTANCE = 130;      // how far lines connect
+    const MOUSE_RADIUS = 140;      // how far mouse influence reaches
+
+    const mouse = { x: null, y: null };
+
+    window.addEventListener("resize", () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+
+    window.addEventListener("mousemove", (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    });
+
+    window.addEventListener("mouseleave", () => {
+      mouse.x = null;
+      mouse.y = null;
+    });
+
+    class Particle {
+      constructor() {
+        this.init();
+      }
+      init() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.vx = (Math.random() - 0.5) * 0.35;
+        this.vy = (Math.random() - 0.5) * 0.35;
+        this.size = 1.7 + Math.random() * 1.8;
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+
+        // Wrap around edges
+        if (this.x < 0) this.x = width;
+        if (this.x > width) this.x = 0;
+        if (this.y < 0) this.y = height;
+        if (this.y > height) this.y = 0;
+
+        // Mouse repulsion
+        if (mouse.x !== null) {
+          const dx = this.x - mouse.x;
+          const dy = this.y - mouse.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < MOUSE_RADIUS && dist > 0) {
+            const force = (MOUSE_RADIUS - dist) / MOUSE_RADIUS;
+            this.x += (dx / dist) * force * 3.5;
+            this.y += (dy / dist) * force * 3.5;
+          }
+        }
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(14, 124, 123, 0.90)"; // teal dots
+        ctx.fill();
+      }
+    }
+
+    function initParticles() {
+      particles.length = 0;
+      for (let i = 0; i < NUM_PARTICLES; i++) {
+        particles.push(new Particle());
+      }
+    }
+
+    function drawConnections() {
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < MAX_DISTANCE) {
+            const alpha = 1 - dist / MAX_DISTANCE;
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(234, 88, 12, ${alpha * 0.5})`; // subtle orange lines
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+
+      // match body background so it feels integrated
+      ctx.fillStyle = "#F2F0EC";
+      ctx.fillRect(0, 0, width, height);
+
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+
+      drawConnections();
+      requestAnimationFrame(animate);
+    }
+
+    initParticles();
+    animate();
+  </script>
 </body>
 </html>
