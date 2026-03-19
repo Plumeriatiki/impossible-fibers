@@ -2,29 +2,63 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Impossible Fibers</title>
+  <title>About – Impossible Fibers</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
   <style>
     * {
       box-sizing: border-box;
     }
 
-   body {
-  margin: 0;
-font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;  color: #111827;
-  background: #F2F0EC;
-  line-height: 1.7;
-  font-size: 16px;
-}
+    :root {
+      --bg: #F2F0EC;
+      --fg: #111827;
+      --teal: #0E7C7B;
+      --teal-deep: #0B4F4E;
+      --orange: #EA580C;
+      --orange-soft: #F97316;
+      --panel: #FFFFFF;
+      --border: #D8D6D2;
+      --border-light: #E5E7EB;
+      --muted: #6B7280;
+      --serif: 'DM Serif Display', Georgia, serif;
+      --sans: 'DM Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
 
-    /* Top nav*/
+    body {
+      margin: 0;
+      font-family: var(--sans);
+      color: var(--fg);
+      background: var(--bg);
+      line-height: 1.75;
+      font-size: 16.5px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #particle-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      display: block;
+      pointer-events: none;
+    }
+
+    header, main, footer {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── Header ── */
     header {
       padding: 1rem 1.5rem;
-      border-bottom: 1px solid #E5E7EB;
+      border-bottom: 1px solid var(--border-light);
       display: flex;
       align-items: center;
       justify-content: space-between;
+      background: rgba(242, 240, 236, 0.92);
+      backdrop-filter: blur(8px);
     }
 
     .logo {
@@ -51,90 +85,245 @@ font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Hel
 
     nav a {
       text-decoration: none;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       color: #374151;
       text-transform: uppercase;
       letter-spacing: 0.12em;
+      font-weight: 500;
+      transition: color 0.2s;
     }
 
     nav a:hover {
-      color: #111827;
+      color: var(--teal);
     }
 
-    /* Main content column */
+    /* ── Main content ── */
     main {
-      max-width: 720px;           /* narrower like 1cFE */
-      margin: 2.5rem auto 3.5rem;
+      max-width: 740px;
+      margin: 0 auto;
       padding: 0 1.25rem;
     }
 
-    h1 {
-      font-size: 2.25rem;
-      margin: 0.5rem 0 1rem;
+    /* ── Hero ── */
+    .hero {
+      padding: 4.5rem 0 3rem;
     }
 
-    h2 {
-      font-size: 0.95rem;
+    .hero-label {
+      font-size: 0.78rem;
       text-transform: uppercase;
-      letter-spacing: 0.18em;
-      color: #0E7C7B;
-      margin: 0 0 0.5rem;
-    }
-
-    .tagline {
-      font-size: 1.05rem;
-      max-width: 650px;
-      margin: 0 0 2rem;
-    }
-
-    .highlight {
-      color: #EA580C;  /* orange, similar strength to 1cFE accent */
+      letter-spacing: 0.2em;
+      color: var(--teal);
       font-weight: 600;
+      margin: 0 0 1rem;
     }
 
+    .hero h1 {
+      font-family: var(--serif);
+      font-size: clamp(2.2rem, 5vw, 3rem);
+      line-height: 1.2;
+      margin: 0 0 1.5rem;
+      font-weight: 400;
+      color: var(--fg);
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--teal-deep);
+    }
+
+    .hero-sub {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: #374151;
+      max-width: 640px;
+      margin: 0;
+    }
+
+    /* ── Sections ── */
     .section {
-  margin-top: 2.5rem;
-  padding: 1.75rem 0;
-  border-top: 1px solid #D8D6D2;
-  background: #FFFFFF;        /* white content panels */
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
-  border-radius: 10px;
-}
+      margin-top: 1rem;
+      padding: 2.25rem 2rem;
+      background: var(--panel);
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 12px 30px rgba(0,0,0,0.03);
+    }
+
+    .section + .section {
+      margin-top: 1.25rem;
+    }
+
+    .section-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      color: var(--orange);
+      font-weight: 600;
+      margin: 0 0 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-label::before {
+      content: '';
+      display: inline-block;
+      width: 18px;
+      height: 2px;
+      background: var(--orange);
+    }
+
+    .section h2 {
+      font-family: var(--serif);
+      font-size: 1.55rem;
+      line-height: 1.3;
+      margin: 0 0 1rem;
+      text-transform: none;
+      letter-spacing: 0;
+      color: var(--fg);
+      font-weight: 400;
+    }
 
     .section p {
+      margin: 0 0 0.85rem;
+      color: #374151;
+    }
+
+    .section p:last-child {
+      margin-bottom: 0;
+    }
+
+    .section .kicker {
+      font-weight: 600;
+      color: var(--teal-deep);
+      font-size: 1.02rem;
+      margin-top: 0.5rem;
+    }
+
+    /* ── Sponsors ── */
+    .sponsors {
+      margin-top: 1.25rem;
+      margin-bottom: 4rem;
+      padding: 2.25rem 2rem;
+      background: var(--panel);
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 12px 30px rgba(0,0,0,0.03);
+    }
+
+    .sponsors .section-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      color: var(--orange);
+      font-weight: 600;
       margin: 0 0 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
-    a {
-      color: #0E7C7B;
+    .sponsors .section-label::before {
+      content: '';
+      display: inline-block;
+      width: 18px;
+      height: 2px;
+      background: var(--orange);
     }
 
-    a:hover {
-      color: #0B4F4E;
+    .sponsors h2 {
+      font-family: var(--serif);
+      font-size: 1.55rem;
+      line-height: 1.3;
+      margin: 0 0 1rem;
+      text-transform: none;
+      letter-spacing: 0;
+      color: var(--fg);
+      font-weight: 400;
     }
 
+    .sponsors p {
+      margin: 0 0 0.85rem;
+      color: #374151;
+    }
+
+    .sponsor-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+      margin-top: 1.25rem;
+    }
+
+    .sponsor-card {
+      padding: 1.25rem 1.5rem;
+      background: var(--bg);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .sponsor-card h3 {
+      font-family: var(--sans);
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin: 0 0 0.4rem;
+      color: var(--fg);
+    }
+
+    .sponsor-card h3 a {
+      color: var(--teal);
+      text-decoration: none;
+    }
+
+    .sponsor-card h3 a:hover {
+      color: var(--teal-deep);
+    }
+
+    .sponsor-card p {
+      font-size: 0.92rem;
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── Footer ── */
     footer {
-      border-top: 1px solid #E5E7EB;
+      border-top: 1px solid var(--border-light);
       padding: 1.25rem 1.5rem;
       font-size: 0.8rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      color: #6B7280;
-      background: #1c1b1b; 
+      color: #9CA3AF;
+      background: #1c1b1b;
     }
 
     footer a {
       color: inherit;
       text-decoration: none;
       margin-left: 1rem;
+      transition: color 0.2s;
     }
 
     footer a:hover {
-      color: #fafcfe;
+      color: #fdfeff;
     }
 
+    /* ── Animations ── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1), transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .hero .fade-up:nth-child(1) { transition-delay: 0.05s; }
+    .hero .fade-up:nth-child(2) { transition-delay: 0.15s; }
+    .hero .fade-up:nth-child(3) { transition-delay: 0.25s; }
+
+    /* ── Responsive ── */
     @media (max-width: 640px) {
       header {
         flex-direction: column;
@@ -147,80 +336,238 @@ font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Hel
         flex-wrap: wrap;
       }
 
-      h1 {
-        font-size: 1.9rem;
+      .hero {
+        padding: 3rem 0 2rem;
+      }
+
+      .hero h1 {
+        font-size: 1.85rem;
+      }
+
+      .section, .sponsors {
+        padding: 1.75rem 1.25rem;
       }
     }
   </style>
 </head>
 <body>
+  <canvas id="particle-canvas"></canvas>
+
   <header>
     <div class="logo">
       <img src="img/logo.png" alt="Impossible Fibers Logo" class="logo-img">
       <span>IMPOSSIBLE FIBERS</span>
     </div>
     <nav>
-      <a href="index.html">Home</a>
+      <a href="/">Home</a>
       <a href="about.html">About</a>
-      <a href="updates.html">Updates</a>
-      <a href="/contact.html">Contact</a>
+      <a href="https://iflab.substack.com/" target="_blank" rel="noopener">Updates</a>
+      <a href="contact.html">Contact</a>
     </nav>
   </header>
 
   <main>
-    <h2>The No Jargon Brief</h2>
-    <h1>Our Heilmeier Catechism</h1>
-    <p class="tagline">
+    <!-- ── Hero ── -->
+    <div class="hero">
+      <p class="hero-label fade-up">About</p>
+      <h1 class="fade-up">We are designing for <em>biological assembly</em> from the ground up.</h1>
+      <p class="hero-sub fade-up">
+        Impossible Fibers exists because the manufacturing infrastructure for protein-based materials doesn't yet exist. We are building it: new physics, new processes, new tools. Our name reflects a conviction that fibers can do far more when we stop borrowing from plastics manufacturing and start learning from how biology builds.
+      </p>
+    </div>
 
-<span class="highlight">What are you trying to do? </span>
-<p>+ Create programmable fibers</p>
-<p>+ Unlock extreme fiber performance</p>
-<p>+ Unlock competitive distributed manufacturing of sustainable fibers</p>
-<p> </p>
-
-<span class="highlight">How is it done today, and what are the limits of current practice? </span> </p>
-<p>+ Existing manufacturing technologies are black box bespoke input and output with little tunability and no predictable programmable outcomes.</p>
-<p>+ Recent advances in materials identification harnessing AI is primarily in hard or crystal materials, because we have existing hard matter emulators. There is no soft matter emulator because of a lack of data around soft matter.</p>
-<p>+ Existing manufacturing technologies for fibers were designed for cellulose or plastics, and don't allow the necessary conditions for assembly of protein materials with performance.</p>
-<p>+ Existing scaling is done with large jumps in volume processing, which changes biophysics and production - leading to total change in product output.</p>
-<p> </p>
-
-<span class="highlight">What is new in your approach and why do you think it will be successful?</span></p>
-<p>+ We are designing for biomaterial assembly from the ground up, leveraging novel phase change triggers for protein self-assembly, and creating predictable performance outcomes.</p>
-<p>+ Advances in micro and nano fluidics handling allows scaling and automation of fiber dope creation and characterization.</p>
-<p>+ We can harness automation and robotics to develop repeatable and normalized processes at scale, enabling both digital twin and standardized characterization.</p>
-<p>+ Newer spinning techniques, such as contact pulling, electro-spinning, and microfluidics can be scaled-out while maintaining the same biophysics, allowing for massive parallel distributed manufacturing and linear scaling.</p>
-<p>+ Rapidly accelerating capabilities in protein design and  protein production mean that proteins are now reliable feedstocks for manufacturing systems.</p>
-
-<span class="highlight">Who cares? If you are successful, what difference will it make?</span>
-<p>+ We will create predictable composite materials with associated techno-economic analysis of cost and performance outcomes for input ingredients, providing evidence for resource allocation and funding of specific applications in textiles, aerospace, biomedical, space missions, remote facilities manufacturing, and robotics.</p>
-<p>+ We can create spatial gradient fibers and materials that can be designed for vibration damping, increased force and shear tolerance and reduced fracture in joining dissimilar materials leading to low vibration applications, increased dexterity in biomedical and robotic applications, increased strength and degrees of freedom for robotics, artificial tendons, artificial muscles.</p>
-<p>+ We will enable nanoscale material sesign and rapid assembly for optical, electrical, and computational fibers. Examples of this include fibers tuned to biological mechanical characteristics, but also to enable electrical conduction from nervous system to computer interface.</p>
-    <p></p>
-
-      </div>
-     <div class="section">
-      <h2>Our Sponsors</h2>
+    <!-- ── The Problem ── -->
+    <div class="section fade-up">
+      <p class="section-label">The Problem</p>
+      <h2>Current Manufacturing Was Not Designed for This</h2>
       <p>
-        Primary support for Impossible Fibers is thanks to Speculative Technologies, LikoLab, and Astera Institute. 
-        <p> </p>
-    <a href="https://spec.tech/">Speculative Technologies</a> is a nonprofit industrial research lab for public good. With a mission to create an abundant, wonder-filled future by unlocking powerful materials and manufacturing technologies that don’t have a home in other institutions.
-      <p></p> <a href="https://astera.org/">Astera Institute</a> empowers visionary, high-leverage science and technology projects with the capacity to create transformative progress for human civilization.
-       <p></p> <a href="https://likolab.com/">LikoLab</a> is a Frontier Research Contractor dedicated to advancing bio-inspired materials and manufacturing.
- 
+        Existing fiber manufacturing technologies were built for cellulose and synthetic polymers. They treat the process as a black box: input a feedstock, output a fiber, with little tunability and no predictable way to program performance outcomes. When researchers try to use these systems for protein-based materials, the conditions required for hierarchical self-assembly simply cannot be met.
+      </p>
+      <p>
+        Scaling compounds the problem. Conventional manufacturing scales up by increasing volume, which changes the underlying biophysics and alters the product entirely. A fiber that works at the bench fails at the pilot line, not because the chemistry is wrong but because the manufacturing regime has shifted underneath it.
+      </p>
+      <p>
+        Meanwhile, recent advances in computational materials discovery have focused almost entirely on hard and crystalline matter, because we have well-established simulators for those systems. Soft matter, the domain of proteins and biological composites, has no equivalent emulator. The data infrastructure is missing. We are building it alongside the manufacturing.
+      </p>
+    </div>
+
+    <!-- ── Our Approach ── -->
+    <div class="section fade-up">
+      <p class="section-label">Our Approach</p>
+      <h2>Assembly-First Manufacturing</h2>
+      <p>
+        Rather than adapting legacy fiber processes to accommodate proteins, we have designed a manufacturing system around the physics of biomaterial assembly. We leverage novel phase-change triggers for protein self-assembly to create predictable, programmable performance outcomes from the start.
+      </p>
+      <p>
+        Advances in micro- and nanofluidics allow us to automate dope creation and characterization with high precision. We combine this with spinning techniques that preserve the biophysics across scale: contact pulling, electrospinning, and microfluidic spinning. Because these processes scale out in parallel units rather than scaling up in volume, the conditions at each production point remain identical. Lab and factory converge.
+      </p>
+      <p>
+        Automation and robotics give us repeatable, normalized processes that feed both standardized characterization and digital twin development. Rapidly accelerating capabilities in protein design and production mean that engineered proteins are now reliable, tunable feedstocks rather than exotic research materials.
+      </p>
+      <p class="kicker">The result is a manufacturing platform where material outcomes are predicted and programmed, not discovered through trial and error.</p>
+    </div>
+
+    <!-- ── What It Enables ── -->
+    <div class="section fade-up">
+      <p class="section-label">What It Enables</p>
+      <h2>From Predictable Composites to Programmable Systems</h2>
+      <p>
+        At the first level, our platform produces composite materials with predictable cost and performance characteristics. We generate techno-economic analyses for every input combination, providing clear evidence for resource allocation across target applications in aerospace, biomedical devices, robotics, and remote or distributed manufacturing.
+      </p>
+      <p>
+        At the next level, control over multi-scale assembly enables materials with spatial gradients: fibers whose properties vary along their length or cross-section. This opens applications in vibration damping, increased force and shear tolerance at material junctions, reduced fracture at interfaces between dissimilar materials, and new degrees of freedom for robotic dexterity, artificial tendons, and artificial muscles.
+      </p>
+      <p>
+        At the frontier, nanoscale material design and rapid assembly create pathways to fibers with optical, electrical, and computational function. Fibers tuned to match the mechanical characteristics of biological tissue while enabling electrical conduction from the nervous system to a computer interface. Composites that don't just carry load but carry information.
+      </p>
+    </div>
+
+    <!-- ── Origins ── -->
+    <div class="sponsors fade-up">
+      <p class="section-label">Origins</p>
+      <h2>Where This Work Began</h2>
+      <p>
+        Impossible Fibers emerged from the support of three organizations committed to funding research that doesn't fit neatly into existing institutions.
+      </p>
+
+      <div class="sponsor-grid">
+        <div class="sponsor-card">
+          <h3><a href="https://spec.tech/" target="_blank" rel="noopener">Speculative Technologies</a></h3>
+          <p>A nonprofit industrial research lab for the public good, with a mission to create an abundant, wonder-filled future by unlocking powerful materials and manufacturing technologies that don't have a home in other institutions.</p>
+        </div>
+        <div class="sponsor-card">
+          <h3><a href="https://astera.org/" target="_blank" rel="noopener">Astera Institute</a></h3>
+          <p>Empowers visionary, high-leverage science and technology projects with the capacity to create transformative progress for human civilization.</p>
+        </div>
+        <div class="sponsor-card">
+          <h3><a href="https://likolab.com/" target="_blank" rel="noopener">LikoLab</a></h3>
+          <p>A frontier research contractor dedicated to advancing bio-inspired materials and manufacturing.</p>
+        </div>
+      </div>
     </div>
   </main>
 
   <footer>
     <div>&copy; 2025 Impossible Fibers</div>
     <div>
-      <span></span>
-      <a href="index.html">Home</a>
+      <a href="/">Home</a>
       <a href="about.html">About</a>
-      <a href="updates.html">Updates</a>
+      <a href="https://iflab.substack.com/" target="_blank" rel="noopener">Updates</a>
       <a href="contact.html">Contact</a>
     </div>
   </footer>
+
+  <!-- Particle field script -->
+  <script>
+    const canvas = document.getElementById("particle-canvas");
+    const ctx = canvas.getContext("2d");
+
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    const particles = [];
+    const NUM_PARTICLES = 50;
+    const MAX_DISTANCE = 110;
+    const MOUSE_RADIUS = 120;
+
+    const mouse = { x: null, y: null };
+
+    window.addEventListener("resize", () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+
+    window.addEventListener("mousemove", (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    });
+
+    window.addEventListener("mouseleave", () => {
+      mouse.x = null;
+      mouse.y = null;
+    });
+
+    class Particle {
+      constructor() { this.init(); }
+      init() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.vx = (Math.random() - 0.5) * 0.35;
+        this.vy = (Math.random() - 0.5) * 0.35;
+        this.size = 1.2 + Math.random() * 1.2;
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        if (this.x < 0) this.x = width;
+        if (this.x > width) this.x = 0;
+        if (this.y < 0) this.y = height;
+        if (this.y > height) this.y = 0;
+        if (mouse.x !== null) {
+          const dx = this.x - mouse.x;
+          const dy = this.y - mouse.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < MOUSE_RADIUS && dist > 0) {
+            const force = (MOUSE_RADIUS - dist) / MOUSE_RADIUS;
+            this.x += (dx / dist) * force * 2;
+            this.y += (dy / dist) * force * 2;
+          }
+        }
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(14, 124, 123, 0.35)";
+        ctx.fill();
+      }
+    }
+
+    function initParticles() {
+      particles.length = 0;
+      for (let i = 0; i < NUM_PARTICLES; i++) particles.push(new Particle());
+    }
+
+    function drawConnections() {
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < MAX_DISTANCE) {
+            const alpha = 1 - dist / MAX_DISTANCE;
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(234, 88, 12, ${alpha * 0.18})`;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = "#F2F0EC";
+      ctx.fillRect(0, 0, width, height);
+      particles.forEach(p => { p.update(); p.draw(); });
+      drawConnections();
+      requestAnimationFrame(animate);
+    }
+
+    initParticles();
+    animate();
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+  </script>
 </body>
 </html>
-

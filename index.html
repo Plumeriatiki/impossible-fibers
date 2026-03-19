@@ -9,7 +9,7 @@
     * {
       box-sizing: border-box;
     }
- 
+
     :root {
       --bg: #F2F0EC;
       --fg: #111827;
@@ -24,7 +24,7 @@
       --serif: 'DM Serif Display', Georgia, serif;
       --sans: 'DM Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
- 
+
     body {
       margin: 0;
       font-family: var(--sans);
@@ -34,7 +34,7 @@
       font-size: 16.5px;
       -webkit-font-smoothing: antialiased;
     }
- 
+
     /* Particle background canvas */
     #particle-canvas {
       position: fixed;
@@ -45,12 +45,12 @@
       display: block;
       pointer-events: none;
     }
- 
+
     header, main, footer {
       position: relative;
       z-index: 1;
     }
- 
+
     /* ── Header ── */
     header {
       padding: 1rem 1.5rem;
@@ -61,7 +61,7 @@
       background: rgba(242, 240, 236, 0.92);
       backdrop-filter: blur(8px);
     }
- 
+
     .logo {
       display: flex;
       align-items: center;
@@ -71,19 +71,19 @@
       text-transform: uppercase;
       font-size: 0.85rem;
     }
- 
+
     .logo-img {
       height: 32px;
       width: auto;
       display: block;
     }
- 
+
     nav {
       display: flex;
       align-items: center;
       gap: 1.25rem;
     }
- 
+
     nav a {
       text-decoration: none;
       font-size: 0.8rem;
@@ -93,23 +93,23 @@
       font-weight: 500;
       transition: color 0.2s;
     }
- 
+
     nav a:hover {
       color: var(--teal);
     }
- 
+
     /* ── Main content ── */
     main {
       max-width: 740px;
       margin: 0 auto;
       padding: 0 1.25rem;
     }
- 
+
     /* ── Hero ── */
     .hero {
       padding: 4.5rem 0 3rem;
     }
- 
+
     .hero-label {
       font-size: 0.78rem;
       text-transform: uppercase;
@@ -118,7 +118,7 @@
       font-weight: 600;
       margin: 0 0 1rem;
     }
- 
+
     .hero h1 {
       font-family: var(--serif);
       font-size: clamp(2.2rem, 5vw, 3rem);
@@ -127,12 +127,12 @@
       font-weight: 400;
       color: var(--fg);
     }
- 
+
     .hero h1 em {
       font-style: italic;
       color: var(--teal-deep);
     }
- 
+
     .hero-sub {
       font-size: 1.1rem;
       line-height: 1.8;
@@ -140,7 +140,7 @@
       max-width: 620px;
       margin: 0;
     }
- 
+
     /* ── Sections ── */
     .section {
       margin-top: 1rem;
@@ -150,11 +150,11 @@
       border-radius: 12px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 12px 30px rgba(0,0,0,0.03);
     }
- 
+
     .section + .section {
       margin-top: 1.25rem;
     }
- 
+
     .section-label {
       font-size: 0.72rem;
       text-transform: uppercase;
@@ -166,7 +166,7 @@
       align-items: center;
       gap: 0.5rem;
     }
- 
+
     .section-label::before {
       content: '';
       display: inline-block;
@@ -174,7 +174,7 @@
       height: 2px;
       background: var(--orange);
     }
- 
+
     .section h2 {
       font-family: var(--serif);
       font-size: 1.55rem;
@@ -185,28 +185,28 @@
       color: var(--fg);
       font-weight: 400;
     }
- 
+
     .section p {
       margin: 0 0 0.85rem;
       color: #374151;
     }
- 
+
     .section p:last-child {
       margin-bottom: 0;
     }
- 
+
     .section .accent {
       color: var(--fg);
       font-weight: 600;
     }
- 
+
     .section .kicker {
       font-weight: 600;
       color: var(--teal-deep);
       font-size: 1.02rem;
       margin-top: 0.5rem;
     }
- 
+
     /* ── CTA section ── */
     .cta-section {
       margin-top: 1.25rem;
@@ -217,7 +217,7 @@
       color: #fff;
       text-align: center;
     }
- 
+
     .cta-section h2 {
       font-family: var(--serif);
       font-size: 1.75rem;
@@ -227,7 +227,7 @@
       letter-spacing: 0;
       font-weight: 400;
     }
- 
+
     .cta-section p {
       color: rgba(255,255,255,0.82);
       margin: 0 0 1.5rem;
@@ -235,7 +235,7 @@
       margin-left: auto;
       margin-right: auto;
     }
- 
+
     .cta-link {
       display: inline-block;
       padding: 0.75rem 2rem;
@@ -248,13 +248,13 @@
       letter-spacing: 0.04em;
       transition: background 0.2s, transform 0.15s;
     }
- 
+
     .cta-link:hover {
       background: var(--orange-soft);
       color: #fff;
       transform: translateY(-1px);
     }
- 
+
     /* ── Footer ── */
     footer {
       border-top: 1px solid var(--border-light);
@@ -266,39 +266,39 @@
       color: #9CA3AF;
       background: #1c1b1b;
     }
- 
+
     footer a {
       color: inherit;
       text-decoration: none;
       margin-left: 1rem;
       transition: color 0.2s;
     }
- 
+
     footer a:hover {
       color: #fdfeff;
     }
- 
+
     /* ── Animations ── */
     .fade-up {
       opacity: 0;
       transform: translateY(24px);
       transition: opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1), transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
     }
- 
+
     .fade-up.visible {
       opacity: 1;
       transform: translateY(0);
     }
- 
+
     /* stagger children */
     .hero .fade-up:nth-child(1) { transition-delay: 0.05s; }
     .hero .fade-up:nth-child(2) { transition-delay: 0.15s; }
     .hero .fade-up:nth-child(3) { transition-delay: 0.25s; }
- 
+
     .section.fade-up:nth-of-type(1) { transition-delay: 0s; }
     .section.fade-up:nth-of-type(2) { transition-delay: 0.08s; }
     .section.fade-up:nth-of-type(3) { transition-delay: 0.16s; }
- 
+
     /* ── Responsive ── */
     @media (max-width: 640px) {
       header {
@@ -306,24 +306,24 @@
         align-items: flex-start;
         gap: 0.5rem;
       }
- 
+
       nav {
         gap: 1rem;
         flex-wrap: wrap;
       }
- 
+
       .hero {
         padding: 3rem 0 2rem;
       }
- 
+
       .hero h1 {
         font-size: 1.85rem;
       }
- 
+
       .section {
         padding: 1.75rem 1.25rem;
       }
- 
+
       .cta-section {
         padding: 2rem 1.25rem;
       }
@@ -333,7 +333,7 @@
 <body>
   <!-- Particle background -->
   <canvas id="particle-canvas"></canvas>
- 
+
   <header>
     <div class="logo">
       <img src="img/logo.png" alt="Impossible Fibers Logo" class="logo-img">
@@ -342,11 +342,11 @@
     <nav>
       <a href="/">Home</a>
       <a href="about.html">About</a>
-      <a href="updates.html">Updates</a>
+      <a href="https://iflab.substack.com/" target="_blank" rel="noopener">Updates</a>
       <a href="contact.html">Contact</a>
     </nav>
   </header>
- 
+
   <main>
     <!-- ── Hero ── -->
     <div class="hero">
@@ -356,7 +356,7 @@
         We are building programmable protein-based composites, an entirely new class of material where performance is directed through multi-scale assembly rather than limited by toxic or rare elements. The result is fibers that can be tuned, predicted, and manufactured at industrial speed.
       </p>
     </div>
- 
+
     <!-- ── Section 1: Manufacturing ── -->
     <div class="section fade-up">
       <p class="section-label">History</p>
@@ -369,7 +369,7 @@
       </p>
       <p class="kicker">We are building the manufacturing platform for the next epoch.</p>
     </div>
- 
+
     <!-- ── Section 2: Assembly ── -->
     <div class="section fade-up">
       <p class="section-label">Approach</p>
@@ -381,7 +381,7 @@
         This is what makes biological materials fundamentally programmable. Changing the assembly changes the outcome. We are building the tools to exploit this principle at the speed and cost of industrial fiber manufacturing, tuning mechanical, electrical, optical, chemical, and magnetic properties on a <span class="accent">millimeter-by-millimeter basis</span>.
       </p>
     </div>
- 
+
     <!-- ── Section 3: Platform ── -->
     <div class="section fade-up">
       <p class="section-label">Platform</p>
@@ -394,7 +394,7 @@
       </p>
       <p class="kicker">We predict and program material outcomes. We don't discover them by accident.</p>
     </div>
- 
+
     <!-- ── Section 4: Market ── -->
     <div class="section fade-up">
       <p class="section-label">Strategy</p>
@@ -406,7 +406,7 @@
         Fibers that give a robotic hand the ability to perceive touch and strain. Fibers that serve as the interface between a human nervous system and a computer. Advanced composites that don't just bear load but transmit information, or even compute. Each of these applications is a real market with real pull, and each one validates the same underlying manufacturing platform.
       </p>
     </div>
- 
+
     <!-- ── Fibers Everywhere ── -->
     <div class="section fade-up">
       <p class="section-label">Vision</p>
@@ -418,7 +418,7 @@
         We believe that making fibers programmable changes what all of these systems can become. Not incrementally, but categorically.
       </p>
     </div>
- 
+
     <!-- ── CTA ── -->
     <div class="cta-section fade-up">
       <h2>Build With Us</h2>
@@ -428,47 +428,47 @@
       <a href="contact.html" class="cta-link">Get in Touch</a>
     </div>
   </main>
- 
+
   <footer>
     <div>&copy; 2025 Impossible Fibers</div>
     <div>
       <a href="/">Home</a>
       <a href="about.html">About</a>
-      <a href="updates.html">Updates</a>
+      <a href="https://iflab.substack.com/" target="_blank" rel="noopener">Updates</a>
       <a href="contact.html">Contact</a>
     </div>
   </footer>
- 
+
   <!-- Particle field script (unchanged) -->
   <script>
     const canvas = document.getElementById("particle-canvas");
     const ctx = canvas.getContext("2d");
- 
+
     let width = canvas.width = window.innerWidth;
     let height = canvas.height = window.innerHeight;
- 
+
     const particles = [];
     const NUM_PARTICLES = 50;
     const MAX_DISTANCE = 110;
     const MOUSE_RADIUS = 120;
- 
+
     const mouse = { x: null, y: null };
- 
+
     window.addEventListener("resize", () => {
       width = canvas.width = window.innerWidth;
       height = canvas.height = window.innerHeight;
     });
- 
+
     window.addEventListener("mousemove", (e) => {
       mouse.x = e.clientX;
       mouse.y = e.clientY;
     });
- 
+
     window.addEventListener("mouseleave", () => {
       mouse.x = null;
       mouse.y = null;
     });
- 
+
     class Particle {
       constructor() { this.init(); }
       init() {
@@ -503,12 +503,12 @@
         ctx.fill();
       }
     }
- 
+
     function initParticles() {
       particles.length = 0;
       for (let i = 0; i < NUM_PARTICLES; i++) particles.push(new Particle());
     }
- 
+
     function drawConnections() {
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
@@ -527,7 +527,7 @@
         }
       }
     }
- 
+
     function animate() {
       ctx.clearRect(0, 0, width, height);
       ctx.fillStyle = "#F2F0EC";
@@ -536,10 +536,10 @@
       drawConnections();
       requestAnimationFrame(animate);
     }
- 
+
     initParticles();
     animate();
- 
+
     /* ── Scroll reveal ── */
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(e => {
@@ -549,9 +549,8 @@
         }
       });
     }, { threshold: 0.15 });
- 
+
     document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
   </script>
 </body>
 </html>
- 
