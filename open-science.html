@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Impossible Fibers</title>
+  <title>Open Science – Impossible Fibers</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Impossible Fibers' open science policy: our commitments to releasing data, methods, instrumentation, and informative failures early and openly." />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
   <style>
     * {
@@ -35,7 +36,6 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* Particle background canvas */
     #particle-canvas {
       position: fixed;
       inset: 0;
@@ -138,7 +138,7 @@
       font-size: 1.1rem;
       line-height: 1.8;
       color: #374151;
-      max-width: 620px;
+      max-width: 640px;
       margin: 0;
     }
 
@@ -146,7 +146,6 @@
     .section {
       margin-top: 1rem;
       padding: 2.25rem 2rem;
-      border-top: none;
       background: var(--panel);
       border-radius: 12px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 12px 30px rgba(0,0,0,0.03);
@@ -196,11 +195,6 @@
       margin-bottom: 0;
     }
 
-    .section .accent {
-      color: var(--fg);
-      font-weight: 600;
-    }
-
     .section .kicker {
       font-weight: 600;
       color: var(--teal-deep);
@@ -208,131 +202,140 @@
       margin-top: 0.5rem;
     }
 
-    /* ── Open sections (no panel) ── */
-    .section.open {
-      background: transparent;
-      box-shadow: none;
-      border-radius: 0;
-      padding-left: 0;
-      padding-right: 0;
-      padding-top: 2.75rem;
-      padding-bottom: 1.5rem;
+    .section a {
+      color: var(--teal);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(14, 124, 123, 0.3);
+      transition: color 0.2s, border-color 0.2s;
     }
 
-    /* ── Pull quote ── */
-    .pullquote {
-      margin: 2.5rem 0 1.5rem;
-      padding: 0 1rem;
-      text-align: center;
-    }
-
-    .pullquote p {
-      font-family: var(--serif);
-      font-size: clamp(1.5rem, 3.4vw, 2.05rem);
-      line-height: 1.32;
+    .section a:hover {
       color: var(--teal-deep);
-      margin: 0;
-      max-width: 620px;
-      margin-left: auto;
-      margin-right: auto;
+      border-bottom-color: var(--teal-deep);
     }
 
-    .pullquote::before {
-      content: '';
-      display: block;
-      width: 40px;
-      height: 2px;
-      background: var(--orange);
-      margin: 0 auto 1.5rem;
-    }
-
-    /* ── Beliefs ── */
-    .beliefs {
+    /* ── Commitment lists ── */
+    .commit-list {
       list-style: none;
-      margin: 1.5rem 0 0;
+      margin: 1.25rem 0 0;
       padding: 0;
-      counter-reset: belief;
     }
 
-    .beliefs li {
+    .commit-list li {
       position: relative;
-      padding-left: 3.25rem;
-      margin-bottom: 1.75rem;
+      padding-left: 1.75rem;
+      margin-bottom: 1.1rem;
       color: #374151;
     }
 
-    .beliefs li:last-child {
+    .commit-list li:last-child {
       margin-bottom: 0;
     }
 
-    .beliefs li::before {
-      counter-increment: belief;
-      content: counter(belief, decimal-leading-zero);
+    .commit-list li::before {
+      content: '+';
       position: absolute;
       left: 0;
-      top: 0.1rem;
-      font-family: var(--serif);
-      font-size: 1.4rem;
-      line-height: 1.2;
+      top: -0.05em;
       color: var(--orange);
+      font-weight: 600;
+      font-size: 1.15rem;
+      line-height: 1.75;
     }
 
-    .beliefs strong {
-      display: block;
-      font-family: var(--serif);
-      font-size: 1.18rem;
-      font-weight: 400;
+    .commit-list strong {
+      font-weight: 600;
       color: var(--fg);
-      margin-bottom: 0.3rem;
-      line-height: 1.35;
     }
 
-    /* ── CTA section ── */
-    .cta-section {
+    /* ── Focus areas grid ── */
+    .focus {
       margin-top: 1.25rem;
       margin-bottom: 4rem;
-      padding: 2.5rem 2rem;
-      background: var(--teal-deep);
+      padding: 2.25rem 2rem;
+      background: var(--panel);
       border-radius: 12px;
-      color: #fff;
-      text-align: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 12px 30px rgba(0,0,0,0.03);
     }
 
-    .cta-section h2 {
-      font-family: var(--serif);
-      font-size: 1.75rem;
+    .focus .section-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      color: var(--orange);
+      font-weight: 600;
       margin: 0 0 0.75rem;
-      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .focus .section-label::before {
+      content: '';
+      display: inline-block;
+      width: 18px;
+      height: 2px;
+      background: var(--orange);
+    }
+
+    .focus h2 {
+      font-family: var(--serif);
+      font-size: 1.55rem;
+      line-height: 1.3;
+      margin: 0 0 1rem;
       text-transform: none;
       letter-spacing: 0;
+      color: var(--fg);
       font-weight: 400;
     }
 
-    .cta-section p {
-      color: rgba(255,255,255,0.82);
-      margin: 0 0 1.5rem;
-      max-width: 520px;
-      margin-left: auto;
-      margin-right: auto;
+    .focus p {
+      margin: 0 0 0.85rem;
+      color: #374151;
     }
 
-    .cta-link {
+    .draft-tag {
       display: inline-block;
-      padding: 0.75rem 2rem;
-      background: var(--orange);
-      color: #fff;
-      text-decoration: none;
-      border-radius: 6px;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
       font-weight: 600;
-      font-size: 0.9rem;
-      letter-spacing: 0.04em;
-      transition: background 0.2s, transform 0.15s;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 0.1rem 0.45rem;
+      vertical-align: 0.35em;
+      margin-left: 0.6rem;
+      font-family: var(--sans);
     }
 
-    .cta-link:hover {
-      background: var(--orange-soft);
-      color: #fff;
-      transform: translateY(-1px);
+    .focus-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin-top: 1.25rem;
+    }
+
+    .focus-card {
+      padding: 1.25rem 1.5rem;
+      background: var(--bg);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .focus-card h3 {
+      font-family: var(--sans);
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin: 0 0 0.4rem;
+      color: var(--fg);
+    }
+
+    .focus-card p {
+      font-size: 0.92rem;
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
     }
 
     /* ── Footer ── */
@@ -370,14 +373,9 @@
       transform: translateY(0);
     }
 
-    /* stagger children */
     .hero .fade-up:nth-child(1) { transition-delay: 0.05s; }
     .hero .fade-up:nth-child(2) { transition-delay: 0.15s; }
     .hero .fade-up:nth-child(3) { transition-delay: 0.25s; }
-
-    .section.fade-up:nth-of-type(1) { transition-delay: 0s; }
-    .section.fade-up:nth-of-type(2) { transition-delay: 0.08s; }
-    .section.fade-up:nth-of-type(3) { transition-delay: 0.16s; }
 
     /* ── Responsive ── */
     @media (max-width: 640px) {
@@ -400,18 +398,17 @@
         font-size: 1.85rem;
       }
 
-      .section {
+      .section, .focus {
         padding: 1.75rem 1.25rem;
       }
 
-      .cta-section {
-        padding: 2rem 1.25rem;
+      .focus-grid {
+        grid-template-columns: 1fr;
       }
     }
   </style>
 </head>
 <body>
-  <!-- Particle background -->
   <canvas id="particle-canvas"></canvas>
 
   <header>
@@ -431,84 +428,112 @@
   <main>
     <!-- ── Hero ── -->
     <div class="hero">
-      <p class="hero-label fade-up">Our Mission</p>
-      <h1 class="fade-up">To unlock nature's <em>manufacturing strategies</em> for abundant advanced materials</h1>
+      <p class="hero-label fade-up">Open Science Policy</p>
+      <h1 class="fade-up">We run our science <em>in the open</em></h1>
       <p class="hero-sub fade-up">
-        We are building programmable protein-based composites, an entirely new class of material where performance is directed through multi-scale assembly rather than limited by toxic or rare elements.
+        We build programmable protein-based materials, with a wide range of possible applications across robotics, aerospace, medical, textiles, and advanced materials. We are a for-profit company, working to advance the future capabilities of an incredible range of materials with large scale impacts.
       </p>
     </div>
 
-    <!-- ── We Believe ── -->
+    <!-- ── Why Open ── -->
     <div class="section fade-up">
-      <p class="section-label">We Believe</p>
-      <h2>Three Convictions Behind the Work</h2>
-      <ul class="beliefs">
+      <p class="section-label">Why Open</p>
+      <h2>A Large Share of Our Work Is More Useful in the Open</h2>
+      <p>
+        The instrumentation, the characterization methods, the data behind our results, and the approaches that failed — we believe all of it is useful to everyone, ourselves included, in the open.
+      </p>
+      <p>
+        Our core mission is to advance humanity's capabilities to create an advanced, sustainable material future. As a result of that, we commit to releasing relevant scientific information early and to running our science in a way the wider community can see, reproduce, and build on.
+      </p>
+    </div>
+
+    <!-- ── Commitments ── -->
+    <div class="section fade-up">
+      <p class="section-label">Our Commitments</p>
+      <h2>Our Open-Research Commitments</h2>
+      <ul class="commit-list">
         <li>
-          <strong>Architecture matters as much as ingredients.</strong>
-          Nature's highest performing materials aren't defined only by what they're made of, but by how they're built.
+          <strong>Post research data and products early</strong>, releasing datasets, characterization results, and finished tools as they mature rather than holding them for a single eventual publication, so the community can put them to use sooner.
         </li>
         <li>
-          <strong>Abundance runs through self-assembly.</strong>
-          The key to an abundant material future lies in our ability to manipulate self-assembly from the nano-scale to the macro-scale, for materials at the kilogram scale.
+          <strong>Broaden what we communicate beyond the journal-article format</strong>, including full datasets, experimental protocols, instrumentation and open-hardware designs, informative failures, and the open problems we would welcome help on.
         </li>
         <li>
-          <strong>This is the moment it becomes possible.</strong>
-          Artificial intelligence and synthetic biology poise us at a point where we can begin to rapidly accelerate the performance and reach of materials into new capabilities for humanity.
+          <strong>Encourage use of our released tools and data</strong> by the scientific community, and invite open critique of their rigor and reproducibility by soliciting feedback rather than waiting for it.
+        </li>
+        <li>
+          <strong>Document what we learn about sustaining an open-science practice inside a for-profit company</strong>, including how the open-versus-protected boundary holds, so that others attempting the same have a worked example rather than starting from nothing.
         </li>
       </ul>
     </div>
 
-    <!-- ── History (open) ── -->
-    <div class="section open fade-up">
-      <p class="section-label">History</p>
-      <h2>Manufacturing Has Always Defined What's Possible</h2>
-      <p>
-        We call it the Bronze Age or the Iron Age, as if the metals themselves changed the world. They didn't. It was the development of smelting, casting, and forging that reshaped societies. The metals were always in the ground. Manufacturing is what made them matter.
-      </p>
-      <p>
-        Photolithography and clean-room fabrication gave us the information age. Silicon was abundant long before anyone built a transistor on it. Every civilizational leap follows the same pattern: a manufacturing breakthrough unlocks what a raw material can become.
-      </p>
-    </div>
-
-    <!-- ── Pull quote ── -->
-    <div class="pullquote fade-up">
-      <p>We are building the manufacturing platform for the next epoch.</p>
-    </div>
-
-    <!-- ── Approach (merged with Platform) ── -->
+    <!-- ── Outputs ── -->
     <div class="section fade-up">
-      <p class="section-label">Approach</p>
-      <h2>Nature's Manufacturing Strategies</h2>
+      <p class="section-label">Outputs</p>
+      <h2>How We Publish</h2>
       <p>
-        The highest-performance materials in biology, from spider silk to bone to abalone shell, don't derive their properties from exotic chemistry. They derive them from hierarchical architecture: precisely controlled assembly from the nanoscale to the macroscale, where structure at every length scale contributes to the final performance envelope.
+        We seek to follow and establish how for-profit organizations can publish FAIR — Findable, Accessible, Interoperable, and Reusable — research artifacts. Our current outputs include:
       </p>
-      <p>
-        Changing the assembly changes the outcome. We build the tools to exploit that at the speed and cost of fiber manufacturing, tuning mechanical, electrical, optical, chemical, and magnetic properties on a <span class="accent">millimeter-by-millimeter basis</span>.
-      </p>
-      <p>
-        Engineered proteins are now viable manufacturing feedstocks. We pair them with novel phase-change triggers for self-assembly, microfluidic dope preparation, and spinning techniques including contact pulling, electrospinning, and microfluidic spinning. Critically, these processes scale out rather than up: the biophysics stay identical at every production unit, so we parallelize without the regime changes that typically derail biomaterial scaling.
-      </p>
-      <p class="kicker">We predict and program material outcomes. We don't discover them by accident.</p>
+      <ul class="commit-list">
+        <li>
+          <strong>Written technical and scientific articles</strong> shared on our community Zenodo page, under a CC&nbsp;BY license.
+        </li>
+        <li>
+          <strong>Code for our projects</strong> shared via GitHub, under an MIT license.
+        </li>
+        <li>
+          <strong>Posts without a DOI</strong> for a general technical audience — assertions, hypotheses, and progress — published in <a href="assembly-required/">Assembly Required</a> and archived on Zenodo.
+        </li>
+        <li>
+          <strong>Working on being a "guinea pig" with The Stack.</strong>
+        </li>
+        <li>
+          <strong>A community Slack channel</strong> that we manage and maintain, focused on open science around protein-based fiber formation.
+        </li>
+      </ul>
     </div>
 
-    <!-- ── Fibers Everywhere (open) ── -->
-    <div class="section open fade-up">
-      <p class="section-label">Vision</p>
-      <h2>Fibers Everywhere</h2>
-      <p>
-        Fibers are one of the oldest technologies on the planet, and one of the most pervasive. In nature, they template the mineralization of bone and the formation of glass spicules in sponges. They make up the fundamental structural units of wood, muscle, tendon, and silk. Our own technological world mirrors this: textiles, cables, composites, optical networks. Civilization is, in a very literal sense, built on fibers.
-      </p>
-      <p class="kicker">What if fibers could sense, conduct, compute, and self-heal?</p>
+    <!-- ── Collaboration ── -->
+    <div class="section fade-up">
+      <p class="section-label">Collaboration</p>
+      <h2>Who We're Looking to Connect With</h2>
+      <ul class="commit-list">
+        <li>
+          <strong>Community partners around materials characterization and reference data</strong>, to help us identify, coordinate, or supplement shared datasets and characterization standards for protein-based and bioinspired fibers — where in several areas none yet exist.
+        </li>
+        <li>
+          <strong>Partners within the scientific community willing to reproduce our work</strong>, taking our released methods and instrumentation, reproducing them independently, and engaging in a public conversation about where they hold up, where they do not, and how they could be improved.
+        </li>
+      </ul>
+      <p class="kicker" style="margin-top: 1.5rem;">If that sounds like you, <a href="contact.html">get in touch</a>.</p>
     </div>
 
-
-    <!-- ── CTA ── -->
-    <div class="cta-section fade-up">
-      <h2>Build With Us</h2>
+    <!-- ── Areas of Focus ── -->
+    <div class="focus fade-up">
+      <p class="section-label">Areas of Focus</p>
+      <h2>Where We're Focused <span class="draft-tag">Draft</span></h2>
       <p>
-        We partner with researchers, industrial teams, and funding organizations working at the frontier of materials, manufacturing, and the systems they enable.
+        The open-science areas we are actively working in, and where outside collaboration would move things fastest.
       </p>
-      <a href="contact.html" class="cta-link">Get in Touch</a>
+
+      <div class="focus-grid">
+        <div class="focus-card">
+          <h3>AI-Assisted Microfluidic Chip Design</h3>
+          <p>Harnessing AI models to enable rapid prototyping capabilities for microfluidics, and bio-inspired fiber manufacturing.</p>
+        </div>
+        <div class="focus-card">
+          <h3>Predictive Protein / Composite Fiber Models</h3>
+          <p>Establishing a foundational model for fiber formation and prediction of performance outcomes.</p>
+        </div>
+        <div class="focus-card">
+          <h3>Bio-Inspired Spinning &amp; Manufacturing Modalities</h3>
+          <p>Building tools that advance our ability to borrow strategies from natural manufacturing — encapsulation, or the chemistry of solvation and formation.</p>
+        </div>
+        <div class="focus-card">
+          <h3>Foundational Mapping of Fiber Possibilities</h3>
+          <p>Expanding on what is currently known or perceived to be possible for fibers.</p>
+        </div>
+      </div>
     </div>
   </main>
 
@@ -523,7 +548,7 @@
     </div>
   </footer>
 
-  <!-- Particle field script (unchanged) -->
+  <!-- Particle field script -->
   <script>
     const canvas = document.getElementById("particle-canvas");
     const ctx = canvas.getContext("2d");
@@ -624,7 +649,6 @@
     initParticles();
     animate();
 
-    /* ── Scroll reveal ── */
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(e => {
         if (e.isIntersecting) {

@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Assembly Required – Impossible Fibers</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="The next revolution in manufacturing won't begin with new materials. It will begin with new ways of thinking about how materials come together. A publication from Impossible Fibers." />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+
+    :root {
+      --bg: #F2F0EC;
+      --fg: #111827;
+      --teal: #0E7C7B;
+      --teal-deep: #0B4F4E;
+      --orange: #EA580C;
+      --panel: #FFFFFF;
+      --border: #D8D6D2;
+      --border-light: #E5E7EB;
+      --muted: #6B7280;
+      --serif: 'DM Serif Display', Georgia, serif;
+      --sans: 'DM Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--sans);
+      color: var(--fg);
+      background: var(--bg);
+      line-height: 1.75;
+      font-size: 16.5px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #particle-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      display: block;
+      pointer-events: none;
+    }
+
+    header, main, footer { position: relative; z-index: 1; }
+
+    /* ── Header ── */
+    header {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(242, 240, 236, 0.92);
+      backdrop-filter: blur(8px);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+    }
+
+    .logo-img { height: 32px; width: auto; display: block; }
+
+    nav { display: flex; align-items: center; gap: 1.25rem; }
+
+    nav a {
+      text-decoration: none;
+      font-size: 0.8rem;
+      color: #374151;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 500;
+      white-space: nowrap;
+      transition: color 0.2s;
+    }
+
+    nav a:hover { color: var(--teal); }
+
+    main { max-width: 740px; margin: 0 auto; padding: 0 1.25rem; }
+
+    /* ── Masthead ── */
+    .masthead { padding: 4.5rem 0 2.5rem; }
+
+    .masthead-label {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--teal);
+      font-weight: 600;
+      margin: 0 0 1rem;
+    }
+
+    .masthead h1 {
+      font-family: var(--serif);
+      font-size: clamp(2.6rem, 6.5vw, 4rem);
+      line-height: 1.1;
+      margin: 0 0 1.25rem;
+      font-weight: 400;
+    }
+
+    .masthead h1 em { font-style: italic; color: var(--teal-deep); }
+
+    .masthead-sub {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: #374151;
+      max-width: 620px;
+      margin: 0 0 2rem;
+    }
+
+    .subscribe-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .subscribe-btn {
+      display: inline-block;
+      background: var(--teal-deep);
+      color: #fff;
+      text-decoration: none;
+      padding: 0.7rem 1.5rem;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      transition: background 0.2s;
+    }
+
+    .subscribe-btn:hover { background: var(--teal); }
+
+    .subscribe-note { font-size: 0.85rem; color: var(--muted); margin: 0; }
+
+    /* ── Archive ── */
+    .archive { margin-bottom: 4rem; }
+
+    .archive-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      color: var(--orange);
+      font-weight: 600;
+      margin: 0 0 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .archive-label::before {
+      content: '';
+      display: inline-block;
+      width: 18px;
+      height: 2px;
+      background: var(--orange);
+    }
+
+    .post {
+      padding: 1.75rem 2rem;
+      background: var(--panel);
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 12px 30px rgba(0,0,0,0.03);
+      margin-bottom: 1.1rem;
+    }
+
+    .post-meta {
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+      font-weight: 500;
+      margin: 0 0 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 0.64rem;
+      letter-spacing: 0.12em;
+      font-weight: 600;
+      padding: 0.1rem 0.45rem;
+      border-radius: 3px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    .tag.audio { color: var(--teal-deep); border-color: rgba(14,124,123,0.35); }
+
+    .post h2 {
+      font-family: var(--serif);
+      font-size: 1.5rem;
+      line-height: 1.28;
+      margin: 0 0 0.5rem;
+      font-weight: 400;
+    }
+
+    .post h2 a { color: var(--fg); text-decoration: none; transition: color 0.2s; }
+    .post h2 a:hover { color: var(--teal-deep); }
+
+    .post p.dek { margin: 0 0 1rem; color: #374151; }
+
+    .post-links {
+      display: flex;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .post-links a { color: var(--teal); text-decoration: none; transition: color 0.2s; }
+    .post-links a:hover { color: var(--teal-deep); }
+    .post-links a.secondary { color: var(--muted); }
+    .post-links a.secondary:hover { color: var(--fg); }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border-light);
+      padding: 1.25rem 1.5rem;
+      font-size: 0.8rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #9CA3AF;
+      background: #1c1b1b;
+    }
+
+    footer a { color: inherit; text-decoration: none; margin-left: 1rem; transition: color 0.2s; }
+    footer a:hover { color: #fdfeff; }
+
+    /* ── Animations ── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1), transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 640px) {
+      header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+      nav { gap: 1rem; flex-wrap: wrap; }
+      .masthead { padding: 3rem 0 2rem; }
+      .post { padding: 1.5rem 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="particle-canvas"></canvas>
+
+  <header>
+    <div class="logo">
+      <img src="../img/logo.png" alt="Impossible Fibers Logo" class="logo-img">
+      <span>IMPOSSIBLE FIBERS</span>
+    </div>
+    <nav>
+      <a href="../">Home</a>
+      <a href="../about.html">About</a>
+      <a href="../open-science.html">Open Science</a>
+      <a href="./">Assembly Required</a>
+      <a href="../contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ── Masthead ── -->
+    <div class="masthead">
+      <p class="masthead-label fade-up">A Publication from Impossible Fibers</p>
+      <h1 class="fade-up">Assembly <em>Required</em></h1>
+      <p class="masthead-sub fade-up">
+        The next revolution in manufacturing won't begin with new materials. It will begin with new ways of thinking about how materials come together. Assembly Required explores that future through biology, engineering, and the lessons hidden in the natural world.
+      </p>
+      <div class="subscribe-row fade-up">
+        <a class="subscribe-btn" href="https://iflab.substack.com/subscribe" target="_blank" rel="noopener">Subscribe</a>
+        <p class="subscribe-note">Free. New pieces land here and in your inbox.</p>
+      </div>
+    </div>
+
+    <!-- ── Archive ── -->
+    <div class="archive">
+      <p class="archive-label fade-up">Archive</p>
+
+      <div class="post fade-up">
+        <p class="post-meta">June 12, 2026</p>
+        <h2><a href="https://iflab.substack.com/p/humanity-makes-noodles-nature-makes" target="_blank" rel="noopener">Humanity Makes Noodles. Nature Makes Machines.</a></h2>
+        <p class="dek">The spider in your backyard is a wonder of manufacturing capability.</p>
+        <div class="post-links">
+          <a href="https://iflab.substack.com/p/humanity-makes-noodles-nature-makes" target="_blank" rel="noopener">Read on Substack &nearr;</a>
+        </div>
+      </div>
+
+      <div class="post fade-up">
+        <p class="post-meta">January 7, 2026</p>
+        <h2><a href="the-missing-emulator.html">The Missing Emulator</a></h2>
+        <p class="dek">Why soft matter needs its own digital twin, and how fibers make it possible.</p>
+        <div class="post-links">
+          <a href="the-missing-emulator.html">Read here &rarr;</a>
+          <a class="secondary" href="https://iflab.substack.com/p/the-missing-emulator" target="_blank" rel="noopener">Read on Substack &nearr;</a>
+        </div>
+      </div>
+
+      <div class="post fade-up">
+        <p class="post-meta">December 3, 2025</p>
+        <h2><a href="https://iflab.substack.com/p/first-contact" target="_blank" rel="noopener">First Contact</a></h2>
+        <p class="dek">Coaxing fibers into existence.</p>
+        <div class="post-links">
+          <a href="https://iflab.substack.com/p/first-contact" target="_blank" rel="noopener">Read on Substack &nearr;</a>
+        </div>
+      </div>
+
+      <div class="post fade-up">
+        <p class="post-meta">November 19, 2025 <span class="tag audio">Podcast</span></p>
+        <h2><a href="https://iflab.substack.com/p/impossible-fibers-podcast" target="_blank" rel="noopener">Impossible Fibers Podcast</a></h2>
+        <p class="dek">Conversations with Tim McGee about fibers.</p>
+        <div class="post-links">
+          <a href="https://iflab.substack.com/p/impossible-fibers-podcast" target="_blank" rel="noopener">Listen on Substack &nearr;</a>
+        </div>
+      </div>
+
+      <div class="post fade-up">
+        <p class="post-meta">November 19, 2025 <span class="tag audio">Video</span></p>
+        <h2><a href="https://iflab.substack.com/p/impossible-fiber-beginnings" target="_blank" rel="noopener">Impossible Fiber Beginnings</a></h2>
+        <p class="dek">A twelve-minute talk from 2024 on learning from nature for hierarchical spinning.</p>
+        <div class="post-links">
+          <a href="https://iflab.substack.com/p/impossible-fiber-beginnings" target="_blank" rel="noopener">Watch on Substack &nearr;</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div>&copy; 2025 Impossible Fibers</div>
+    <div>
+      <a href="../">Home</a>
+      <a href="../about.html">About</a>
+      <a href="../open-science.html">Open Science</a>
+      <a href="./">Assembly Required</a>
+      <a href="../contact.html">Contact</a>
+    </div>
+  </footer>
+
+  <script>
+    const canvas = document.getElementById("particle-canvas");
+    const ctx = canvas.getContext("2d");
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+    const particles = [];
+    const NUM_PARTICLES = 50;
+    const MAX_DISTANCE = 110;
+    const MOUSE_RADIUS = 120;
+    const mouse = { x: null, y: null };
+
+    window.addEventListener("resize", () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+    window.addEventListener("mousemove", (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
+    window.addEventListener("mouseleave", () => { mouse.x = null; mouse.y = null; });
+
+    class Particle {
+      constructor() { this.init(); }
+      init() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.vx = (Math.random() - 0.5) * 0.35;
+        this.vy = (Math.random() - 0.5) * 0.35;
+        this.size = 1.2 + Math.random() * 1.2;
+      }
+      update() {
+        this.x += this.vx; this.y += this.vy;
+        if (this.x < 0) this.x = width;
+        if (this.x > width) this.x = 0;
+        if (this.y < 0) this.y = height;
+        if (this.y > height) this.y = 0;
+        if (mouse.x !== null) {
+          const dx = this.x - mouse.x, dy = this.y - mouse.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < MOUSE_RADIUS && dist > 0) {
+            const force = (MOUSE_RADIUS - dist) / MOUSE_RADIUS;
+            this.x += (dx / dist) * force * 2;
+            this.y += (dy / dist) * force * 2;
+          }
+        }
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(14, 124, 123, 0.35)";
+        ctx.fill();
+      }
+    }
+
+    function initParticles() {
+      particles.length = 0;
+      for (let i = 0; i < NUM_PARTICLES; i++) particles.push(new Particle());
+    }
+
+    function drawConnections() {
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < MAX_DISTANCE) {
+            const alpha = 1 - dist / MAX_DISTANCE;
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(234, 88, 12, ${alpha * 0.18})`;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = "#F2F0EC";
+      ctx.fillRect(0, 0, width, height);
+      particles.forEach(p => { p.update(); p.draw(); });
+      drawConnections();
+      requestAnimationFrame(animate);
+    }
+
+    initParticles();
+    animate();
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+      });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>

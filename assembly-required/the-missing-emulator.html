@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>The Missing Emulator – Assembly Required</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Why soft matter needs its own digital twin, and how fibers make it possible." />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+
+    :root {
+      --bg: #F2F0EC;
+      --fg: #111827;
+      --teal: #0E7C7B;
+      --teal-deep: #0B4F4E;
+      --orange: #EA580C;
+      --panel: #FFFFFF;
+      --border: #D8D6D2;
+      --border-light: #E5E7EB;
+      --muted: #6B7280;
+      --serif: 'DM Serif Display', Georgia, serif;
+      --sans: 'DM Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--sans);
+      color: var(--fg);
+      background: var(--bg);
+      line-height: 1.75;
+      font-size: 16.5px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #particle-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      display: block;
+      pointer-events: none;
+    }
+
+    header, main, footer { position: relative; z-index: 1; }
+
+    /* ── Header ── */
+    header {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(242, 240, 236, 0.92);
+      backdrop-filter: blur(8px);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+    }
+
+    .logo-img { height: 32px; width: auto; display: block; }
+
+    nav { display: flex; align-items: center; gap: 1.25rem; }
+
+    nav a {
+      text-decoration: none;
+      font-size: 0.8rem;
+      color: #374151;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 500;
+      white-space: nowrap;
+      transition: color 0.2s;
+    }
+
+    nav a:hover { color: var(--teal); }
+
+    main { max-width: 680px; margin: 0 auto; padding: 0 1.25rem; }
+
+    /* ── Article header ── */
+    .article-head {
+      padding: 3.5rem 0 2rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2.5rem;
+    }
+
+    .breadcrumb {
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-weight: 600;
+      margin: 0 0 1.25rem;
+    }
+
+    .breadcrumb a { color: var(--teal); text-decoration: none; }
+    .breadcrumb a:hover { color: var(--teal-deep); }
+
+    .article-head h1 {
+      font-family: var(--serif);
+      font-size: clamp(2.1rem, 5vw, 2.9rem);
+      line-height: 1.18;
+      margin: 0 0 0.9rem;
+      font-weight: 400;
+    }
+
+    .article-dek {
+      font-size: 1.12rem;
+      line-height: 1.7;
+      color: #374151;
+      margin: 0 0 1.5rem;
+    }
+
+    .byline {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+      font-weight: 500;
+      margin: 0;
+    }
+
+    /* ── Article body ── */
+    .article-body { padding-bottom: 1rem; }
+
+    .article-body p {
+      margin: 0 0 1.35rem;
+      color: #1F2937;
+      font-size: 1.06rem;
+      line-height: 1.85;
+    }
+
+    .article-body p.lead {
+      font-family: var(--serif);
+      font-size: 1.4rem;
+      line-height: 1.5;
+      color: var(--fg);
+      margin-bottom: 1.75rem;
+    }
+
+    .article-body strong { font-weight: 600; color: var(--fg); }
+
+    .article-body a {
+      color: var(--teal);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(14,124,123,0.3);
+    }
+
+    .article-body a:hover { color: var(--teal-deep); border-bottom-color: var(--teal-deep); }
+
+    .article-body figure {
+      margin: 2rem 0;
+    }
+
+    .article-body figure img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .article-body figcaption {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 0.6rem;
+      line-height: 1.6;
+    }
+
+    .pull {
+      margin: 2.25rem 0;
+      padding-left: 1.5rem;
+      border-left: 3px solid var(--orange);
+    }
+
+    .pull p {
+      font-family: var(--serif);
+      font-size: 1.32rem;
+      line-height: 1.45;
+      color: var(--teal-deep);
+      margin: 0;
+    }
+
+    /* ── Article footer ── */
+    .article-foot {
+      margin: 1rem 0 4rem;
+      padding: 2rem;
+      background: var(--panel);
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 12px 30px rgba(0,0,0,0.03);
+    }
+
+    .article-foot h3 {
+      font-family: var(--serif);
+      font-size: 1.3rem;
+      font-weight: 400;
+      margin: 0 0 0.6rem;
+    }
+
+    .article-foot p {
+      margin: 0 0 1.25rem;
+      color: #374151;
+      font-size: 0.98rem;
+    }
+
+    .foot-links { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
+
+    .subscribe-btn {
+      display: inline-block;
+      background: var(--teal-deep);
+      color: #fff;
+      text-decoration: none;
+      padding: 0.65rem 1.4rem;
+      border-radius: 6px;
+      font-size: 0.86rem;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+
+    .subscribe-btn:hover { background: var(--teal); }
+
+    .foot-links a.plain {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.86rem;
+      font-weight: 500;
+    }
+
+    .foot-links a.plain:hover { color: var(--fg); }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border-light);
+      padding: 1.25rem 1.5rem;
+      font-size: 0.8rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #9CA3AF;
+      background: #1c1b1b;
+    }
+
+    footer a { color: inherit; text-decoration: none; margin-left: 1rem; transition: color 0.2s; }
+    footer a:hover { color: #fdfeff; }
+
+    @media (max-width: 640px) {
+      header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+      nav { gap: 1rem; flex-wrap: wrap; }
+      .article-head { padding: 2.5rem 0 1.5rem; }
+      .article-foot { padding: 1.5rem 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="particle-canvas"></canvas>
+
+  <header>
+    <div class="logo">
+      <img src="../img/logo.png" alt="Impossible Fibers Logo" class="logo-img">
+      <span>IMPOSSIBLE FIBERS</span>
+    </div>
+    <nav>
+      <a href="../">Home</a>
+      <a href="../about.html">About</a>
+      <a href="../open-science.html">Open Science</a>
+      <a href="./">Assembly Required</a>
+      <a href="../contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+    <article>
+      <div class="article-head">
+        <p class="breadcrumb"><a href="./">&larr; Assembly Required</a></p>
+        <h1>The Missing Emulator</h1>
+        <p class="article-dek">Why soft matter needs its own digital twin, and how fibers make it possible.</p>
+        <p class="byline">Tim McGee &middot; January 7, 2026</p>
+      </div>
+
+      <div class="article-body">
+        <p class="lead">A microchip never gets etched before it's simulated. A bridge only gets built after it has collapsed, digitally, thousands of times.</p>
+
+        <p>In modern engineering if you want to innovate quickly, you don't start with the physical object. You start with its emulator. Airplanes are designed inside digital wind tunnels. Chips are debugged in virtual silicon. Structures are stressed and shattered on screens, not in cities. These digital twins don't just reduce cost, they make complexity routine. They make iteration cheap and ambition practical.</p>
+
+        <p>However, there's a pattern hiding in plain sight. These revolutions have only happened in hard matter. Rigid bodies. Fixed geometries. Well-behaved physics.</p>
+
+        <p>Soft matter, composed of polymers, proteins, gels, fibers, liquids, biological materials, has largely been left behind. Soft matter is different. It flows, folds, self-assembles, and changes character mid-process. Small tweaks in solvent, humidity, pH, temperature, or shear history can rewrite the outcome. That unpredictability is what makes soft materials so difficult to engineer, but it's also their superpower. Soft matter is tunable in ways steel never will be. The problem is that we don't yet have a clean way to explore that design space systematically.</p>
+
+        <div class="pull">
+          <p>What we're missing is a soft matter emulator.</p>
+        </div>
+
+        <p>Not just a simulation of molecules in a box, but a practical digital twin that connects recipe &rarr; process &rarr; structure &rarr; performance. A system where you could virtually mix a polymer or composite protein solution, run it through a spinning or printing process, and immediately see a predicted fiber diameter, alignment, strength, elasticity, conductivity, or biodegradation profile before touching a lab bench. The soft-matter analogue of CAD or circuit simulation software.</p>
+
+        <p>For a long time, this idea was out of reach. Soft matter spans scales from the nano to the macro that has been thought mathematically intractable. It involves complex phase changes, self-assembly, and kinetics that unfold while the material is being made. Soft materials don't just have structure, they become structure. Historically, we've had to deal with that complexity through trial and error.</p>
+
+        <p>In our lab at Impossible Fibers, we've started to take on this challenge. Our initial work in this area was supported by a small DARPA contract where we focused on building tight loops between process, measurement, and theory. Our thinking is that fiber formation is where soft matter meets engineering. Fibers carry their history with them. Alignment, phase transition, and molecular order are all frozen into a single object you can test, pull, break and iterate.</p>
+
+        <!-- IMAGE PLACEHOLDER — the Substack version has a lab photo here.
+             To add it: save the image into ../img/ and uncomment this block.
+        <figure>
+          <img src="../img/missing-emulator-lab.jpg" alt="Laboratory fiber formation work">
+          <figcaption>Caption goes here.</figcaption>
+        </figure>
+        -->
+
+        <p>The strategy is deliberately modest. Start with spinning regimes that we know are stable enough to repeat for protein assembly (see our previous post on Contact Pulling). Choose outputs that collapse hierarchy into measurable signals. Build physical intuition first, then encode it. As those loops tighten, the digital models begin to do more of the exploratory work, and the lab shifts from searching blindly to navigating intentionally. This is how we believe a soft matter emulator begins. Over time, the emulator starts to run ahead of reality, proposing materials and pathways that the lab can then test and validate.</p>
+
+        <p>Once that loop exists, the implications fan out quickly.</p>
+
+        <p>Sustainable fibers stop being decade-long bets. Protein and cellulose-based materials become design decisions not baked in choices. Biomedical scaffolds can be tuned digitally before they touch a cell. Soft neural interfaces, fibers that match the mechanics of tissue instead of fighting it become rapidly designable. Soft robots, sensor fibers, actuator fibers, gradient fibers, all are systems where the material is the device. We move away from bespoke craft toward true engineering and design.</p>
+
+        <p>Hard-matter emulators didn't just optimize airplanes and chips. They changed how engineers think. They turned design into exploration instead of guesswork. A soft matter emulator would do the same, opening a design space so wide we've barely begun to name it.</p>
+
+        <p>In the end, this isn't really about simulation. It's about orientation. About deciding that the squishy, ambiguous, hard-to-predict world of soft materials isn't a side quest, it's the main frontier of the future of materials. And that to unlock it, we don't need to force soft materials into rigid frameworks. We need to build tools that let softness become programmable.</p>
+      </div>
+
+      <div class="article-foot">
+        <h3>Thanks for reading Assembly Required.</h3>
+        <p>New pieces on fiber formation, soft matter, and open science from inside the lab. Free to subscribe.</p>
+        <div class="foot-links">
+          <a class="subscribe-btn" href="https://iflab.substack.com/subscribe" target="_blank" rel="noopener">Subscribe</a>
+          <a class="plain" href="https://iflab.substack.com/p/the-missing-emulator" target="_blank" rel="noopener">Read this on Substack &nearr;</a>
+          <a class="plain" href="./">All posts</a>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <footer>
+    <div>&copy; 2025 Impossible Fibers</div>
+    <div>
+      <a href="../">Home</a>
+      <a href="../about.html">About</a>
+      <a href="../open-science.html">Open Science</a>
+      <a href="./">Assembly Required</a>
+      <a href="../contact.html">Contact</a>
+    </div>
+  </footer>
+
+  <script>
+    const canvas = document.getElementById("particle-canvas");
+    const ctx = canvas.getContext("2d");
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+    const particles = [];
+    const NUM_PARTICLES = 50;
+    const MAX_DISTANCE = 110;
+    const MOUSE_RADIUS = 120;
+    const mouse = { x: null, y: null };
+
+    window.addEventListener("resize", () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+    window.addEventListener("mousemove", (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
+    window.addEventListener("mouseleave", () => { mouse.x = null; mouse.y = null; });
+
+    class Particle {
+      constructor() { this.init(); }
+      init() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.vx = (Math.random() - 0.5) * 0.35;
+        this.vy = (Math.random() - 0.5) * 0.35;
+        this.size = 1.2 + Math.random() * 1.2;
+      }
+      update() {
+        this.x += this.vx; this.y += this.vy;
+        if (this.x < 0) this.x = width;
+        if (this.x > width) this.x = 0;
+        if (this.y < 0) this.y = height;
+        if (this.y > height) this.y = 0;
+        if (mouse.x !== null) {
+          const dx = this.x - mouse.x, dy = this.y - mouse.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < MOUSE_RADIUS && dist > 0) {
+            const force = (MOUSE_RADIUS - dist) / MOUSE_RADIUS;
+            this.x += (dx / dist) * force * 2;
+            this.y += (dy / dist) * force * 2;
+          }
+        }
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(14, 124, 123, 0.35)";
+        ctx.fill();
+      }
+    }
+
+    function initParticles() {
+      particles.length = 0;
+      for (let i = 0; i < NUM_PARTICLES; i++) particles.push(new Particle());
+    }
+
+    function drawConnections() {
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < MAX_DISTANCE) {
+            const alpha = 1 - dist / MAX_DISTANCE;
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(234, 88, 12, ${alpha * 0.18})`;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = "#F2F0EC";
+      ctx.fillRect(0, 0, width, height);
+      particles.forEach(p => { p.update(); p.draw(); });
+      drawConnections();
+      requestAnimationFrame(animate);
+    }
+
+    initParticles();
+    animate();
+  </script>
+</body>
+</html>
