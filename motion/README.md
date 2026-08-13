@@ -7,8 +7,63 @@ convincing.
 
 | File | What it explains | Source in the paper |
 |---|---|---|
+| `fading-memory.html` | **Interactive.** Why a useful material must forget — and a switch that breaks it | §3.2.3, §3.3.2, Eq. 3.10 |
 | `fiber-three-tricks.svg` | Three computations a nonlinear fiber performs that a clean sensor cannot | §2.1.1, Fig. 2.2, Appendix A |
 | `bucket-reservoir.svg` | What reservoir computing is, via a ripple tank solving XOR | §3.1, §3.2.2, Eq. 3.9 |
+
+Prefer the interactive one. It is the only asset here that lets a reader
+*change* something, it covers the property the paper says must be demonstrated
+of any candidate substrate, and being HTML rather than a fixed-width SVG it
+reads correctly on a phone.
+
+## The interactive one
+
+`fading-memory.html` is standalone — open it directly, or drop it on the site
+as a page or an `<iframe>`. It needs no build step and no dependencies, and it
+runs the fiber model **live in the browser**: every slider move re-integrates
+Eqs. (A.12)–(A.14) by RK4 for both fibers, about 40 000 steps per redraw, which
+is a couple of milliseconds.
+
+It stages the §3.3.2 protocol: two identical fibers get opposite conditioning
+histories, then the same drive, and you watch whether their readouts converge.
+Three outcomes are reported, and the distinction matters:
+
+| verdict | meaning |
+|---|---|
+| **YES** | the gap reaches the noise floor and stays — usable as a reservoir |
+| **NOT YET** | still visibly decaying when the window ended; the material would settle, the *test* was too short |
+| **NO** | the gap has stopped falling; a hidden past survives forever |
+
+Conflating the middle case with failure would be wrong, and it is easy to do:
+a slow substrate and a broken one look alike if you only ever watch for a fixed
+interval. Drag **relaxation time** to about 2.4 to see it.
+
+The failure switch is not a contrivance. §3.2.3 names ferroelectric switching
+as a way fading memory fails, and §2.2.1 notes ferroelectricity is native to
+protein systems (crystalline β- and γ-glycine), so "Add a latching mode" gives
+the fiber one bistable polarisation obeying
+
+```
+τ_P · dP/dt = P − P³ + κ·h
+```
+
+with stable states at P = ±1. Conditioning drops the two fibers into opposite
+wells and nothing afterwards shakes them out: the gap flatlines at 0.90 and
+λ collapses to ≈ 0.
+
+### It was validated, not assumed
+
+The JavaScript is a hand port, so it is checked against `fading_memory.py`
+rather than trusted. Agreement is 4–5 significant figures:
+
+| case | Python | JavaScript |
+|---|---|---|
+| plain, τ=1 | `settled 1.856946e-09`, `λ −0.79685` | `1.853810e-9`, `−0.79692` |
+| plain, τ=2 | `1.942546e-05`, `−0.40104` | `1.940750e-5`, `−0.40104` |
+| latching, τ=1 | `8.995244e-01`, `−0.00117` | `8.995215e-1`, `−0.00118` |
+
+`window.__probe(tau, amp, cond, latch)` is left exposed in the page so this
+comparison can be re-run at any time.
 
 ## Regenerating
 
@@ -20,6 +75,14 @@ python fiber_sim.py && python make_fiber_svg.py
 
 ```bash
 python tank_sim.py && python make_tank_svg.py
+```
+
+`fading_memory.py` needs no build step — it is the reference the interactive
+page is checked against, and printing it shows the same numbers the page
+displays:
+
+```bash
+python fading_memory.py
 ```
 
 The `*_sim.py` scripts run the physics and write `*_data.json`; the

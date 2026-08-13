@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A material that forgets — Impossible Fibers</title>
+<style>
+  :root{
+    --bg:#F2F0EC; --fg:#111827; --panel:#FFFFFF;
+    --teal:#0E7C7B; --teal-deep:#0B4F4E;
+    --orange:#EA580C; --slate:#2F3E46;
+    --border:#D8D6D2; --muted:#6B7280; --faint:#9CA3AF;
+    --serif:'DM Serif Display',Georgia,'Times New Roman',serif;
+    --sans:'DM Sans',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);
+       line-height:1.6;font-size:16px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:960px;margin:0 auto;padding:28px 20px 40px}
+
+  h1{font-family:var(--serif);font-weight:400;font-size:clamp(26px,4.6vw,34px);
+     margin:0 0 6px;line-height:1.15}
+  .sub{color:var(--muted);font-size:clamp(14px,2.2vw,16px);margin:0 0 22px}
+  hr{border:0;border-top:1px solid var(--border);margin:22px 0}
+
+  .setup{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:0 0 22px}
+  .step{background:var(--panel);border:1px solid var(--border);border-radius:4px;padding:12px 14px}
+  .step .n{font-size:10.5px;letter-spacing:1.6px;font-weight:700;color:var(--orange)}
+  .step p{margin:5px 0 0;font-size:13.5px;line-height:1.45}
+  @media(max-width:640px){.setup{grid-template-columns:1fr}}
+
+  .controls{background:var(--panel);border:1px solid var(--border);border-radius:4px;
+            padding:16px 18px;margin:0 0 18px}
+  .row{display:flex;flex-wrap:wrap;gap:22px;align-items:flex-end}
+  .ctl{flex:1 1 190px;min-width:170px}
+  .ctl label{display:block;font-size:11px;letter-spacing:1.3px;font-weight:700;
+             color:var(--muted);margin-bottom:6px}
+  .ctl .val{font-family:var(--serif);font-size:17px;color:var(--teal-deep);margin-left:6px}
+  input[type=range]{width:100%;accent-color:var(--teal);margin:0}
+  .hint{font-size:11.5px;color:var(--faint);margin-top:4px;line-height:1.35}
+
+  .switchrow{display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+             margin-top:16px;padding-top:15px;border-top:1px solid var(--border)}
+  button{font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;
+         border-radius:3px;padding:8px 14px;border:1px solid var(--border);
+         background:var(--panel);color:var(--fg);transition:.14s}
+  button:hover{border-color:var(--teal);color:var(--teal-deep)}
+  button.on{background:var(--orange);border-color:var(--orange);color:#fff}
+  button.on:hover{color:#fff;opacity:.9}
+  .switchrow .note{font-size:12px;color:var(--muted);flex:1 1 240px;min-width:200px}
+
+  canvas{display:block;width:100%;height:auto;background:var(--panel);
+         border:1px solid var(--border);border-radius:4px}
+
+  .verdict{display:flex;flex-wrap:wrap;gap:16px;align-items:stretch;margin-top:18px}
+  .card{flex:1 1 190px;background:var(--panel);border:1px solid var(--border);
+        border-radius:4px;padding:14px 16px}
+  .card .k{font-size:10.5px;letter-spacing:1.4px;font-weight:700;color:var(--muted)}
+  .card .v{font-family:var(--serif);font-size:26px;line-height:1.25;margin-top:2px}
+  .card .d{font-size:11.5px;color:var(--faint);line-height:1.35}
+  .card.pass{border-left:3px solid var(--teal)}
+  .card.slow{border-left:3px solid var(--slate)}
+  .card.fail{border-left:3px solid var(--orange)}
+  .pass .v{color:var(--teal-deep)}
+  .slow .v{color:var(--slate);font-size:22px}
+  .fail .v{color:var(--orange)}
+
+  .prose{margin-top:26px;font-size:14.5px;max-width:70ch}
+  .prose h2{font-family:var(--serif);font-weight:400;font-size:21px;margin:0 0 8px}
+  .prose p{margin:0 0 12px}
+  .prose .q{color:var(--muted)}
+  footer{margin-top:30px;padding-top:16px;border-top:1px solid var(--border);
+         font-size:11.5px;color:var(--faint);line-height:1.5}
+  footer b{color:var(--muted)}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.92em}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>A material that forgets</h1>
+  <p class="sub">To compute with a physical substrate, you first have to prove it forgets its own past.
+     Here is the test — and a switch that breaks it.</p>
+
+  <div class="setup">
+    <div class="step"><div class="n">STEP 1</div>
+      <p>Take two <b>identical</b> fibers.</p></div>
+    <div class="step"><div class="n">STEP 2</div>
+      <p>Give them <b>different pasts</b>. One gets squeezed, the other stretched.</p></div>
+    <div class="step"><div class="n">STEP 3</div>
+      <p>Now treat them <b>identically</b>, and watch whether they come to agree.</p></div>
+  </div>
+
+  <div class="controls">
+    <div class="row">
+      <div class="ctl">
+        <label>RELAXATION TIME <span class="val" id="vTau">1.00</span></label>
+        <input type="range" id="sTau" min="0.30" max="2.60" step="0.05" value="1.00">
+        <div class="hint">How slowly the fiber's internal state unwinds.</div>
+      </div>
+      <div class="ctl">
+        <label>DRIVE STRENGTH <span class="val" id="vAmp">0.10</span></label>
+        <input type="range" id="sAmp" min="0.03" max="0.20" step="0.005" value="0.10">
+        <div class="hint">Amplitude of the shared stress applied to both.</div>
+      </div>
+      <div class="ctl">
+        <label>HOW DIFFERENT THE PASTS WERE <span class="val" id="vCond">0.16</span></label>
+        <input type="range" id="sCond" min="0.04" max="0.24" step="0.005" value="0.16">
+        <div class="hint">Size of the opposing conditioning loads.</div>
+      </div>
+    </div>
+    <div class="switchrow">
+      <button id="bLatch">Add a latching mode</button>
+      <button id="bRun">Replay</button>
+      <div class="note" id="latchNote">A plain viscoelastic fiber. Every internal mode decays.</div>
+    </div>
+  </div>
+
+  <canvas id="cv" aria-label="Two fiber responses converging, and the gap between them on a logarithmic scale"></canvas>
+
+  <div class="verdict">
+    <div class="card" id="cVerdict"><div class="k">FADING MEMORY</div>
+      <div class="v" id="vVerdict">—</div><div class="d" id="dVerdict">&nbsp;</div></div>
+    <div class="card"><div class="k">FINAL DISAGREEMENT</div>
+      <div class="v" id="vGap">—</div><div class="d">between the two readouts, at the end</div></div>
+    <div class="card"><div class="k">FORGETTING RATE</div>
+      <div class="v" id="vLam">—</div><div class="d">conditional Lyapunov exponent, per t₀</div></div>
+    <div class="card"><div class="k">USABLE MEMORY</div>
+      <div class="v" id="vHorizon">—</div><div class="d">in units of t₀ — how far back the readout can still resolve</div></div>
+  </div>
+
+  <div class="prose">
+    <h2>Why forgetting is the feature</h2>
+    <p>It sounds backwards. A computer that forgets? But think about what the alternative means.
+      If a material's response depends on something that happened to it last week — something you
+      cannot see and did not record — then the same input gives you different answers, and you can
+      never trust the result. The material is not a computer. It is a machine for producing
+      irreproducible numbers.</p>
+    <p>So the requirement is precise: recent history should matter, distant history should not.
+      That is <b>fading memory</b>, and it is the one property that has to be demonstrated of any
+      candidate substrate before anything else is worth measuring.</p>
+    <p>Drag <b>relaxation time</b> and watch the trade-off appear. A fiber that forgets fast becomes
+      reproducible quickly, but cannot reach far back. A fiber that forgets slowly holds more of the
+      past, and takes far longer to settle into agreement. You cannot have both, and where you sit on
+      that dial should be decided by the task.</p>
+    <p>Push it far enough and the verdict turns to <b>NOT YET</b>. That is not the same as failing.
+      The gap is still visibly falling when the test runs out; the material would settle, given a
+      longer look. Reporting that honestly matters, because a slow substrate and a broken one look
+      alike if you only ever watch for a fixed interval.</p>
+    <p class="q">Then press <b>Add a latching mode</b>. This is not a contrivance: it gives the fiber a
+      bistable polarisation — the switchable kind found in crystalline glycine — and conditioning
+      drops the two fibers into opposite states. Nothing afterwards can shake them out. The gap stops
+      decaying and simply sits there, and the two fibers disagree forever about an input they both
+      received identically.</p>
+  </div>
+
+  <footer>
+    <b>Simulated live in your browser, not illustrated.</b>
+    Each frame integrates the visco-piezoelectric fiber model of the Computational Fibers white
+    paper, Eqs. (A.12)–(A.14), by fourth-order Runge–Kutta at the parameters of the Fig. 2.2
+    caption, once per fiber. The test protocol is §3.3.2; the forgetting rate is the slope of
+    log|Δy| while it is above the readout noise floor, and the usable-memory figure is
+    <code>ln δ ⁄ λ</code> from Eq. (3.10) with δ = 10⁻⁶. The latching mode adds one bistable
+    polarisation obeying <code>τ·dP/dt = P − P³ + κh</code>, the failure route named in §3.2.3.
+    Cross-checked against the Python reference in <code>fading_memory.py</code>.
+  </footer>
+</div>
+
+<script>
+"use strict";
+// ---------------------------------------------------------------------------
+// Model: Appendix A of the white paper, Table A.1 coefficients, plus one
+// optional bistable (ferroelectric) mode. Mirrors fading_memory.py exactly.
+// ---------------------------------------------------------------------------
+const K0SQ = 0.2, G_ = 0.2, GE = 0.3;
+const DC = [0.30, 0.20], DE = [0.25, -0.10], ELL = [0.30, 0.10];
+const TAU_P = 0.8, KAPPA = 0.55, LATCH_W = 0.45;
+const NOISE_FLOOR = 1e-6;
+
+const A_ = 1 + K0SQ;                                  // stiffened modulus
+const B_ = G_ + 1.5 * GE * K0SQ;                      // quadratic stiffness
+const GG = GE / 2;                                    // square-law charge
+const W_ = [DC[0] - K0SQ*DE[0], DC[1] - K0SQ*DE[1]];  // relaxation strength
+const ETA = DE.slice();                               // charge per excursion
+const FX = [2*DC[0]*ELL[0] + GE*K0SQ*DE[0], 2*DC[1]*ELL[1] + GE*K0SQ*DE[1]];
+const R_ = [K0SQ*DE[0]/DC[0], K0SQ*DE[1]/DC[1]];      // field feedback
+const P_ = [1 - R_[0], 1 - R_[1]];                    // linear drive
+const Q_ = [ELL[0] + GG*R_[0], ELL[1] + GG*R_[1]];    // quadratic drive
+
+function strain(u, x0, x1){
+  const s = u + W_[0]*x0 + W_[1]*x1;
+  const aeff = A_ + FX[0]*x0 + FX[1]*x1;
+  const disc = Math.max(aeff*aeff + 4*B_*s, 1e-12);
+  return 2*s / (aeff + Math.sqrt(disc));
+}
+
+// state = [x0, x1, P]; returns derivatives into out
+function rhs(u, st, tau, out){
+  const h = strain(u, st[0], st[1]);
+  const ex = ETA[0]*st[0] + ETA[1]*st[1];
+  out[0] = (P_[0]*h - Q_[0]*h*h - st[0] - R_[0]*ex) / tau[0];
+  out[1] = (P_[1]*h - Q_[1]*h*h - st[1] - R_[1]*ex) / tau[1];
+  out[2] = (st[2] - st[2]*st[2]*st[2] + KAPPA*h) / TAU_P;
+  return h;
+}
+
+function readout(u, st, latch){
+  const h = strain(u, st[0], st[1]);
+  return -(h + GG*h*h + ETA[0]*st[0] + ETA[1]*st[1]) - latch*st[2];
+}
+
+const DT = 2e-3;
+function integrate(uFn, T, tau, latch, st, sampleEvery, outT, outY, t0){
+  const n = Math.round(T / DT);
+  const k1=[0,0,0],k2=[0,0,0],k3=[0,0,0],k4=[0,0,0],tmp=[0,0,0];
+  for(let i=0;i<n;i++){
+    const t = i*DT;
+    if(i % sampleEvery === 0){ outT.push(t0 + t); outY.push(readout(uFn(t), st, latch)); }
+    rhs(uFn(t), st, tau, k1);
+    for(let j=0;j<3;j++) tmp[j]=st[j]+DT/2*k1[j];
+    rhs(uFn(t+DT/2), tmp, tau, k2);
+    for(let j=0;j<3;j++) tmp[j]=st[j]+DT/2*k2[j];
+    rhs(uFn(t+DT/2), tmp, tau, k3);
+    for(let j=0;j<3;j++) tmp[j]=st[j]+DT*k3[j];
+    rhs(uFn(t+DT), tmp, tau, k4);
+    for(let j=0;j<3;j++) st[j]+=DT/6*(k1[j]+2*k2[j]+2*k3[j]+k4[j]);
+  }
+}
+
+const T_COND = 14, T_COMMON = 26, SAMPLE = 12;
+
+function simulate(tauSlow, amp, cond, latchOn){
+  const tau = [tauSlow, tauSlow*0.125];
+  const latch = latchOn ? LATCH_W : 0;
+  const f = 0.21;
+  const uCommon = t => amp * Math.sin(2*Math.PI*f*t);
+  const series = [];
+  for(const sign of [1,-1]){
+    const uCond = t => sign*cond*(1 + 0.35*Math.sin(2*Math.PI*0.13*t));
+    const st = [0,0,0];
+    const T=[], Y=[];
+    integrate(uCond, T_COND, tau, latch, st, SAMPLE, T, Y, -T_COND);
+    integrate(uCommon, T_COMMON, tau, latch, st, SAMPLE, T, Y, 0);
+    series.push({T, Y, P: st[2]});
+  }
+  // gap over the shared-drive phase only
+  const gT=[], gD=[];
+  for(let i=0;i<series[0].T.length;i++){
+    if(series[0].T[i] < 0) continue;
+    gT.push(series[0].T[i]);
+    gD.push(Math.abs(series[0].Y[i] - series[1].Y[i]));
+  }
+  // slope and intercept of log(gap) while clear of the floor
+  let sx=0,sy=0,sxx=0,sxy=0,n=0;
+  for(let i=0;i<gT.length;i++){
+    if(gT[i]>0.5 && gD[i]>NOISE_FLOOR*20){
+      const x=gT[i], y=Math.log(gD[i]); sx+=x; sy+=y; sxx+=x*x; sxy+=x*y; n++;
+    }
+  }
+  const lam = n>20 ? (n*sxy - sx*sy)/(n*sxx - sx*sx) : 0;
+  const icept = n>20 ? (sy - lam*sx)/n : 0;
+  const tail = gD.slice(Math.floor(gD.length*0.75));
+  tail.sort((a,b)=>a-b);
+  const settled = tail[Math.floor(tail.length/2)] || 0;
+
+  // Three outcomes, not two. A slow fiber that is still visibly decaying when
+  // the window ends has NOT failed the test -- the window was too short. That
+  // is a different statement from a latched fiber whose gap has stopped
+  // falling altogether, and conflating them would be wrong.
+  let status;
+  if(settled < NOISE_FLOOR*10) status = 'pass';
+  else if(lam < -0.05)         status = 'slow';
+  else                         status = 'fail';
+  const tConv = lam < -0.05 ? (Math.log(NOISE_FLOOR) - icept)/lam : Infinity;
+  return {series, gT, gD, lam, settled, status, tConv};
+}
+
+// ---------------------------------------------------------------------------
+// drawing
+// ---------------------------------------------------------------------------
+const cv = document.getElementById('cv');
+const ctx = cv.getContext('2d');
+const CSSV = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+let state = {tau:1.0, amp:0.10, cond:0.16, latch:false, reveal:1};
+let sim = null;
+
+function layout(){
+  const w = cv.clientWidth;
+  const narrow = w < 560;
+  const h = narrow ? 430 : 400;
+  const dpr = Math.min(window.devicePixelRatio||1, 2);
+  cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+  cv.style.height = h+'px';
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  return {w, h, narrow};
+}
+
+function draw(){
+  if(!sim) return;
+  const {w, h, narrow} = layout();
+  const ink=CSSV('--fg'), muted=CSSV('--muted'), faint=CSSV('--faint'),
+        border=CSSV('--border'), teal=CSSV('--teal'), tealD=CSSV('--teal-deep'),
+        orange=CSSV('--orange'), slate=CSSV('--slate'), panel=CSSV('--panel');
+  ctx.clearRect(0,0,w,h);
+
+  const L = narrow ? 46 : 62, R = 14, gap = narrow ? 46 : 40;
+  const topH = Math.round((h - 78 - gap) * 0.56);
+  const botH = (h - 78 - gap) - topH;
+  const T0 = 26, B0 = T0 + topH + gap;
+  const PW = w - L - R;
+  const tMin = -T_COND, tMax = T_COMMON;
+  const X = t => L + (t - tMin)/(tMax - tMin)*PW;
+
+  // ---- panel 1: the two responses -------------------------------------
+  let yMax = 0;
+  for(const s of sim.series) for(const v of s.Y) yMax = Math.max(yMax, Math.abs(v));
+  yMax = (yMax || 1) * 1.14;
+  const Y1 = v => T0 + topH/2 - v/yMax*(topH/2);
+
+  ctx.fillStyle = panel; ctx.fillRect(L,T0,PW,topH);
+  // conditioning region
+  ctx.fillStyle = 'rgba(47,62,70,0.055)';
+  ctx.fillRect(L, T0, X(0)-L, topH);
+  ctx.strokeStyle = border; ctx.lineWidth = 1;
+  ctx.strokeRect(L+.5,T0+.5,PW-1,topH-1);
+  ctx.setLineDash([3,3]); ctx.beginPath();
+  ctx.moveTo(L, Y1(0)); ctx.lineTo(L+PW, Y1(0)); ctx.strokeStyle = border; ctx.stroke();
+  ctx.setLineDash([]);
+
+  ctx.font = '600 10.5px '+CSSV('--sans');
+  ctx.fillStyle = muted; ctx.textAlign='left';
+  ctx.fillText('VOLTAGE OUT OF EACH FIBER', L, T0-9);
+
+  ctx.font = '11px '+CSSV('--sans'); ctx.textAlign='center';
+  const capBack = (txt, cx, cy) => {          // keep captions off the traces
+    const tw = ctx.measureText(txt).width;
+    ctx.fillStyle = 'rgba(255,255,255,0.86)';
+    ctx.fillRect(cx-tw/2-5, cy-11, tw+10, 15);
+  };
+  if(X(0)-L > 76){
+    capBack('different pasts', (L+X(0))/2, T0+14);
+    ctx.fillStyle = slate;
+    ctx.fillText('different pasts', (L+X(0))/2, T0+14);
+  }
+  const rcap = narrow ? 'identical from here' : 'identical treatment from here on';
+  capBack(rcap, (X(0)+L+PW)/2, T0+14);
+  ctx.fillStyle = tealD;
+  ctx.fillText(rcap, (X(0)+L+PW)/2, T0+14);
+
+  // t = 0 divider
+  ctx.strokeStyle = ink; ctx.lineWidth = 1.4; ctx.setLineDash([5,4]);
+  ctx.beginPath(); ctx.moveTo(X(0), T0); ctx.lineTo(X(0), T0+topH); ctx.stroke();
+  ctx.setLineDash([]);
+
+  const revealT = tMin + (tMax - tMin)*state.reveal;
+  const cols = [orange, teal];
+  sim.series.forEach((s, i) => {
+    ctx.strokeStyle = cols[i]; ctx.lineWidth = i===0 ? 2.0 : 1.6;
+    ctx.lineJoin='round'; ctx.beginPath();
+    let started=false;
+    for(let k=0;k<s.T.length;k++){
+      if(s.T[k] > revealT) break;
+      const px=X(s.T[k]), py=Y1(s.Y[k]);
+      if(!started){ ctx.moveTo(px,py); started=true; } else ctx.lineTo(px,py);
+    }
+    ctx.stroke();
+  });
+
+  if(sim.status==='pass' && state.reveal > 0.85 && !narrow && PW-(X(0)-L) > 190){
+    ctx.font='600 11px '+CSSV('--sans'); ctx.textAlign='right'; ctx.fillStyle=tealD;
+    ctx.fillText('both fibers — now a single line', L+PW-8, T0+topH-12);
+  }
+
+  // legend
+  ctx.font=(narrow?'10.5px ':'11.5px ')+CSSV('--sans'); ctx.textAlign='left';
+  const La = narrow ? 'squeezed' : 'squeezed first';
+  const Lb = narrow ? 'stretched' : 'stretched first';
+  const lgx = L+8, lgy = T0+topH-9, tick = narrow ? 13 : 18;
+  ctx.strokeStyle=orange; ctx.lineWidth=2.2; ctx.beginPath();
+  ctx.moveTo(lgx,lgy-4); ctx.lineTo(lgx+tick,lgy-4); ctx.stroke();
+  ctx.fillStyle=muted; ctx.fillText(La, lgx+tick+6, lgy);
+  const lg2 = lgx + tick + 6 + ctx.measureText(La).width + (narrow?12:18);
+  ctx.strokeStyle=teal; ctx.beginPath();
+  ctx.moveTo(lg2,lgy-4); ctx.lineTo(lg2+tick,lgy-4); ctx.stroke();
+  ctx.fillText(Lb, lg2+tick+6, lgy);
+
+  // ---- panel 2: the gap, log scale ------------------------------------
+  const lo = -9, hi = 1;
+  const Y2 = v => B0 + botH - (Math.log10(Math.max(v,Math.pow(10,lo))) - lo)/(hi-lo)*botH;
+  ctx.fillStyle = panel; ctx.fillRect(L,B0,PW,botH);
+  ctx.strokeStyle = border; ctx.lineWidth=1; ctx.strokeRect(L+.5,B0+.5,PW-1,botH-1);
+
+  ctx.font='9.5px '+CSSV('--sans'); ctx.textAlign='right';
+  for(let e=lo+1;e<=hi;e+=2){
+    const yy = Y2(Math.pow(10,e));
+    ctx.strokeStyle=border; ctx.setLineDash([2,4]);
+    ctx.beginPath(); ctx.moveTo(L,yy); ctx.lineTo(L+PW,yy); ctx.stroke();
+    ctx.setLineDash([]);
+    const sup = String(e).replace('-','\u207B').replace(/\d/g, d=>'\u2070\u00B9\u00B2\u00B3\u2074\u2075\u2076\u2077\u2078\u2079'[d]);
+    ctx.fillStyle=faint; ctx.fillText('10'+sup, L-6, yy+3);
+  }
+  ctx.font='600 10.5px '+CSSV('--sans'); ctx.textAlign='left'; ctx.fillStyle=muted;
+  ctx.fillText('HOW FAR APART THEY ARE', L, B0-9);
+
+  // noise floor
+  const yf = Y2(NOISE_FLOOR);
+  ctx.strokeStyle=slate; ctx.setLineDash([4,3]); ctx.lineWidth=1.2;
+  ctx.beginPath(); ctx.moveTo(L,yf); ctx.lineTo(L+PW,yf); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.font='10px '+CSSV('--sans'); ctx.fillStyle=slate;
+  if(narrow){ ctx.textAlign='left'; ctx.fillText('readout noise floor', L+6, yf-5); }
+  else { ctx.textAlign='right'; ctx.fillText('readout noise floor', L+PW-6, yf-5); }
+
+  ctx.strokeStyle = sim.status==='fail' ? orange
+                  : sim.status==='slow' ? slate : tealD;
+  ctx.lineWidth=2.2;
+  ctx.lineJoin='round'; ctx.beginPath();
+  let st2=false;
+  for(let k=0;k<sim.gT.length;k++){
+    if(sim.gT[k] > revealT) break;
+    const px=X(sim.gT[k]), py=Y2(sim.gD[k]);
+    if(!st2){ ctx.moveTo(px,py); st2=true; } else ctx.lineTo(px,py);
+  }
+  ctx.stroke();
+
+  if(state.reveal > 0.6){
+    ctx.font='600 11.5px '+CSSV('--sans'); ctx.textAlign='right';
+    if(sim.status==='fail'){
+      ctx.fillStyle=orange;
+      ctx.fillText('it stops falling — they never agree', L+PW-8, Y2(sim.settled)-9);
+    } else if(sim.status==='slow'){
+      ctx.fillStyle=slate;
+      ctx.fillText('still falling when the test ended', L+PW-8, Y2(sim.settled)-9);
+    }
+  }
+
+  // shared x axis
+  ctx.font='9.5px '+CSSV('--sans'); ctx.textAlign='center'; ctx.fillStyle=faint;
+  const ticks = narrow ? [-10,0,10,20] : [-10,-5,0,5,10,15,20,25];
+  for(const t of ticks) ctx.fillText(String(t), X(t), B0+botH+15);
+  ctx.fillStyle=muted; ctx.font='10.5px '+CSSV('--sans');
+  ctx.fillText('time   [t₀]', L+PW/2, B0+botH+32);
+}
+
+// ---------------------------------------------------------------------------
+function fmtSci(v){
+  if(v === 0) return '0';
+  const e = Math.floor(Math.log10(v));
+  if(e >= -2) return v.toFixed(3);
+  return (v/Math.pow(10,e)).toFixed(1)+'×10'+String(e).replace('-','⁻')
+          .replace(/\d/g, d=>'⁰¹²³⁴⁵⁶⁷⁸⁹'[d]);
+}
+
+function recompute(){
+  sim = simulate(state.tau, state.amp, state.cond, state.latch);
+
+  const vCard = document.getElementById('cVerdict');
+  const V = {
+    pass: ['YES', 'the past washes out — usable as a reservoir', 'pass'],
+    slow: ['NOT YET', 'still forgetting when the test ended — needs a longer '
+           + 'window than ' + T_COMMON + ' t₀ (about '
+           + (isFinite(sim.tConv) ? sim.tConv.toFixed(0) : '∞') + ')', 'slow'],
+    fail: ['NO', 'a hidden past survives forever — unusable', 'fail'],
+  }[sim.status];
+  vCard.className = 'card ' + V[2];
+  document.getElementById('vVerdict').textContent = V[0];
+  document.getElementById('dVerdict').textContent = V[1];
+  document.getElementById('vGap').textContent = fmtSci(sim.settled);
+  document.getElementById('vLam').textContent =
+    (sim.lam<=-0.005 ? sim.lam.toFixed(2) : '≈ 0');
+  document.getElementById('vHorizon').textContent = sim.lam < -0.01
+    ? (Math.log(NOISE_FLOOR)/sim.lam).toFixed(1) : 'none';
+  draw();
+}
+
+let raf = null;
+function play(){
+  if(raf) cancelAnimationFrame(raf);
+  const t0 = performance.now(), DURMS = 1500;
+  const step = now => {
+    state.reveal = Math.min(1, (now - t0)/DURMS);
+    draw();
+    if(state.reveal < 1) raf = requestAnimationFrame(step); else raf = null;
+  };
+  raf = requestAnimationFrame(step);
+}
+
+function bindSlider(id, key, out, dp){
+  const el = document.getElementById(id);
+  el.addEventListener('input', () => {
+    state[key] = parseFloat(el.value);
+    document.getElementById(out).textContent = state[key].toFixed(dp);
+    state.reveal = 1; if(raf){cancelAnimationFrame(raf); raf=null;}
+    recompute();
+  });
+}
+bindSlider('sTau','tau','vTau',2);
+bindSlider('sAmp','amp','vAmp',3);
+bindSlider('sCond','cond','vCond',3);
+
+const bL = document.getElementById('bLatch');
+bL.addEventListener('click', () => {
+  state.latch = !state.latch;
+  bL.classList.toggle('on', state.latch);
+  bL.textContent = state.latch ? 'Remove the latching mode' : 'Add a latching mode';
+  document.getElementById('latchNote').textContent = state.latch
+    ? 'A bistable polarisation now stores which way each fiber was conditioned — permanently.'
+    : 'A plain viscoelastic fiber. Every internal mode decays.';
+  recompute(); play();
+});
+document.getElementById('bRun').addEventListener('click', () => { recompute(); play(); });
+
+let rt = null;
+window.addEventListener('resize', () => {
+  clearTimeout(rt); rt = setTimeout(draw, 120);
+});
+
+// expose for cross-validation against the Python reference
+window.__probe = (tau, amp, cond, latch) => {
+  const s = simulate(tau, amp, cond, latch);
+  return {settled:s.settled, lam:s.lam, hasFM:s.hasFM,
+          P:[s.series[0].P, s.series[1].P]};
+};
+
+recompute();
+if(!matchMedia('(prefers-reduced-motion: reduce)').matches) play();
+</script>
+</body>
+</html>
