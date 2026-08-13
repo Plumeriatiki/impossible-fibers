@@ -63,28 +63,34 @@ def anim(name, extra=""):
     return cls(f"animation:{name} {DUR}s linear infinite;{extra}")
 
 
+def poster_op(i):
+    """Un-animated fallback: act 1 visible, later acts hidden."""
+    return "opacity:1;" if i == 0 else "opacity:0;"
+
+
 def act_class(i, first=0.5, last=7.8, gone=8.3):
     t0 = ACT_T0[i]
     stops = [] if t0 == 0 else [(0.0, 0)]
     stops += [(t0, 0), (t0 + first, 1), (t0 + last, 1), (t0 + gone, 0), (DUR, 0)]
-    return anim(kf(stops, "opacity"), "opacity:0;")
+    # Base state = act 1 fully shown, so a frozen render is a readable poster.
+    return anim(kf(stops, "opacity"), poster_op(i))
 
 
-def show_from(t_abs, dur=0.6):
+def show_from(t_abs, dur=0.6, poster=False):
     """Visible from t_abs to the end of the loop."""
     stops = [(0.0, 0)] + ([] if t_abs == 0 else [(t_abs, 0)]) + [(t_abs + dur, 1), (DUR, 1)]
-    return anim(kf(stops, "opacity"), "opacity:0;")
+    return anim(kf(stops, "opacity"), "opacity:1;" if poster else "opacity:0;")
 
 
 def fade_in(i, t_local, dur=0.5):
-    return show_from(ACT_T0[i] + t_local, dur)
+    return show_from(ACT_T0[i] + t_local, dur, poster=(i == 0))
 
 
 def draw_class(i, length, t0, t1):
     a, b = ACT_T0[i] + t0, ACT_T0[i] + t1
     stops = [(0.0, length)] + ([] if a == 0 else [(a, length)]) + [(b, 0.0), (DUR, 0.0)]
     return anim(kf(stops, "stroke-dashoffset", lambda v: f"{v:.1f}"),
-                f"stroke-dasharray:{length:.1f};stroke-dashoffset:{length:.1f};")
+                f"stroke-dasharray:{length:.1f};stroke-dashoffset:0;")
 
 
 def hexlerp(c1, c2, t):
@@ -178,7 +184,7 @@ add("</g>")
 
 # shutter pulse during act 3
 sh = anim(kf([(0.0, 0), (ACT_T0[2] + 1.0, 0), (ACT_T0[2] + 1.25, 0.85),
-              (ACT_T0[2] + 2.1, 0), (DUR, 0)], "opacity"))
+              (ACT_T0[2] + 2.1, 0), (DUR, 0)], "opacity"), "opacity:0;")
 add(f'<circle class="{sh}" cx="{TCX}" cy="{TCY}" r="{TR+6}" fill="none" '
     f'stroke="{ORANGE}" stroke-width="4"/>')
 
@@ -501,7 +507,8 @@ for i in range(4):
     name = kf([(0.0, 0.0)] + ([] if ACT_T0[i] == 0 else [(ACT_T0[i], 0.0)])
               + [(ACT_T0[i] + ACT_LEN, 1.0), (DUR, 1.0)],
               "transform", lambda v: f"scaleX({v:.3f})")
-    c = anim(name, "transform-box:fill-box;transform-origin:left;transform:scaleX(0);")
+    c = anim(name, "transform-box:fill-box;transform-origin:left;"
+             f"transform:scaleX({1 if i == 0 else 0});")
     add(f'<rect class="{c}" x="{x:.1f}" y="{pby}" width="{seg:.1f}" height="3" rx="1.5" fill="{ORANGE}"/>')
 
 add(txt(56, 756, "Simulated, not illustrated.", 11.5, MUTED, weight="600"))
@@ -514,8 +521,7 @@ add(txt(56, 772,
         "After Fernando & Sojakka (2003), “Pattern recognition in a bucket”.", 11, FAINT))
 
 style = ("<style>\n" + "\n".join(RULES) + "\n" + "\n".join(KEYFRAMES)
-         + "\n@media (prefers-reduced-motion:reduce){*{animation-duration:0s !important;"
-           "animation-iteration-count:1 !important}}\n</style>")
+         + "\n@media (prefers-reduced-motion:reduce){*{animation:none !important}}\n</style>")
 
 svg = (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" '
        f'height="{H}" font-family="{SANS}" role="img" '

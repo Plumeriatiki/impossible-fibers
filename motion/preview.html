@@ -21,7 +21,7 @@
 <div id="host">loading…</div>
 <script>
 const file = new URLSearchParams(location.search).get('f') || 'fiber-three-tricks.svg';
-fetch(file).then(r=>r.text()).then(s=>{
+fetch(file + '?v=' + Date.now()).then(r=>r.text()).then(s=>{
   document.getElementById('host').innerHTML = s;
   window.__ready = true;
 });

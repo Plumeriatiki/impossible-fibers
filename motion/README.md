@@ -40,23 +40,62 @@ Then open `http://127.0.0.1:8765/preview.html?f=bucket-reservoir.svg`.
 
 ## Embedding
 
-Both files are standalone: no external scripts, fonts, or images. Animation is
-CSS keyframes (plus SMIL for the water), so they work as `<img>`, as
-`<object>`, or inlined.
+Both files are standalone: no external scripts, fonts, or images.
+
+### Do not use `<img>`
+
+**Verified in Chrome:** an SVG loaded through `<img>` renders, but its CSS
+animation clock never advances — every element freezes at t = 0, where the
+acts are still at `opacity: 0`. The result is a near-blank frame showing only
+the title, the device sketch and the footer. (In `bucket-reservoir.svg` it is
+worse: the water is SMIL, which *does* run in `<img>`, so you get a rippling
+tank with no captions at all.)
+
+Use `<object>` — confirmed animating correctly:
 
 ```html
-<img src="motion/fiber-three-tricks.svg" alt="Three computations performed by a single nonlinear protein fiber" style="width:100%;height:auto">
+<object type="image/svg+xml" data="motion/fiber-three-tricks.svg"
+        style="width:100%;height:auto" aria-label="Three computations performed by a single nonlinear protein fiber"></object>
 ```
 
-Inlining them instead lets the page's already-loaded DM Sans / DM Serif Display
-render the type; as an `<img>` they fall back to Helvetica/Georgia, which is
-fine but less on-brand. Colours are the site tokens (`--teal`, `--orange`,
-`--bg`) hard-coded, and each file paints its own background so it is legible
-anywhere. Both honour `prefers-reduced-motion` by freezing on the first frame.
+Or paste the SVG markup inline, which is better still: the page's
+already-loaded DM Sans / DM Serif Display then render the type, instead of
+falling back to Helvetica/Georgia.
 
-Sizes: 203 KB and 392 KB uncompressed. They gzip well (highly repetitive
-numerics) — enable compression on Netlify and they go over the wire at roughly
-a quarter of that.
+### Sizing — read this before putting them on a page
+
+These are 1120 px wide with 10.5–14.5 px type, and **the site's content column
+caps at 620–740 px**. At 740 px everything scales by 0.66, so the smallest
+labels land at ~7 px and captions at ~9.6 px — legible only if the reader
+leans in. At mobile width (~340 px) the small type is around 3 px, i.e. gone.
+
+So do one of:
+
+- give them a full-bleed container that escapes the text column, and/or
+- link out to them at full size rather than inlining, and/or
+- build portrait reflows for narrow screens (not yet done).
+
+They are currently **desktop, wide-container assets**. Treat that as a real
+constraint, not a detail.
+
+### Reduced motion
+
+Both honour `prefers-reduced-motion: reduce` by disabling animation entirely,
+at which point the un-animated base state renders **Act 1, complete** — traces
+drawn, spectrum built, labels in place. This is deliberate and verified: the
+first version froze at the *final* keyframe instead and produced a blank
+graphic, which is why the rule is `animation: none` rather than
+`animation-duration: 0s`.
+
+The same trick does not rescue `<img>`, because there the animation is applied
+and merely frozen at t = 0, so the keyframe wins over the base state. Making
+`<img>` work would mean retiming the loop so that t = 0 is a hold frame with
+Act 1 already built, with the build moved to the tail of the loop. Not done.
+
+### Size
+
+203 KB and 392 KB uncompressed. They gzip well (highly repetitive numerics) —
+with compression on they go over the wire at roughly a quarter of that.
 
 ## Two things worth knowing about the content
 

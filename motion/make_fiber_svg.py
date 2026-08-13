@@ -57,12 +57,19 @@ def anim(name, extra=""):
     return cls(f"animation:{name} {DUR}s linear infinite;{extra}")
 
 
+def poster_op(i):
+    """Un-animated fallback: act 1 visible, later acts hidden."""
+    return "opacity:1;" if i == 0 else "opacity:0;"
+
+
 def act_class(i, fade_in=0.5, hold_out=10.3, fade_out=10.8):
     t0 = ACT_T0[i]
     stops = [] if t0 == 0 else [(0.0, 0)]
     stops += [(t0, 0), (t0 + fade_in, 1), (t0 + hold_out, 1),
               (t0 + fade_out, 0), (DUR, 0)]
-    return anim(kf(stops, "opacity"), "opacity:0;")
+    # Base state = act 1 fully shown, so a frozen render (SVG-in-<img>, or a
+    # reduced-motion viewer) is a complete readable poster rather than blank.
+    return anim(kf(stops, "opacity"), poster_op(i))
 
 
 def draw_class(i, length, t_start, t_end):
@@ -71,7 +78,7 @@ def draw_class(i, length, t_start, t_end):
     a, b = t0 + t_start, t0 + t_end
     stops = [(0.0, length)] + ([] if a == 0 else [(a, length)]) + [(b, 0.0), (DUR, 0.0)]
     name = kf(stops, "stroke-dashoffset", lambda v: f"{v:.1f}")
-    return anim(name, f"stroke-dasharray:{length:.1f};stroke-dashoffset:{length:.1f};")
+    return anim(name, f"stroke-dasharray:{length:.1f};stroke-dashoffset:0;")
 
 
 def grow_class(i, t_start, t_end):
@@ -81,14 +88,14 @@ def grow_class(i, t_start, t_end):
     stops = [(0.0, 0.0)] + ([] if a == 0 else [(a, 0.0)]) + [(b, 1.0), (DUR, 1.0)]
     name = kf(stops, "transform", lambda v: f"scaleY({v:.3f})")
     return anim(name, "transform-box:fill-box;transform-origin:bottom;"
-                      "transform:scaleY(0);")
+                      "transform:scaleY(1);")
 
 
 def fade_in_class(i, t_start, dur=0.6):
     t0 = ACT_T0[i]
     a = t0 + t_start
     stops = [(0.0, 0)] + ([] if a == 0 else [(a, 0)]) + [(a + dur, 1), (DUR, 1)]
-    return anim(kf(stops, "opacity"), "opacity:0;")
+    return anim(kf(stops, "opacity"), poster_op(i))
 
 
 # ---------------------------------------------------------------------------
@@ -190,7 +197,8 @@ for i in range(3):
     fill_kf = kf([(0.0, 0.0)] + ([] if ACT_T0[i] == 0 else [(ACT_T0[i], 0.0)])
                  + [(ACT_T0[i] + ACT_LEN, 1.0), (DUR, 1.0)],
                  "transform", lambda v: f"scaleX({v:.3f})")
-    c = anim(fill_kf, "transform-box:fill-box;transform-origin:left;transform:scaleX(0);")
+    c = anim(fill_kf, "transform-box:fill-box;transform-origin:left;"
+             f"transform:scaleX({1 if i == 0 else 0});")
     add(f'<rect class="{c}" x="{x:.1f}" y="{pby}" width="{seg:.1f}" height="3" rx="1.5" fill="{ORANGE}"/>')
 
 # --- footer / provenance ---
@@ -540,8 +548,7 @@ for i, body in enumerate((A, B, Cc)):
     add(f'<g class="{act_class(i)}">' + "".join(body) + "</g>")
 
 style = ("<style>\n" + "\n".join(RULES) + "\n" + "\n".join(KEYFRAMES)
-         + "\n@media (prefers-reduced-motion:reduce){*{animation-duration:0s !important;"
-           "animation-iteration-count:1 !important}}\n</style>")
+         + "\n@media (prefers-reduced-motion:reduce){*{animation:none !important}}\n</style>")
 
 svg = (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" '
        f'height="{H}" font-family="{SANS}" role="img" '
