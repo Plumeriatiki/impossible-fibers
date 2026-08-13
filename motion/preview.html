@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>preview</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#F2F0EC;font-family:'DM Sans',sans-serif}
+  #host svg{display:block;width:100%;height:auto}
+  #bar{position:fixed;top:0;left:0;right:0;background:#111827;color:#fff;padding:6px 12px;font-size:12px;z-index:9}
+  #host{margin-top:34px}
+  button{margin-right:6px}
+</style></head>
+<body>
+<div id="bar">
+  <span id="t">t = ?</span>
+  <button onclick="seek(2)">2s</button><button onclick="seek(6)">6s</button>
+  <button onclick="seek(9)">9s</button><button onclick="seek(10)">10s</button>
+  <button onclick="seek(13)">13s</button><button onclick="seek(17)">17s</button>
+  <button onclick="seek(20)">20s</button><button onclick="seek(24)">24s</button>
+  <button onclick="seek(28)">28s</button><button onclick="seek(31)">31s</button>
+  <button onclick="play()">play</button>
+</div>
+<div id="host">loading…</div>
+<script>
+const file = new URLSearchParams(location.search).get('f') || 'fiber-three-tricks.svg';
+fetch(file).then(r=>r.text()).then(s=>{
+  document.getElementById('host').innerHTML = s;
+  window.__ready = true;
+});
+function anims(){ return document.getAnimations(); }
+function seek(t){
+  anims().forEach(a=>{ a.pause(); a.currentTime = t*1000; });
+  document.getElementById('t').textContent = 't = '+t+'s  ('+anims().length+' animations)';
+}
+function play(){ anims().forEach(a=>a.play()); document.getElementById('t').textContent='playing'; }
+</script>
+</body></html>
