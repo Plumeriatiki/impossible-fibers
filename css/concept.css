@@ -144,7 +144,7 @@ body.plain{--spine:0px}
 /* Lists of projects / areas on light pages */
 .rows{list-style:none;margin:40px 0 0;padding:0;border-top:1px solid var(--ink)}
 .rows li{border-bottom:1px solid var(--rule)}
-.rows a,.rows .row{display:grid;grid-template-columns:48px minmax(0,1.1fr) minmax(0,1fr) 160px;gap:20px;align-items:baseline;padding:18px 0;text-decoration:none;color:inherit}
+.rows li > a,.rows .row{display:grid;grid-template-columns:48px minmax(0,1.1fr) minmax(0,1fr) 160px;gap:20px;align-items:baseline;padding:18px 0;text-decoration:none;color:inherit}
 .rows .n{font-family:var(--serif);font-size:1.6rem;line-height:1;color:var(--teal)}
 .rows b{font-family:var(--serif);font-weight:400;font-size:clamp(1.25rem,1.8vw,1.55rem);line-height:1.15}
 .rows b small{display:block;font:12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:6px}
@@ -168,7 +168,7 @@ body.plain{--spine:0px}
 
 @media (max-width:900px){
   .area-block .inner{grid-template-columns:1fr;gap:8px}
-  .rows a,.rows .row{grid-template-columns:44px minmax(0,1fr);gap:6px 16px}
+  .rows li > a,.rows .row{grid-template-columns:44px minmax(0,1fr);gap:6px 16px}
   .rows span:not(.n){grid-column:2}
   .rows .st{grid-column:2;justify-self:start}
   .commit{grid-template-columns:1fr}
@@ -180,5 +180,5 @@ body.plain{--spine:0px}
 .read a + a::before{content:"·";color:var(--muted);margin:0 10px;display:inline-block}
 .night .read{color:var(--night-muted)}
 .night .read a{color:var(--teal-light)}
-.rows .read{grid-column:3;margin-top:6px}
+.rows .read{grid-column:2;margin-top:4px}
 @media (max-width:900px){.rows .read{grid-column:2}}
