@@ -1,668 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Open Science – Impossible Fibers</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Impossible Fibers' open science policy: our commitments to releasing data, methods, instrumentation, and informative failures early and openly." />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    :root {
-      --bg: #F2F0EC;
-      --fg: #111827;
-      --teal: #0E7C7B;
-      --teal-deep: #0B4F4E;
-      --orange: #EA580C;
-      --orange-soft: #F97316;
-      --panel: #FFFFFF;
-      --border: #D8D6D2;
-      --border-light: #E5E7EB;
-      --muted: #6B7280;
-      --serif: 'DM Serif Display', Georgia, serif;
-      --sans: 'DM Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    }
-
-    body {
-      margin: 0;
-      font-family: var(--sans);
-      color: var(--fg);
-      background: var(--bg);
-      line-height: 1.75;
-      font-size: 16.5px;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    #particle-canvas {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      display: block;
-      pointer-events: none;
-    }
-
-    header, main, footer {
-      position: relative;
-      z-index: 1;
-    }
-
-    /* ── Header ── */
-    header {
-      padding: 1rem 1.5rem;
-      border-bottom: 1px solid var(--border-light);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: rgba(242, 240, 236, 0.92);
-      backdrop-filter: blur(8px);
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      font-size: 0.85rem;
-    }
-
-    .logo-img {
-      height: 32px;
-      width: auto;
-      display: block;
-    }
-
-    nav {
-      display: flex;
-      align-items: center;
-      gap: 1.25rem;
-    }
-
-    nav a {
-      text-decoration: none;
-      font-size: 0.8rem;
-      color: #374151;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      font-weight: 500;
-      white-space: nowrap;
-      transition: color 0.2s;
-    }
-
-    nav a:hover {
-      color: var(--teal);
-    }
-
-    /* ── Main content ── */
-    main {
-      max-width: 740px;
-      margin: 0 auto;
-      padding: 0 1.25rem;
-    }
-
-    /* ── Hero ── */
-    .hero {
-      padding: 4.5rem 0 3rem;
-    }
-
-    .hero-label {
-      font-size: 0.78rem;
-      text-transform: uppercase;
-      letter-spacing: 0.2em;
-      color: var(--teal);
-      font-weight: 600;
-      margin: 0 0 1rem;
-    }
-
-    .hero h1 {
-      font-family: var(--serif);
-      font-size: clamp(2.2rem, 5vw, 3rem);
-      line-height: 1.2;
-      margin: 0 0 1.5rem;
-      font-weight: 400;
-      color: var(--fg);
-    }
-
-    .hero h1 em {
-      font-style: italic;
-      color: var(--teal-deep);
-    }
-
-    .hero-sub {
-      font-size: 1.1rem;
-      line-height: 1.8;
-      color: #374151;
-      max-width: 640px;
-      margin: 0;
-    }
-
-    /* ── Sections ── */
-    .section {
-      margin-top: 1rem;
-      padding: 2.25rem 2rem;
-      background: var(--panel);
-      border-radius: 12px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 12px 30px rgba(0,0,0,0.03);
-    }
-
-    .section + .section {
-      margin-top: 1.25rem;
-    }
-
-    .section-label {
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 0.22em;
-      color: var(--orange);
-      font-weight: 600;
-      margin: 0 0 0.75rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .section-label::before {
-      content: '';
-      display: inline-block;
-      width: 18px;
-      height: 2px;
-      background: var(--orange);
-    }
-
-    .section h2 {
-      font-family: var(--serif);
-      font-size: 1.55rem;
-      line-height: 1.3;
-      margin: 0 0 1rem;
-      text-transform: none;
-      letter-spacing: 0;
-      color: var(--fg);
-      font-weight: 400;
-    }
-
-    .section p {
-      margin: 0 0 0.85rem;
-      color: #374151;
-    }
-
-    .section p:last-child {
-      margin-bottom: 0;
-    }
-
-    .section .kicker {
-      font-weight: 600;
-      color: var(--teal-deep);
-      font-size: 1.02rem;
-      margin-top: 0.5rem;
-    }
-
-    .section a {
-      color: var(--teal);
-      text-decoration: none;
-      border-bottom: 1px solid rgba(14, 124, 123, 0.3);
-      transition: color 0.2s, border-color 0.2s;
-    }
-
-    .section a:hover {
-      color: var(--teal-deep);
-      border-bottom-color: var(--teal-deep);
-    }
-
-    /* ── Commitment lists ── */
-    .commit-list {
-      list-style: none;
-      margin: 1.25rem 0 0;
-      padding: 0;
-    }
-
-    .commit-list li {
-      position: relative;
-      padding-left: 1.75rem;
-      margin-bottom: 1.1rem;
-      color: #374151;
-    }
-
-    .commit-list li:last-child {
-      margin-bottom: 0;
-    }
-
-    .commit-list li::before {
-      content: '+';
-      position: absolute;
-      left: 0;
-      top: -0.05em;
-      color: var(--orange);
-      font-weight: 600;
-      font-size: 1.15rem;
-      line-height: 1.75;
-    }
-
-    .commit-list strong {
-      font-weight: 600;
-      color: var(--fg);
-    }
-
-    /* ── Focus areas grid ── */
-    .focus {
-      margin-top: 1.25rem;
-      margin-bottom: 4rem;
-      padding: 2.25rem 2rem;
-      background: var(--panel);
-      border-radius: 12px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 12px 30px rgba(0,0,0,0.03);
-    }
-
-    .focus .section-label {
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 0.22em;
-      color: var(--orange);
-      font-weight: 600;
-      margin: 0 0 0.75rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .focus .section-label::before {
-      content: '';
-      display: inline-block;
-      width: 18px;
-      height: 2px;
-      background: var(--orange);
-    }
-
-    .focus h2 {
-      font-family: var(--serif);
-      font-size: 1.55rem;
-      line-height: 1.3;
-      margin: 0 0 1rem;
-      text-transform: none;
-      letter-spacing: 0;
-      color: var(--fg);
-      font-weight: 400;
-    }
-
-    .focus p {
-      margin: 0 0 0.85rem;
-      color: #374151;
-    }
-
-    .draft-tag {
-      display: inline-block;
-      font-size: 0.68rem;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      font-weight: 600;
-      color: var(--muted);
-      border: 1px solid var(--border);
-      border-radius: 3px;
-      padding: 0.1rem 0.45rem;
-      vertical-align: 0.35em;
-      margin-left: 0.6rem;
-      font-family: var(--sans);
-    }
-
-    .focus-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.25rem;
-      margin-top: 1.25rem;
-    }
-
-    .focus-card {
-      padding: 1.25rem 1.5rem;
-      background: var(--bg);
-      border-radius: 8px;
-      border: 1px solid var(--border);
-    }
-
-    .focus-card h3 {
-      font-family: var(--sans);
-      font-size: 0.95rem;
-      font-weight: 600;
-      margin: 0 0 0.4rem;
-      color: var(--fg);
-    }
-
-    .focus-card p {
-      font-size: 0.92rem;
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-    /* ── Footer ── */
-    footer {
-      border-top: 1px solid var(--border-light);
-      padding: 1.25rem 1.5rem;
-      font-size: 0.8rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      color: #9CA3AF;
-      background: #1c1b1b;
-    }
-
-    footer a {
-      color: inherit;
-      text-decoration: none;
-      margin-left: 1rem;
-      transition: color 0.2s;
-    }
-
-    footer a:hover {
-      color: #fdfeff;
-    }
-
-    /* ── Animations ── */
-    .fade-up {
-      opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1), transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
-    }
-
-    .fade-up.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .hero .fade-up:nth-child(1) { transition-delay: 0.05s; }
-    .hero .fade-up:nth-child(2) { transition-delay: 0.15s; }
-    .hero .fade-up:nth-child(3) { transition-delay: 0.25s; }
-
-    /* ── Responsive ── */
-    @media (max-width: 640px) {
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
-      }
-
-      nav {
-        gap: 1rem;
-        flex-wrap: wrap;
-      }
-
-      .hero {
-        padding: 3rem 0 2rem;
-      }
-
-      .hero h1 {
-        font-size: 1.85rem;
-      }
-
-      .section, .focus {
-        padding: 1.75rem 1.25rem;
-      }
-
-      .focus-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Impossible Fibers publishes its tools, methods and data in four areas: AI-assisted chip design, predictive fiber models, bio-inspired manufacturing, and the future of fibers.">
+  <link rel="icon" href="img/if-mark.png">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/concept.css">
 </head>
-<body>
-  <canvas id="particle-canvas"></canvas>
-
-  <header>
-    <div class="logo">
-      <img src="img/logo.png" alt="Impossible Fibers Logo" class="logo-img">
-      <span>IMPOSSIBLE FIBERS</span>
-    </div>
+<body class="plain">
+  <header class="top">
+    <a class="mark" href="concept-process.html"><img src="img/logo.png" alt="">Impossible Fibers</a>
     <nav>
-      <a href="/">Home</a>
-      <a href="about.html">About</a>
-      <a href="open-science.html">Open Science</a>
+      <a href="projects.html">R&amp;D</a>
+      <a href="sensors.html">Sensors</a>
+      <a href="open-science.html" style="color:var(--teal)">Open science</a>
       <a href="assembly-required/">Assembly Required</a>
+      <a href="about.html">About</a>
       <a href="contact.html">Contact</a>
     </nav>
   </header>
 
-  <main>
-    <!-- ── Hero ── -->
-    <div class="hero">
-      <p class="hero-label fade-up">Open Science Policy</p>
-      <h1 class="fade-up">We run our science <em>in the open</em></h1>
-      <p class="hero-sub fade-up">
-        We build programmable protein-based materials, with a wide range of possible applications across robotics, aerospace, medical, textiles, and advanced materials. We are a for-profit company, working to advance the future capabilities of an incredible range of materials with large scale impacts.
-      </p>
+  <section class="stage head">
+    <div class="inner">
+      <p class="tag"><span class="dot"></span>03 · Open science</p>
+      <h1>We run our science in the open</h1>
+      <p class="sum">We're a for-profit company. We publish our tools, methods and data in four areas, and look for collaborators on each.</p>
+      <ol class="rows">
+        <li><a href="https://github.com/Plumeriatiki/microfluidic-onshape-library" target="_blank" rel="noopener"><span class="n">1</span><b>AI-assisted chip design</b><span>The design loop, and how to score success.</span><span class="st">Code on GitHub ↗</span></a></li>
+        <li><div class="row"><span class="n">2</span><b>Predictive fiber models</b><span>Expanding data sets beyond the collagen model.</span><span class="st">Page coming</span></div></li>
+        <li><a href="bio-inspired-manufacturing.html"><span class="n">3</span><b>Bio-inspired manufacturing</b><span>Keeping proteins unreacted until the right time.</span><span class="st">Explore →</span></a></li>
+        <li><div class="row"><span class="n">4</span><b>The future of fibers</b><span>Computational fibers: our white paper.</span><span class="st">Page coming</span></div></li>
+      </ol>
     </div>
+  </section>
 
-    <!-- ── Why Open ── -->
-    <div class="section fade-up">
-      <p class="section-label">Why Open</p>
-      <h2>A Large Share of Our Work Is More Useful in the Open</h2>
-      <p>
-        The instrumentation, the characterization methods, the data behind our results, and the approaches that failed — we believe all of it is useful to everyone, ourselves included, in the open.
-      </p>
-      <p>
-        Our core mission is to advance humanity's capabilities to create an advanced, sustainable material future. As a result of that, we commit to releasing relevant scientific information early and to running our science in a way the wider community can see, reproduce, and build on.
-      </p>
-    </div>
-
-    <!-- ── Commitments ── -->
-    <div class="section fade-up">
-      <p class="section-label">Our Commitments</p>
-      <h2>Our Open-Research Commitments</h2>
-      <ul class="commit-list">
-        <li>
-          <strong>Post research data and products early</strong>, releasing datasets, characterization results, and finished tools as they mature rather than holding them for a single eventual publication, so the community can put them to use sooner.
-        </li>
-        <li>
-          <strong>Broaden what we communicate beyond the journal-article format</strong>, including full datasets, experimental protocols, instrumentation and open-hardware designs, informative failures, and the open problems we would welcome help on.
-        </li>
-        <li>
-          <strong>Encourage use of our released tools and data</strong> by the scientific community, and invite open critique of their rigor and reproducibility by soliciting feedback rather than waiting for it.
-        </li>
-        <li>
-          <strong>Document what we learn about sustaining an open-science practice inside a for-profit company</strong>, including how the open-versus-protected boundary holds, so that others attempting the same have a worked example rather than starting from nothing.
-        </li>
-      </ul>
-    </div>
-
-    <!-- ── Outputs ── -->
-    <div class="section fade-up">
-      <p class="section-label">Outputs</p>
-      <h2>How We Publish</h2>
-      <p>
-        We seek to follow and establish how for-profit organizations can publish FAIR — Findable, Accessible, Interoperable, and Reusable — research artifacts. Our current outputs include:
-      </p>
-      <ul class="commit-list">
-        <li>
-          <strong>Written technical and scientific articles</strong> shared on our <a href="https://zenodo.org/communities/if" target="_blank" rel="noopener">community Zenodo page</a>, under a CC&nbsp;BY license.
-        </li>
-        <li>
-          <!-- TODO: once the repo is transferred to the ImpossibleFibers org, link GitHub here:
-               <a href="https://github.com/ImpossibleFibers" target="_blank" rel="noopener">GitHub</a>
-               Held back deliberately — the org had 0 public repos as of Aug 2026, so the link
-               would land visitors on an empty page. -->
-          <strong>Code for our projects</strong> shared via GitHub, under an MIT license.
-        </li>
-        <li>
-          <strong>Posts without a DOI</strong> for a general technical audience — assertions, hypotheses, and progress — published in <a href="assembly-required/">Assembly Required</a> and archived on <a href="https://zenodo.org/communities/if" target="_blank" rel="noopener">Zenodo</a>.
-        </li>
-        <li>
-          <strong>Working on being a "guinea pig" with <a href="https://thestacks.org/" target="_blank" rel="noopener">The Stacks</a></strong> — an experimental publishing platform for research resources, results, ideas, and open questions. Publications coming soon.
-        </li>
-        <li>
-          <strong>A community Slack channel</strong> that we manage and maintain, focused on open science around protein-based fiber formation. <a href="contact.html">Get in touch</a> for an invite.
-        </li>
-      </ul>
-    </div>
-
-    <!-- ── Collaboration ── -->
-    <div class="section fade-up">
-      <p class="section-label">Collaboration</p>
-      <h2>Who We're Looking to Connect With</h2>
-      <ul class="commit-list">
-        <li>
-          <strong>Community partners around materials characterization and reference data</strong>, to help us identify, coordinate, or supplement shared datasets and characterization standards for protein-based and bioinspired fibers — where in several areas none yet exist.
-        </li>
-        <li>
-          <strong>Partners within the scientific community willing to reproduce our work</strong>, taking our released methods and instrumentation, reproducing them independently, and engaging in a public conversation about where they hold up, where they do not, and how they could be improved.
-        </li>
-      </ul>
-      <p class="kicker" style="margin-top: 1.5rem;">If that sounds like you, <a href="contact.html">get in touch</a>.</p>
-    </div>
-
-    <!-- ── Areas of Focus ── -->
-    <div class="focus fade-up">
-      <p class="section-label">Areas of Focus</p>
-      <h2>Where We're Focused <span class="draft-tag">Draft</span></h2>
-      <p>
-        The open-science areas we are actively working in, and where outside collaboration would move things fastest.
-      </p>
-
-      <div class="focus-grid">
-        <div class="focus-card">
-          <h3>AI-Assisted Microfluidic Chip Design</h3>
-          <p>Harnessing AI models to enable rapid prototyping capabilities for microfluidics, and bio-inspired fiber manufacturing.</p>
-        </div>
-        <div class="focus-card">
-          <h3>Predictive Protein / Composite Fiber Models</h3>
-          <p>Establishing a foundational model for fiber formation and prediction of performance outcomes.</p>
-        </div>
-        <div class="focus-card">
-          <h3>Bio-Inspired Spinning &amp; Manufacturing Modalities</h3>
-          <p>Building tools that advance our ability to borrow strategies from natural manufacturing — encapsulation, or the chemistry of solvation and formation.</p>
-        </div>
-        <div class="focus-card">
-          <h3>Foundational Mapping of Fiber Possibilities</h3>
-          <p>Expanding on what is currently known or perceived to be possible for fibers.</p>
-        </div>
+  <section class="stage tight">
+    <div class="inner">
+      <p class="tag">Where we publish</p>
+      <div class="linkrow" style="margin-top:0">
+        <a href="https://zenodo.org/communities/if" target="_blank" rel="noopener">Zenodo · CC BY ↗</a>
+        <a href="assembly-required/">Assembly Required</a>
+        <a href="https://github.com/Plumeriatiki/microfluidic-onshape-library" target="_blank" rel="noopener">Microfluidic CAD library · MIT ↗</a>
+        <a href="https://thestacks.org/" target="_blank" rel="noopener">The Stacks (coming soon) ↗</a>
+        <a href="contact.html">Slack community: ask for an invite</a>
+        <!-- TODO: once the repo is transferred to the ImpossibleFibers org, link the org here:
+             <a href="https://github.com/ImpossibleFibers" target="_blank" rel="noopener">GitHub</a>
+             Held back deliberately: the org had 0 public repos as of Aug 2026. -->
       </div>
     </div>
-  </main>
+  </section>
 
-  <footer>
-    <div>&copy; 2025 Impossible Fibers</div>
-    <div>
-      <a href="/">Home</a>
-      <a href="about.html">About</a>
-      <a href="open-science.html">Open Science</a>
-      <a href="assembly-required/">Assembly Required</a>
-      <a href="contact.html">Contact</a>
+  <section class="stage tight">
+    <div class="inner">
+      <p class="tag">What we commit to</p>
+      <ul class="commit">
+        <li><b>Release early</b><span>Datasets, results and tools as they mature, not held for one final paper.</span></li>
+        <li><b>Publish more than papers</b><span>Protocols, open hardware, informative failures and open problems.</span></li>
+        <li><b>Ask for critique</b><span>We invite people to use our tools and data, and to test their rigor.</span></li>
+        <li><b>Show how it works in a company</b><span>We document where the line between open and protected falls, so others have a worked example.</span></li>
+      </ul>
     </div>
-  </footer>
+  </section>
 
-  <!-- Particle field script -->
-  <script>
-    const canvas = document.getElementById("particle-canvas");
-    const ctx = canvas.getContext("2d");
-
-    let width = canvas.width = window.innerWidth;
-    let height = canvas.height = window.innerHeight;
-
-    const particles = [];
-    const NUM_PARTICLES = 50;
-    const MAX_DISTANCE = 110;
-    const MOUSE_RADIUS = 120;
-
-    const mouse = { x: null, y: null };
-
-    window.addEventListener("resize", () => {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-    });
-
-    window.addEventListener("mousemove", (e) => {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
-    });
-
-    window.addEventListener("mouseleave", () => {
-      mouse.x = null;
-      mouse.y = null;
-    });
-
-    class Particle {
-      constructor() { this.init(); }
-      init() {
-        this.x = Math.random() * width;
-        this.y = Math.random() * height;
-        this.vx = (Math.random() - 0.5) * 0.35;
-        this.vy = (Math.random() - 0.5) * 0.35;
-        this.size = 1.2 + Math.random() * 1.2;
-      }
-      update() {
-        this.x += this.vx;
-        this.y += this.vy;
-        if (this.x < 0) this.x = width;
-        if (this.x > width) this.x = 0;
-        if (this.y < 0) this.y = height;
-        if (this.y > height) this.y = 0;
-        if (mouse.x !== null) {
-          const dx = this.x - mouse.x;
-          const dy = this.y - mouse.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < MOUSE_RADIUS && dist > 0) {
-            const force = (MOUSE_RADIUS - dist) / MOUSE_RADIUS;
-            this.x += (dx / dist) * force * 2;
-            this.y += (dy / dist) * force * 2;
-          }
-        }
-      }
-      draw() {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(14, 124, 123, 0.35)";
-        ctx.fill();
-      }
-    }
-
-    function initParticles() {
-      particles.length = 0;
-      for (let i = 0; i < NUM_PARTICLES; i++) particles.push(new Particle());
-    }
-
-    function drawConnections() {
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < MAX_DISTANCE) {
-            const alpha = 1 - dist / MAX_DISTANCE;
-            ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(234, 88, 12, ${alpha * 0.18})`;
-            ctx.lineWidth = 1;
-            ctx.stroke();
-          }
-        }
-      }
-    }
-
-    function animate() {
-      ctx.clearRect(0, 0, width, height);
-      ctx.fillStyle = "#F2F0EC";
-      ctx.fillRect(0, 0, width, height);
-      particles.forEach(p => { p.update(); p.draw(); });
-      drawConnections();
-      requestAnimationFrame(animate);
-    }
-
-    initParticles();
-    animate();
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.classList.add('visible');
-          observer.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.15 });
-
-    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
-  </script>
+  <section class="stage tight">
+    <div class="inner">
+      <h2>Reproduce our work, or build shared datasets with us</h2>
+      <p class="sum">We're looking for characterization partners and labs willing to reproduce our methods and discuss the results in public.</p>
+      <a class="mail" href="mailto:info@impossiblefibers.com" style="display:inline-block;margin-top:36px;font-family:var(--serif);font-size:clamp(1.4rem,2.6vw,2.2rem);color:var(--orange);text-decoration:none;border-bottom:2px solid currentColor">info@impossiblefibers.com</a>
+    </div>
+  </section>
+  <footer>© 2026 Impossible Fibers</footer>
 </body>
 </html>
