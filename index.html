@@ -1,640 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Impossible Fibers</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    :root {
-      --bg: #F2F0EC;
-      --fg: #111827;
-      --teal: #0E7C7B;
-      --teal-deep: #0B4F4E;
-      --orange: #EA580C;
-      --orange-soft: #F97316;
-      --panel: #FFFFFF;
-      --border: #D8D6D2;
-      --border-light: #E5E7EB;
-      --muted: #6B7280;
-      --serif: 'DM Serif Display', Georgia, serif;
-      --sans: 'DM Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    }
-
-    body {
-      margin: 0;
-      font-family: var(--sans);
-      color: var(--fg);
-      background: var(--bg);
-      line-height: 1.75;
-      font-size: 16.5px;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    /* Particle background canvas */
-    #particle-canvas {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      display: block;
-      pointer-events: none;
-    }
-
-    header, main, footer {
-      position: relative;
-      z-index: 1;
-    }
-
-    /* ── Header ── */
-    header {
-      padding: 1rem 1.5rem;
-      border-bottom: 1px solid var(--border-light);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: rgba(242, 240, 236, 0.92);
-      backdrop-filter: blur(8px);
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      font-size: 0.85rem;
-    }
-
-    .logo-img {
-      height: 32px;
-      width: auto;
-      display: block;
-    }
-
-    nav {
-      display: flex;
-      align-items: center;
-      gap: 1.25rem;
-    }
-
-    nav a {
-      text-decoration: none;
-      font-size: 0.8rem;
-      color: #374151;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      font-weight: 500;
-      white-space: nowrap;
-      transition: color 0.2s;
-    }
-
-    nav a:hover {
-      color: var(--teal);
-    }
-
-    /* ── Main content ── */
-    main {
-      max-width: 740px;
-      margin: 0 auto;
-      padding: 0 1.25rem;
-    }
-
-    /* ── Hero ── */
-    .hero {
-      padding: 4.5rem 0 3rem;
-    }
-
-    .hero-label {
-      font-size: 0.78rem;
-      text-transform: uppercase;
-      letter-spacing: 0.2em;
-      color: var(--teal);
-      font-weight: 600;
-      margin: 0 0 1rem;
-    }
-
-    .hero h1 {
-      font-family: var(--serif);
-      font-size: clamp(2.2rem, 5vw, 3rem);
-      line-height: 1.2;
-      margin: 0 0 1.5rem;
-      font-weight: 400;
-      color: var(--fg);
-    }
-
-    .hero h1 em {
-      font-style: italic;
-      color: var(--teal-deep);
-    }
-
-    .hero-sub {
-      font-size: 1.1rem;
-      line-height: 1.8;
-      color: #374151;
-      max-width: 620px;
-      margin: 0;
-    }
-
-    /* ── Sections ── */
-    .section {
-      margin-top: 1rem;
-      padding: 2.25rem 2rem;
-      border-top: none;
-      background: var(--panel);
-      border-radius: 12px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 12px 30px rgba(0,0,0,0.03);
-    }
-
-    .section + .section {
-      margin-top: 1.25rem;
-    }
-
-    .section-label {
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 0.22em;
-      color: var(--orange);
-      font-weight: 600;
-      margin: 0 0 0.75rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .section-label::before {
-      content: '';
-      display: inline-block;
-      width: 18px;
-      height: 2px;
-      background: var(--orange);
-    }
-
-    .section h2 {
-      font-family: var(--serif);
-      font-size: 1.55rem;
-      line-height: 1.3;
-      margin: 0 0 1rem;
-      text-transform: none;
-      letter-spacing: 0;
-      color: var(--fg);
-      font-weight: 400;
-    }
-
-    .section p {
-      margin: 0 0 0.85rem;
-      color: #374151;
-    }
-
-    .section p:last-child {
-      margin-bottom: 0;
-    }
-
-    .section .accent {
-      color: var(--fg);
-      font-weight: 600;
-    }
-
-    .section .kicker {
-      font-weight: 600;
-      color: var(--teal-deep);
-      font-size: 1.02rem;
-      margin-top: 0.5rem;
-    }
-
-    /* ── Open sections (no panel) ── */
-    .section.open {
-      background: transparent;
-      box-shadow: none;
-      border-radius: 0;
-      padding-left: 0;
-      padding-right: 0;
-      padding-top: 2.75rem;
-      padding-bottom: 1.5rem;
-    }
-
-    /* ── Pull quote ── */
-    .pullquote {
-      margin: 2.5rem 0 1.5rem;
-      padding: 0 1rem;
-      text-align: center;
-    }
-
-    .pullquote p {
-      font-family: var(--serif);
-      font-size: clamp(1.5rem, 3.4vw, 2.05rem);
-      line-height: 1.32;
-      color: var(--teal-deep);
-      margin: 0;
-      max-width: 620px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .pullquote::before {
-      content: '';
-      display: block;
-      width: 40px;
-      height: 2px;
-      background: var(--orange);
-      margin: 0 auto 1.5rem;
-    }
-
-    /* ── Beliefs ── */
-    .beliefs {
-      list-style: none;
-      margin: 1.5rem 0 0;
-      padding: 0;
-      counter-reset: belief;
-    }
-
-    .beliefs li {
-      position: relative;
-      padding-left: 3.25rem;
-      margin-bottom: 1.75rem;
-      color: #374151;
-    }
-
-    .beliefs li:last-child {
-      margin-bottom: 0;
-    }
-
-    .beliefs li::before {
-      counter-increment: belief;
-      content: counter(belief, decimal-leading-zero);
-      position: absolute;
-      left: 0;
-      top: 0.1rem;
-      font-family: var(--serif);
-      font-size: 1.4rem;
-      line-height: 1.2;
-      color: var(--orange);
-    }
-
-    .beliefs strong {
-      display: block;
-      font-family: var(--serif);
-      font-size: 1.18rem;
-      font-weight: 400;
-      color: var(--fg);
-      margin-bottom: 0.3rem;
-      line-height: 1.35;
-    }
-
-    /* ── CTA section ── */
-    .cta-section {
-      margin-top: 1.25rem;
-      margin-bottom: 4rem;
-      padding: 2.5rem 2rem;
-      background: var(--teal-deep);
-      border-radius: 12px;
-      color: #fff;
-      text-align: center;
-    }
-
-    .cta-section h2 {
-      font-family: var(--serif);
-      font-size: 1.75rem;
-      margin: 0 0 0.75rem;
-      color: #fff;
-      text-transform: none;
-      letter-spacing: 0;
-      font-weight: 400;
-    }
-
-    .cta-section p {
-      color: rgba(255,255,255,0.82);
-      margin: 0 0 1.5rem;
-      max-width: 520px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .cta-link {
-      display: inline-block;
-      padding: 0.75rem 2rem;
-      background: var(--orange);
-      color: #fff;
-      text-decoration: none;
-      border-radius: 6px;
-      font-weight: 600;
-      font-size: 0.9rem;
-      letter-spacing: 0.04em;
-      transition: background 0.2s, transform 0.15s;
-    }
-
-    .cta-link:hover {
-      background: var(--orange-soft);
-      color: #fff;
-      transform: translateY(-1px);
-    }
-
-    /* ── Footer ── */
-    footer {
-      border-top: 1px solid var(--border-light);
-      padding: 1.25rem 1.5rem;
-      font-size: 0.8rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      color: #9CA3AF;
-      background: #1c1b1b;
-    }
-
-    footer a {
-      color: inherit;
-      text-decoration: none;
-      margin-left: 1rem;
-      transition: color 0.2s;
-    }
-
-    footer a:hover {
-      color: #fdfeff;
-    }
-
-    /* ── Animations ── */
-    .fade-up {
-      opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1), transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
-    }
-
-    .fade-up.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* stagger children */
-    .hero .fade-up:nth-child(1) { transition-delay: 0.05s; }
-    .hero .fade-up:nth-child(2) { transition-delay: 0.15s; }
-    .hero .fade-up:nth-child(3) { transition-delay: 0.25s; }
-
-    .section.fade-up:nth-of-type(1) { transition-delay: 0s; }
-    .section.fade-up:nth-of-type(2) { transition-delay: 0.08s; }
-    .section.fade-up:nth-of-type(3) { transition-delay: 0.16s; }
-
-    /* ── Responsive ── */
-    @media (max-width: 640px) {
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
-      }
-
-      nav {
-        gap: 1rem;
-        flex-wrap: wrap;
-      }
-
-      .hero {
-        padding: 3rem 0 2rem;
-      }
-
-      .hero h1 {
-        font-size: 1.85rem;
-      }
-
-      .section {
-        padding: 1.75rem 1.25rem;
-      }
-
-      .cta-section {
-        padding: 2rem 1.25rem;
-      }
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Impossible Fibers runs R&D projects on protein fibers, develops robotic sensor systems, and runs an open science platform.">
+  <link rel="icon" href="img/if-mark.png">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/site.css">
+  <script src="js/site.js"></script>
 </head>
 <body>
-  <!-- Particle background -->
-  <canvas id="particle-canvas"></canvas>
-
-  <header>
-    <div class="logo">
-      <img src="img/logo.png" alt="Impossible Fibers Logo" class="logo-img">
-      <span>IMPOSSIBLE FIBERS</span>
-    </div>
+  <header class="site-header">
+    <a class="logo" href="/"><img src="img/logo.png" alt=""><span>Impossible Fibers</span></a>
     <nav>
-      <a href="/">Home</a>
-      <a href="about.html">About</a>
-      <a href="open-science.html">Open Science</a>
+      <a href="#open-science">Open Science</a>
       <a href="assembly-required/">Assembly Required</a>
+      <a href="about.html">About</a>
       <a href="contact.html">Contact</a>
     </nav>
   </header>
 
   <main>
-    <!-- ── Hero ── -->
+    <!-- What we do -->
     <div class="hero">
-      <p class="hero-label fade-up">Our Mission</p>
-      <h1 class="fade-up">To unlock nature's <em>manufacturing strategies</em> for abundant advanced materials</h1>
-      <p class="hero-sub fade-up">
-        We are building programmable protein-based composites, an entirely new class of material where performance is directed through multi-scale assembly rather than limited by toxic or rare elements.
-      </p>
+      <canvas id="particle-canvas"></canvas>
+      <div class="wrap">
+        <p class="eyebrow">Impossible Fibers</p>
+        <h1>We make protein fibers using nature's manufacturing strategies</h1>
+        <div class="what">
+          <div>
+            <span class="k">01</span>
+            <b>Research &amp; development</b>
+            <span>We run R&amp;D projects on protein fibers with funders and partners.</span>
+          </div>
+          <div>
+            <span class="k">02</span>
+            <b>Robotic sensor systems</b>
+            <span>We're developing protein-fiber sensors for robotic touch.</span>
+          </div>
+          <a class="what-tile" href="#open-science">
+            <span class="k">03</span>
+            <b>Open science platform</b>
+            <span>We publish our tools, methods and data in four areas.</span>
+            <span class="go">See the four areas ↓</span>
+          </a>
+        </div>
+      </div>
     </div>
 
-    <!-- ── We Believe ── -->
-    <div class="section fade-up">
-      <p class="section-label">We Believe</p>
-      <h2>Three Convictions Behind the Work</h2>
-      <ul class="beliefs">
-        <li>
-          <strong>Architecture matters as much as ingredients.</strong>
-          Nature's highest performing materials aren't defined only by what they're made of, but by how they're built.
-        </li>
-        <li>
-          <strong>Abundance runs through self-assembly.</strong>
-          The key to an abundant material future lies in our ability to manipulate self-assembly from the nano-scale to the macro-scale, for materials at the kilogram scale.
-        </li>
-        <li>
-          <strong>This is the moment it becomes possible.</strong>
-          Artificial intelligence and synthetic biology poise us at a point where we can begin to rapidly accelerate the performance and reach of materials into new capabilities for humanity.
-        </li>
-      </ul>
+    <div class="wrap">
+      <!-- The bio-inspired story -->
+      <section class="block reveal">
+        <p class="eyebrow">Learning from nature</p>
+        <h2>Spiders, mussels and velvet worms keep fiber proteins unreacted until they need them</h2>
+        <div class="organisms">
+          <div class="organism">
+            <div class="pic"><img src="img/nature/spider-cut.png" alt="Illustration of a spider hanging from a silk thread"></div>
+            <b>Spider</b><span>Silk proteins held in <em>micelles</em></span>
+            <div class="purpose"><img src="img/nature/icon-storing.png" alt="">Storage</div>
+          </div>
+          <div class="organism">
+            <div class="pic"><img src="img/nature/mussel-cut.png" alt="Illustration of a mussel anchored by byssal threads"></div>
+            <b>Mussel</b><span>Proteins packaged in <em>secretory vesicles</em></span>
+            <div class="purpose"><img src="img/nature/icon-storing.png" alt=""><img src="img/nature/icon-sequencing.png" alt="" style="height:18px">Storage + sequencing</div>
+          </div>
+          <div class="organism">
+            <div class="pic"><img src="img/nature/velvet-worm.png" alt="Illustration of a velvet worm ejecting slime"></div>
+            <b>Velvet worm</b><span>Proteins stored in <em>nanoglobules</em></span>
+            <div class="purpose"><img src="img/nature/icon-triggering.png" alt="">Triggered delivery</div>
+          </div>
+        </div>
+        <div class="steps3">
+          <div><b>Store</b><span>Keep the protein condensed and unreacted.</span></div>
+          <div><b>Sort</b><span>Move it into place while it's still fluid.</span></div>
+          <div><b>Trigger</b><span>Turn it into a fiber at the right place and time.</span></div>
+        </div>
+        <p style="margin-top:30px"><a class="btn ghost wrap" href="https://iflab.substack.com/p/humanity-makes-noodles-nature-makes" target="_blank" rel="noopener">Read the story: Humanity Makes Noodles. Nature Makes Machines. ↗</a></p>
+        <p class="credit">Illustrations © Gretchen Hooker / Pixel Naturalist.</p>
+      </section>
+
+      <!-- Open science platform -->
+      <section class="block reveal" id="open-science">
+        <p class="eyebrow">Open science platform</p>
+        <h2>Four areas we work on in the open</h2>
+        <div class="cards" style="grid-template-columns:repeat(auto-fit,minmax(230px,1fr))">
+          <div class="card later">
+            <div class="pic"><img src="img/lab/microfluidics-steel.jpg" alt="A stainless-steel microfluidic chip"></div>
+            <div class="body"><b><span class="n">1</span>AI-assisted chip design</b><span>Designing microfluidic chips for protein dopes with AI.</span><span class="tag">Page coming</span></div>
+          </div>
+          <div class="card later">
+            <div class="pic contain"><img src="img/collagen-hierarchy.png" alt="Collagen hierarchy from amino acids to fibers"></div>
+            <div class="body"><b><span class="n">2</span>Predictive fiber models</b><span>From a protein's molecules to its fiber's strength.</span><span class="tag">Page coming</span></div>
+          </div>
+          <a class="card" href="bio-inspired-manufacturing.html">
+            <div class="pic contain"><img src="img/microfluidics-platform.png" alt="Illustration of an encapsulation chip, a sorting chip and a spinning chip"></div>
+            <div class="body"><b><span class="n">3</span>Bio-inspired manufacturing</b><span>Encapsulated dopes: store, sort, spin.</span></div>
+          </a>
+          <div class="card later">
+            <div class="pic contain"><img src="img/pattern-localized.png" alt="Illustration of a fiber with localized regions"></div>
+            <div class="body"><b><span class="n">4</span>The future of fibers</b><span>Fibers that sense and compute: our white paper.</span><span class="tag">Page coming</span></div>
+          </div>
+        </div>
+        <p style="margin-top:22px"><a href="open-science.html">Our open science policy →</a></p>
+      </section>
     </div>
 
-    <!-- ── History (open) ── -->
-    <div class="section open fade-up">
-      <p class="section-label">History</p>
-      <h2>Manufacturing Has Always Defined What's Possible</h2>
-      <p>
-        We call it the Bronze Age or the Iron Age, as if the metals themselves changed the world. They didn't. It was the development of smelting, casting, and forging that reshaped societies. The metals were always in the ground. Manufacturing is what made them matter.
-      </p>
-      <p>
-        Photolithography and clean-room fabrication gave us the information age. Silicon was abundant long before anyone built a transistor on it. Every civilizational leap follows the same pattern: a manufacturing breakthrough unlocks what a raw material can become.
-      </p>
-    </div>
-
-    <!-- ── Pull quote ── -->
-    <div class="pullquote fade-up">
-      <p>We are building the manufacturing platform for the next epoch.</p>
-    </div>
-
-    <!-- ── Approach (merged with Platform) ── -->
-    <div class="section fade-up">
-      <p class="section-label">Approach</p>
-      <h2>Nature's Manufacturing Strategies</h2>
-      <p>
-        The highest-performance materials in biology, from spider silk to bone to abalone shell, don't derive their properties from exotic chemistry. They derive them from hierarchical architecture: precisely controlled assembly from the nanoscale to the macroscale, where structure at every length scale contributes to the final performance envelope.
-      </p>
-      <p>
-        Changing the assembly changes the outcome. We build the tools to exploit that at the speed and cost of fiber manufacturing, tuning mechanical, electrical, optical, chemical, and magnetic properties on a <span class="accent">millimeter-by-millimeter basis</span>.
-      </p>
-      <p>
-        Engineered proteins are now viable manufacturing feedstocks. We pair them with novel phase-change triggers for self-assembly, microfluidic dope preparation, and spinning techniques including contact pulling, electrospinning, and microfluidic spinning. Critically, these processes scale out rather than up: the biophysics stay identical at every production unit, so we parallelize without the regime changes that typically derail biomaterial scaling.
-      </p>
-      <p class="kicker">We predict and program material outcomes. We don't discover them by accident.</p>
-    </div>
-
-    <!-- ── Fibers Everywhere (open) ── -->
-    <div class="section open fade-up">
-      <p class="section-label">Vision</p>
-      <h2>Fibers Everywhere</h2>
-      <p>
-        Fibers are one of the oldest technologies on the planet, and one of the most pervasive. In nature, they template the mineralization of bone and the formation of glass spicules in sponges. They make up the fundamental structural units of wood, muscle, tendon, and silk. Our own technological world mirrors this: textiles, cables, composites, optical networks. Civilization is, in a very literal sense, built on fibers.
-      </p>
-      <p class="kicker">What if fibers could sense, conduct, compute, and self-heal?</p>
-    </div>
-
-
-    <!-- ── CTA ── -->
-    <div class="cta-section fade-up">
-      <h2>Build With Us</h2>
-      <p>
-        We partner with researchers, industrial teams, and funding organizations working at the frontier of materials, manufacturing, and the systems they enable.
-      </p>
-      <a href="contact.html" class="cta-link">Get in Touch</a>
+    <div class="cta">
+      <h2>Work with us</h2>
+      <p>We partner with researchers, industrial teams and funders on protein fibers.</p>
+      <a href="contact.html" class="btn">Get in touch</a>
     </div>
   </main>
 
-  <footer>
-    <div>&copy; 2025 Impossible Fibers</div>
+  <footer class="site-footer">
+    <div>&copy; 2026 Impossible Fibers</div>
     <div>
-      <a href="/">Home</a>
-      <a href="about.html">About</a>
-      <a href="open-science.html">Open Science</a>
-      <a href="assembly-required/">Assembly Required</a>
-      <a href="contact.html">Contact</a>
+      <a href="#open-science">Open Science</a><a href="assembly-required/">Assembly Required</a><a href="about.html">About</a><a href="contact.html">Contact</a>
     </div>
   </footer>
-
-  <!-- Particle field script (unchanged) -->
-  <script>
-    const canvas = document.getElementById("particle-canvas");
-    const ctx = canvas.getContext("2d");
-
-    let width = canvas.width = window.innerWidth;
-    let height = canvas.height = window.innerHeight;
-
-    const particles = [];
-    const NUM_PARTICLES = 50;
-    const MAX_DISTANCE = 110;
-    const MOUSE_RADIUS = 120;
-
-    const mouse = { x: null, y: null };
-
-    window.addEventListener("resize", () => {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-    });
-
-    window.addEventListener("mousemove", (e) => {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
-    });
-
-    window.addEventListener("mouseleave", () => {
-      mouse.x = null;
-      mouse.y = null;
-    });
-
-    class Particle {
-      constructor() { this.init(); }
-      init() {
-        this.x = Math.random() * width;
-        this.y = Math.random() * height;
-        this.vx = (Math.random() - 0.5) * 0.35;
-        this.vy = (Math.random() - 0.5) * 0.35;
-        this.size = 1.2 + Math.random() * 1.2;
-      }
-      update() {
-        this.x += this.vx;
-        this.y += this.vy;
-        if (this.x < 0) this.x = width;
-        if (this.x > width) this.x = 0;
-        if (this.y < 0) this.y = height;
-        if (this.y > height) this.y = 0;
-        if (mouse.x !== null) {
-          const dx = this.x - mouse.x;
-          const dy = this.y - mouse.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < MOUSE_RADIUS && dist > 0) {
-            const force = (MOUSE_RADIUS - dist) / MOUSE_RADIUS;
-            this.x += (dx / dist) * force * 2;
-            this.y += (dy / dist) * force * 2;
-          }
-        }
-      }
-      draw() {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(14, 124, 123, 0.35)";
-        ctx.fill();
-      }
-    }
-
-    function initParticles() {
-      particles.length = 0;
-      for (let i = 0; i < NUM_PARTICLES; i++) particles.push(new Particle());
-    }
-
-    function drawConnections() {
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < MAX_DISTANCE) {
-            const alpha = 1 - dist / MAX_DISTANCE;
-            ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(234, 88, 12, ${alpha * 0.18})`;
-            ctx.lineWidth = 1;
-            ctx.stroke();
-          }
-        }
-      }
-    }
-
-    function animate() {
-      ctx.clearRect(0, 0, width, height);
-      ctx.fillStyle = "#F2F0EC";
-      ctx.fillRect(0, 0, width, height);
-      particles.forEach(p => { p.update(); p.draw(); });
-      drawConnections();
-      requestAnimationFrame(animate);
-    }
-
-    initParticles();
-    animate();
-
-    /* ── Scroll reveal ── */
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.classList.add('visible');
-          observer.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.15 });
-
-    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
-  </script>
 </body>
 </html>

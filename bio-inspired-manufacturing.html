@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bio-inspired Manufacturing – Impossible Fibers</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Encapsulated dopes: how Impossible Fibers rebuilds the spider's and mussel's manufacturing strategy with microfluidics, in the open.">
+  <link rel="icon" href="img/if-mark.png">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/site.css">
+  <script src="js/site.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="logo" href="/"><img src="img/logo.png" alt=""><span>Impossible Fibers</span></a>
+    <nav>
+      <a href="index.html#open-science" aria-current="page">Open Science</a>
+      <a href="assembly-required/">Assembly Required</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="wrap">
+      <div class="page-head">
+        <p class="eyebrow"><a href="index.html#open-science" style="color:inherit;text-decoration:none">Open science</a> · Area 3</p>
+        <h1>Bio-inspired manufacturing</h1>
+        <p class="lede">Spiders and mussels keep fiber proteins unreacted until the right time and place. We're building the same strategy as microfluidics: encapsulated spinning dopes.</p>
+      </div>
+
+      <!-- How the spider does it -->
+      <section class="block reveal">
+        <p class="eyebrow">How nature does it</p>
+        <h2>In the spider’s duct, a drop in pH triggers the fiber</h2>
+        <figure class="fig" data-w="1728" data-h="560">
+          <div class="fig-box"><div class="fig-sizer"><div class="stage slide">
+            <canvas id="spider-duct" role="img" aria-label="Simulated spider silk gland: proteins stored in micelles flow into a narrowing duct; as the pH falls from about 8 to 5, their ends lock and trigger, the stretching flow aligns them, and a solid fiber leaves the spigot"></canvas>
+          </div></div></div>
+          <p class="scroll-hint">Scroll the figure sideways →</p>
+          <figcaption>Schematic simulation after Rising &amp; Harrington, “Biological materials processing: time-tested tricks for sustainable fiber fabrication,” <i>Chem. Rev.</i> 123, 2155–2199 (2023). Flow speeds up as the duct narrows and aligns the proteins; the pH values for locking and triggering are illustrative.</figcaption>
+        </figure>
+      </section>
+
+      <!-- Our platform -->
+      <section class="block reveal">
+        <p class="eyebrow">What we're building</p>
+        <h2>Store, sort, spin</h2>
+        <div class="two">
+          <div class="photo bare"><img src="img/microfluidics-platform.png" alt="Illustration of the platform: an encapsulation chip, a sorting chip, and a spinning chip winding fiber onto a spool"></div>
+          <div class="steps3" style="grid-template-columns:1fr;gap:26px;margin:0">
+            <div><b>Encapsulate</b><span>Stainless-steel microfluidic chips wrap each spinning dope in a droplet. Steel handles the harsh solvents proteins often need.</span></div>
+            <div><b>Sort</b><span>Program the order and timing of the droplets, so each protein arrives in the right place.</span></div>
+            <div><b>Spin</b><span>Control the trigger and cross-linking that turn the dope into a fiber.</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Patterns -->
+      <section class="block reveal">
+        <p class="eyebrow">Why it matters</p>
+        <h2>The order of the droplets becomes a pattern in the fiber</h2>
+        <figure class="fig" data-w="1140" data-h="300" data-steps="3" data-hold="4200" data-loop>
+          <div class="fig-box"><div class="fig-sizer"><div class="stage slide">
+            <canvas id="pattern-program" role="img" aria-label="Animation: capsules of two dopes are released in a programmed order and merge into a fiber whose pattern follows the sequence: gradient, periodic, localized, encoded"></canvas>
+          </div></div></div>
+          <p class="scroll-hint">Scroll the figure sideways →</p>
+          <div class="patterns">
+            <div class="pattern-card"><img src="img/pattern-gradient.png" alt=""><b>Gradient</b><span>tendon repair · robotic tendons · composite layups</span></div>
+            <div class="pattern-card"><img src="img/pattern-periodic.png" alt=""><b>Periodic</b><span>structural color · metamaterials · biomineralized</span></div>
+            <div class="pattern-card"><img src="img/pattern-localized.png" alt=""><b>Localized</b><span>stimuli-responsive · designed self-assembly · reservoir computing</span></div>
+            <div class="pattern-card"><img src="img/pattern-encoded.png" alt=""><b>Encoded</b><span>identification · addressable</span></div>
+          </div>
+          <figcaption>Animation is schematic.</figcaption>
+        </figure>
+      </section>
+
+      <!-- What's open -->
+      <section class="block reveal">
+        <p class="eyebrow">Open</p>
+        <h2>Use it, reproduce it, build on it</h2>
+        <div class="links">
+          <a href="https://github.com/Plumeriatiki/microfluidic-onshape-library" target="_blank" rel="noopener"><b>Microfluidic CAD library ↗</b><span>Parametric Onshape parts, MIT license. Includes a spider-duct-style wet-spinning chip.</span></a>
+          <a href="https://iflab.substack.com/p/humanity-makes-noodles-nature-makes" target="_blank" rel="noopener"><b>Humanity Makes Noodles. Nature Makes Machines. ↗</b><span>The full story, in Assembly Required</span></a>
+          <a href="https://zenodo.org/communities/if" target="_blank" rel="noopener"><b>Zenodo ↗</b><span>Papers, methods and data as we release them</span></a>
+        </div>
+        <p class="credit">Illustrations © Gretchen Hooker / Pixel Naturalist.</p>
+      </section>
+    </div>
+
+    <div class="cta">
+      <h2>Work on encapsulated dopes with us</h2>
+      <p>We're looking for collaborators on protein dopes, microfluidics and spinning.</p>
+      <a href="contact.html" class="btn">Get in touch</a>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div>&copy; 2026 Impossible Fibers</div>
+    <div>
+      <a href="index.html#open-science">Open Science</a><a href="assembly-required/">Assembly Required</a><a href="about.html">About</a><a href="contact.html">Contact</a>
+    </div>
+  </footer>
+
+  <script src="js/charts/spider-duct.js"></script>
+  <script src="js/charts/pattern-program.js"></script>
+</body>
+</html>
