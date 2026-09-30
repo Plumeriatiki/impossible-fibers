@@ -4,120 +4,116 @@
   <meta charset="UTF-8">
   <title>Impossible Fibers</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Impossible Fibers runs R&D projects on protein fibers, develops robotic sensor systems, and runs an open science platform.">
+  <meta name="description" content="Impossible Fibers makes advanced materials from commonly available ingredients, using nature's manufacturing strategies.">
   <link rel="icon" href="img/if-mark.png">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/site.css">
-  <script src="js/site.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/concept.css">
+  <style>
+    .mech-head{display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;margin-top:48px}
+    .mech-head p{margin:0;font:12px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+    .mech-head a{font:12px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-decoration:none}
+    .mech-head a:hover{color:var(--orange)}
+    .mech{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-top:18px;border-top:1px solid var(--ink)}
+    .mech div{padding:16px 22px 0 0}
+    .mech .k{font:500 12px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--teal)}
+    .mech div:nth-child(n+3) .k{color:var(--orange)}
+    .mech b{display:block;font-family:var(--serif);font-weight:400;font-size:1.2rem;line-height:1.2;margin:6px 0 4px}
+    .mech span{font-size:.9rem;color:var(--ink2)}
+    .mech .ours{margin:12px 0 0;padding-top:10px;border-top:1px dashed var(--rule);font-size:.9rem;color:var(--ink)}
+    .mech .ours em{font-style:normal;font:500 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:2px}
+    @media (max-width:900px){.mech{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:28px}}
+    @media (max-width:520px){.mech{grid-template-columns:1fr}}
+  </style>
 </head>
 <body>
-  <header class="site-header">
-    <a class="logo" href="/"><img src="img/logo.png" alt=""><span>Impossible Fibers</span></a>
+  <canvas id="spine" aria-hidden="true"></canvas>
+  <div class="readout" aria-hidden="true"></div>
+
+  <header class="top">
+    <a class="mark" href="/"><img src="img/logo.png" alt="">Impossible Fibers</a>
     <nav>
-      <a href="#open-science">Open Science</a>
+      <a href="projects.html">R&amp;D</a>
+      <a href="sensors.html">Sensors</a>
+      <a href="open-science.html">Open science</a>
       <a href="https://iflab.substack.com">Assembly Required</a>
       <a href="about.html">About</a>
       <a href="contact.html">Contact</a>
     </nav>
   </header>
 
-  <main>
-    <!-- What we do -->
-    <div class="hero">
-      <canvas id="particle-canvas"></canvas>
-      <div class="wrap">
-        <p class="eyebrow">Impossible Fibers</p>
-        <h1>We make protein fibers using nature's manufacturing strategies</h1>
-        <div class="what">
-          <div>
-            <span class="k">01</span>
-            <b>Research &amp; development</b>
-            <span>We run R&amp;D projects on protein fibers with funders and partners.</span>
-          </div>
-          <div>
-            <span class="k">02</span>
-            <b>Robotic sensor systems</b>
-            <span>We're developing protein-fiber sensors for robotic touch.</span>
-          </div>
-          <a class="what-tile" href="#open-science">
-            <span class="k">03</span>
-            <b>Open science platform</b>
-            <span>We publish our tools, methods and data in four areas.</span>
-            <span class="go">See the four areas ↓</span>
-          </a>
-        </div>
+  <!-- Mission, and how: the mechanisms -->
+  <section class="stage" data-stage="store">
+    <div class="inner">
+      <h1>We make advanced materials from <em>commonly available</em> ingredients</h1>
+      <div class="mech-head">
+        <p>How: we're building nature's manufacturing strategies into tools, starting with encapsulated dopes</p>
+        <a href="bio-inspired-manufacturing.html">See them in spiders, mussels and velvet worms →</a>
+      </div>
+      <div class="mech">
+        <div><span class="k">Store</span><b>Keep it unreacted</b><span>Nature holds proteins in micelles, vesicles and droplets.</span>
+          <p class="ours"><em>We build</em> encapsulated dopes, made in our custom microfluidic chips.</p></div>
+        <div><span class="k">Sort</span><b>Put it in place</b><span>They move into position while still fluid.</span>
+          <p class="ours"><em>We're researching</em> microfluidic sorting that sets the order of the droplets.</p></div>
+        <div><span class="k">Trigger</span><b>Start assembly</b><span>A change in pH, shear or ions locks them together.</span>
+          <p class="ours"><em>We're researching</em> triggering at the right place and time.</p></div>
+        <div><span class="k">Align</span><b>Draw the fiber</b><span>The flow lines the chains up into a solid fiber.</span>
+          <p class="ours"><em>We spin</em> by contact pulling, electrospinning and microfluidic spinning.</p></div>
+      </div>
+      <p class="read">Read <a href="https://iflab.substack.com/p/humanity-makes-noodles-nature-makes" target="_blank" rel="noopener">Humanity Makes Noodles. Nature Makes Machines. ↗</a></p>
+    </div>
+  </section>
+
+  <!-- 01 -->
+  <section class="stage area-block" data-stage="sort">
+    <div class="inner">
+      <span class="big-n">01</span>
+      <div>
+        <h2>Research &amp; development</h2>
+        <p class="sum">R&amp;D projects on protein fibers, with funders and partners.</p>
+        <ul class="sub"><li>Predicting fiber properties: from DARPA to a high-throughput dope machine</li><li>Open science projects</li></ul>
+        <a class="cta-link" href="projects.html">See our projects →</a>
       </div>
     </div>
+  </section>
 
-    <div class="wrap">
-      <!-- The bio-inspired story -->
-      <section class="block reveal">
-        <p class="eyebrow">Learning from nature</p>
-        <h2>Spiders, mussels and velvet worms keep fiber proteins unreacted until they need them</h2>
-        <div class="organisms">
-          <div class="organism">
-            <div class="pic"><img src="img/nature/spider-cut.png" alt="Illustration of a spider hanging from a silk thread"></div>
-            <b>Spider</b><span>Silk proteins held in <em>micelles</em></span>
-            <div class="purpose"><img src="img/nature/icon-storing.png" alt="">Storage</div>
-          </div>
-          <div class="organism">
-            <div class="pic"><img src="img/nature/mussel-cut.png" alt="Illustration of a mussel anchored by byssal threads"></div>
-            <b>Mussel</b><span>Proteins packaged in <em>secretory vesicles</em></span>
-            <div class="purpose"><img src="img/nature/icon-storing.png" alt=""><img src="img/nature/icon-sequencing.png" alt="" style="height:18px">Storage + sequencing</div>
-          </div>
-          <div class="organism">
-            <div class="pic"><img src="img/nature/velvet-worm.png" alt="Illustration of a velvet worm ejecting slime"></div>
-            <b>Velvet worm</b><span>Proteins stored in <em>nanoglobules</em></span>
-            <div class="purpose"><img src="img/nature/icon-triggering.png" alt="">Triggered delivery</div>
-          </div>
-        </div>
-        <div class="steps3">
-          <div><b>Store</b><span>Keep the protein condensed and unreacted.</span></div>
-          <div><b>Sort</b><span>Move it into place while it's still fluid.</span></div>
-          <div><b>Trigger</b><span>Turn it into a fiber at the right place and time.</span></div>
-        </div>
-        <p style="margin-top:30px"><a class="btn ghost wrap" href="https://iflab.substack.com/p/humanity-makes-noodles-nature-makes" target="_blank" rel="noopener">Read the story: Humanity Makes Noodles. Nature Makes Machines. ↗</a></p>
-        <p class="credit">Illustrations © Gretchen Hooker / Pixel Naturalist.</p>
-      </section>
-
-      <!-- Open science platform -->
-      <section class="block reveal" id="open-science">
-        <p class="eyebrow">Open science platform</p>
-        <h2>Four areas we work on in the open</h2>
-        <div class="cards" style="grid-template-columns:repeat(auto-fit,minmax(230px,1fr))">
-          <div class="card later">
-            <div class="pic"><img src="img/lab/microfluidics-steel.jpg" alt="A stainless-steel microfluidic chip"></div>
-            <div class="body"><b><span class="n">1</span>AI-assisted chip design</b><span>Designing microfluidic chips for protein dopes with AI.</span><span class="tag">Page coming</span></div>
-          </div>
-          <div class="card later">
-            <div class="pic contain"><img src="img/collagen-hierarchy.png" alt="Collagen hierarchy from amino acids to fibers"></div>
-            <div class="body"><b><span class="n">2</span>Predictive fiber models</b><span>From a protein's molecules to its fiber's strength.</span><span class="tag">Page coming</span></div>
-          </div>
-          <a class="card" href="bio-inspired-manufacturing.html">
-            <div class="pic contain"><img src="img/microfluidics-platform.png" alt="Illustration of an encapsulation chip, a sorting chip and a spinning chip"></div>
-            <div class="body"><b><span class="n">3</span>Bio-inspired manufacturing</b><span>Encapsulated dopes: store, sort, spin.</span></div>
-          </a>
-          <div class="card later">
-            <div class="pic contain"><img src="img/pattern-localized.png" alt="Illustration of a fiber with localized regions"></div>
-            <div class="body"><b><span class="n">4</span>The future of fibers</b><span>Fibers that sense and compute: our white paper.</span><span class="tag">Page coming</span></div>
-          </div>
-        </div>
-        <p style="margin-top:22px"><a href="open-science.html">Our open science policy →</a></p>
-      </section>
+  <!-- 02 -->
+  <section class="stage area-block" data-stage="trigger">
+    <div class="inner">
+      <span class="big-n">02</span>
+      <div>
+        <h2>Robotic sensor systems</h2>
+        <p class="sum">We're developing protein-fiber sensors for robotic touch.</p>
+        <a class="cta-link" href="sensors.html">Follow the work →</a>
+      </div>
     </div>
+  </section>
 
-    <div class="cta">
-      <h2>Work with us</h2>
-      <p>We partner with researchers, industrial teams and funders on protein fibers.</p>
-      <a href="contact.html" class="btn">Get in touch</a>
+  <!-- 03 -->
+  <section class="stage area-block night" id="open-science">
+    <div class="inner">
+      <span class="big-n">03</span>
+      <div>
+        <h2>Open science</h2>
+        <p class="sum">We publish our tools, methods and data in four areas.</p>
+        <ul class="sub"><li>AI-assisted chip design</li><li>Predictive fiber models</li><li>Bio-inspired manufacturing</li><li>The future of fibers</li></ul>
+        <a class="cta-link" href="open-science.html">Explore open science →</a>
+      </div>
     </div>
-  </main>
+  </section>
 
-  <footer class="site-footer">
-    <div>&copy; 2026 Impossible Fibers</div>
-    <div>
-      <a href="#open-science">Open Science</a><a href="https://iflab.substack.com">Assembly Required</a><a href="about.html">About</a><a href="contact.html">Contact</a>
+  <!-- Contact -->
+  <section class="stage end" data-stage="fiber">
+    <div class="inner">
+      <h2>Partner with us to turn proteins into advanced materials and products</h2>
+      <p class="sum">Researchers, industrial teams and funders: tell us what you're working on.</p>
+      <a class="mail" href="mailto:info@impossiblefibers.com">info@impossiblefibers.com</a>
+      <div class="links">
+        <a href="https://iflab.substack.com">Assembly Required</a><a href="about.html">About</a><a href="https://zenodo.org/communities/if" target="_blank" rel="noopener">Zenodo ↗</a>
+      </div>
     </div>
-  </footer>
+  </section>
+  <footer>© 2026 Impossible Fibers · The line at the left is a schematic simulation of the four mechanisms: store, sort, trigger, align.</footer>
+
+  <script src="js/spine.js"></script>
 </body>
 </html>

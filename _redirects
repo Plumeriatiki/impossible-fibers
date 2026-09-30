@@ -1,0 +1,6 @@
+# Netlify redirects. Assembly Required posts live on Substack only; the old on-site
+# archive and article URLs send readers there.
+/assembly-required/the-missing-emulator.html  https://iflab.substack.com/p/the-missing-emulator  301
+/assembly-required/the-missing-emulator       https://iflab.substack.com/p/the-missing-emulator  301
+/assembly-required/*                          https://iflab.substack.com  301
+/assembly-required                            https://iflab.substack.com  301

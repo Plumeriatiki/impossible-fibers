@@ -183,3 +183,34 @@ body.plain{--spine:0px}
 .rows .read{grid-column:2 / -1;margin-top:4px}
 @media (max-width:900px){.rows .read{grid-column:2}}
 .rows b.step{display:inline;font:600 1em var(--sans);color:var(--ink)}
+
+/* Animated charts (driven by js/site.js). The charts read these color names. */
+:root{--fg:#111827;--fg2:#374151;--bg:#F2F0EC;--panel:#FFFFFF}
+.fig{margin:28px 0 0}
+.fig-box{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch}
+.fig-sizer{overflow:hidden}
+.chart-stage{position:relative;transform-origin:0 0;font-family:var(--sans);color:var(--ink);line-height:1.4;font-size:30px;
+  --t-body:30px;--t-small:24px;--t-lead:44px;--t-caption:18px;--gap:48px}
+.chart-stage canvas,.chart-stage svg{display:block}
+.fig figcaption{margin-top:12px;font:11px/1.6 var(--mono);color:var(--muted);max-width:110ch}
+.scroll-hint{display:none;font:11px var(--mono);color:var(--muted);margin-top:6px}
+.fig.scrolls .scroll-hint{display:block}
+.fig-tools{margin-top:8px}
+.replay{font:11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--teal);background:none;border:1px solid var(--rule);border-radius:999px;padding:4px 12px;cursor:pointer}
+.patterns{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:18px}
+.pattern-card{border-top:2px solid var(--rule);padding-top:10px;opacity:.45;transition:opacity .4s,border-color .4s}
+.pattern-card.on{opacity:1;border-color:var(--teal)}
+.pattern-card img{height:46px;width:auto;margin-bottom:6px}
+.pattern-card b{display:block;font-family:var(--serif);font-weight:400;font-size:1.15rem}
+.pattern-card span{display:block;font-size:.85rem;color:var(--ink2);line-height:1.4}
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:center;margin-top:28px}
+.split > *{min-width:0}
+.steps{list-style:none;padding:0;margin:0;display:grid;gap:22px;counter-reset:s}
+.steps li{counter-increment:s;display:grid;grid-template-columns:34px minmax(0,1fr);gap:0 10px}
+.steps li::before{content:counter(s);grid-row:1/4;font-family:var(--serif);font-size:1.9rem;line-height:1;color:var(--orange)}
+.steps b{font-family:var(--serif);font-weight:400;font-size:1.25rem}
+.steps em{font-style:normal;font:500 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.steps span{color:var(--ink2);font-size:.95rem}
+.big-mail{display:inline-block;margin-top:22px;font-family:var(--serif);font-size:clamp(1.2rem,1.8vw,1.5rem);color:var(--orange);text-decoration:none;border-bottom:2px solid currentColor}
+@media (max-width:900px){.patterns{grid-template-columns:repeat(2,minmax(0,1fr))}.split{grid-template-columns:1fr}}
+@media (max-width:640px){.big-mail{font-size:1.2rem;overflow-wrap:anywhere}}
