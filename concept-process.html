@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Impossible Fibers</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <meta name="description" content="Impossible Fibers runs R&D projects on protein fibers, develops robotic sensor systems, and runs an open science platform.">
+  <link rel="icon" href="img/if-mark.png">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+  <!--
+    CONCEPT PROTOTYPE: "the page works like the process".
+    A simulated spinning line runs down the left edge. Droplets of dope drift down a channel,
+    line up single-file where it narrows, open into protein chains where the pH falls, and are
+    aligned by the flow into a solid fiber. The readout reports pH and chain alignment for
+    whatever is on screen. Schematic: the geometry and pH values are illustrative.
+    Color means state everywhere on the page: teal = stored / unreacted, orange = triggered.
+  -->
+  <style>
+    :root{
+      --paper:#F2F0EC; --ink:#111827; --ink2:#374151; --muted:#6B7280; --rule:#CFCBC4;
+      --teal:#0E7C7B; --teal-light:#7FCFCB; --teal-deep:#0B4F4E; --orange:#EA580C;
+      --night:#0E1417; --night-ink:#EDEBE6; --night-muted:#8E979C; --night-rule:#2B3438;
+      --serif:'DM Serif Display',Georgia,serif;
+      --sans:'DM Sans',-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+      --mono:'DM Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+      --spine:176px; --pad:56px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+    a{color:inherit}
+    img{display:block;max-width:100%}
+
+    /* The spinning line */
+    #spine{position:fixed;left:0;top:0;width:var(--spine);height:100vh;z-index:5;pointer-events:none}
+    .readout{position:fixed;left:14px;bottom:14px;z-index:6;font:11px/1.6 var(--mono);color:var(--muted);letter-spacing:.02em;
+      background:rgba(242,240,236,.86);padding:6px 9px;border-radius:6px;pointer-events:none;min-width:136px}
+    .readout.on-night{background:rgba(14,20,23,.86);color:var(--night-muted)}
+    .readout b{font-weight:500;color:var(--ink)}
+    .readout.on-night b{color:var(--night-ink)}
+    .readout i{font-style:normal;color:var(--orange)}
+
+    /* Header */
+    .top{position:absolute;top:0;left:var(--spine);right:0;display:flex;justify-content:space-between;align-items:center;gap:20px;padding:26px var(--pad);z-index:4}
+    .top .mark{display:flex;align-items:center;gap:10px;text-decoration:none;font:500 12px var(--mono);letter-spacing:.14em;text-transform:uppercase}
+    .top .mark img{height:26px}
+    .top nav{display:flex;gap:24px;flex-wrap:wrap}
+    .top nav a{font:12px var(--mono);letter-spacing:.1em;text-transform:uppercase;text-decoration:none;color:var(--ink2)}
+    .top nav a:hover{color:var(--teal)}
+
+    /* Sections sit to the right of the spine */
+    .stage{position:relative;padding:140px var(--pad) 140px calc(var(--spine) + var(--pad))}
+    .inner{max-width:1100px}
+    .tag{font:12px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 22px;display:flex;gap:14px;align-items:baseline}
+    .tag .dot{width:8px;height:8px;border-radius:50%;background:var(--teal);display:inline-block;transform:translateY(-1px)}
+    .tag .dot.trig{background:var(--orange)}
+    h1,h2,h3{font-family:var(--serif);font-weight:400;margin:0;line-height:1.02;letter-spacing:-.015em;text-wrap:balance}
+    h1{font-size:clamp(2.7rem,6.6vw,6rem);max-width:15ch}
+    h1 em,h2 em{font-style:italic;color:var(--teal)}
+    h2{font-size:clamp(2.1rem,4.4vw,3.9rem);max-width:18ch}
+    .mono{font-family:var(--mono)}
+
+    /* 01: what we do, as type, not cards */
+    .doing{list-style:none;margin:84px 0 0;padding:0;border-top:1px solid var(--ink)}
+    .doing li{display:grid;grid-template-columns:72px minmax(0,1.1fr) minmax(0,1fr) 170px;gap:24px;align-items:baseline;padding:26px 0;border-bottom:1px solid var(--rule)}
+    .doing .n{font:13px var(--mono);color:var(--muted)}
+    .doing b{font-family:var(--serif);font-weight:400;font-size:clamp(1.6rem,2.6vw,2.3rem);line-height:1.1}
+    .doing span{color:var(--ink2)}
+    .doing a.go{white-space:nowrap;font:12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--teal);text-decoration:none;justify-self:end}
+    .doing a.go:hover{color:var(--orange)}
+
+    /* 02: field-guide plates */
+    .plates{margin-top:90px;display:flex;flex-direction:column;gap:70px}
+    .plate{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:56px;align-items:center}
+    .plate:nth-child(even) .pic{order:2}
+    .plate .pic{display:flex;justify-content:center;align-items:flex-end;min-height:280px}
+    .plate .pic img{max-height:380px;width:auto}
+    .plate .label{position:relative;padding-left:0}
+    .plate .label::before{content:"";display:block;width:72px;height:1px;background:var(--ink);margin-bottom:18px}
+    .plate h3{font-size:clamp(2rem,3.4vw,3rem)}
+    .plate .how{font:14px/1.6 var(--mono);color:var(--ink2);margin:10px 0 18px}
+    .plate .how em{font-style:normal;color:var(--teal)}
+    .role{display:inline-flex;align-items:center;gap:10px;font:12px var(--mono);letter-spacing:.12em;text-transform:uppercase;padding:7px 12px;border-radius:999px;border:1px solid currentColor}
+    .role.store{color:var(--teal)}
+    .role.trig{color:var(--orange)}
+    .role img{height:22px;width:auto}
+    .rule3{display:grid;grid-template-columns:repeat(3,1fr);margin-top:96px;border-top:1px solid var(--ink)}
+    .rule3 div{padding:22px 22px 0 0}
+    .rule3 .k{font:12px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--teal)}
+    .rule3 div:last-child .k{color:var(--orange)}
+    .rule3 b{display:block;font-family:var(--serif);font-weight:400;font-size:1.7rem;margin:6px 0 4px}
+    .rule3 span{color:var(--ink2);font-size:.95rem}
+    .credit{margin-top:36px;font:11px var(--mono);color:var(--muted)}
+    .credit a{color:inherit}
+
+    /* 03: open science, on dark */
+    .night{background:var(--night);color:var(--night-ink)}
+    .night .tag{color:var(--night-muted)}
+    .night h2 em{color:var(--teal-light)}
+    .areas{list-style:none;margin:80px 0 0;padding:0;border-top:1px solid var(--night-ink)}
+    .areas li{border-bottom:1px solid var(--night-rule)}
+    .areas a,.areas .row{display:grid;grid-template-columns:72px minmax(0,1.2fr) minmax(0,1fr) 150px;gap:24px;align-items:baseline;padding:30px 0;text-decoration:none;color:inherit}
+    .areas .n{font-family:var(--serif);font-size:2.4rem;line-height:1;color:var(--teal-light)}
+    .areas b{font-family:var(--serif);font-weight:400;font-size:clamp(1.6rem,2.6vw,2.3rem);line-height:1.1}
+    .areas span{color:var(--night-muted)}
+    .areas .st{font:12px var(--mono);letter-spacing:.08em;text-transform:uppercase;justify-self:end;color:var(--night-muted)}
+    .areas a .st{color:var(--orange)}
+    .areas a:hover b{color:var(--orange)}
+    .areas .row{opacity:.72}
+    .night .more{margin-top:34px;font:12px var(--mono);letter-spacing:.08em;text-transform:uppercase}
+    .night .more a{color:var(--teal-light);text-decoration:none}
+
+    /* 04: work with us */
+    .end h2{max-width:14ch}
+    .end .mail{display:inline-block;margin-top:44px;font-family:var(--serif);font-size:clamp(1.6rem,3vw,2.6rem);color:var(--orange);text-decoration:none;border-bottom:2px solid currentColor}
+    .end .links{display:flex;gap:28px;flex-wrap:wrap;margin-top:70px;font:12px var(--mono);letter-spacing:.1em;text-transform:uppercase}
+    .end .links a{text-decoration:none;color:var(--ink2)}
+    .end .links a:hover{color:var(--teal)}
+    footer{padding:26px var(--pad) 30px calc(var(--spine) + var(--pad));font:11px var(--mono);color:var(--muted);border-top:1px solid var(--rule)}
+
+    @media (max-width:900px){
+      .doing li,.areas a,.areas .row{grid-template-columns:44px minmax(0,1fr);gap:6px 16px}
+      .doing li > span:not(.n),.areas span:not(.n){grid-column:2}
+      .doing a.go,.areas .st{grid-column:2;justify-self:start}
+      .plate{grid-template-columns:1fr;gap:18px}
+      .plate:nth-child(even) .pic{order:0}
+      .plate .pic{min-height:0}
+      .plate .pic img{max-height:260px}
+      .rule3{grid-template-columns:1fr}
+    }
+    @media (max-width:640px){
+      :root{--spine:48px;--pad:18px}
+      body{font-size:16px}
+      .top{position:relative;left:0;flex-direction:column;align-items:flex-start;padding:18px var(--pad) 0 calc(var(--spine) + var(--pad))}
+      .top nav{gap:8px 16px}
+      .stage{padding-top:72px;padding-bottom:88px}
+      .readout{display:none}
+    }
+  </style>
+</head>
+<body>
+  <canvas id="spine" aria-hidden="true"></canvas>
+  <div class="readout" aria-hidden="true"></div>
+
+  <header class="top">
+    <a class="mark" href="/"><img src="img/logo.png" alt="">Impossible Fibers</a>
+    <nav>
+      <a href="#open-science">Open science</a>
+      <a href="assembly-required/">Assembly Required</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <!-- 01 -->
+  <section class="stage" data-stage="store">
+    <div class="inner">
+      <p class="tag"><span class="dot"></span>Impossible Fibers</p>
+      <h1>We make protein fibers using nature's <em>manufacturing strategies</em></h1>
+      <ol class="doing">
+        <li><span class="n">01</span><b>Research &amp; development</b><span>R&amp;D projects on protein fibers, with funders and partners.</span><span></span></li>
+        <li><span class="n">02</span><b>Robotic sensor systems</b><span>Protein-fiber sensors for robotic touch.</span><span></span></li>
+        <li><span class="n">03</span><b>Open science platform</b><span>Tools, methods and data, published in four areas.</span><a class="go" href="#open-science">See the areas ↓</a></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- 02 -->
+  <section class="stage" data-stage="sort">
+    <div class="inner">
+      <p class="tag"><span class="dot"></span>Learning from nature</p>
+      <h2>Spiders, mussels and velvet worms keep fiber proteins <em>unreacted</em> until they need them</h2>
+      <div class="plates">
+        <div class="plate">
+          <div class="pic"><img src="img/nature/spider-cut.png" alt="Illustration of a spider hanging from a silk thread"></div>
+          <div class="label"><h3>Spider</h3><p class="how">silk proteins held in <em>micelles</em></p>
+            <span class="role store"><img src="img/nature/icon-storing.png" alt="">Storage</span></div>
+        </div>
+        <div class="plate">
+          <div class="pic"><img src="img/nature/mussel-cut.png" alt="Illustration of a mussel anchored by byssal threads"></div>
+          <div class="label"><h3>Mussel</h3><p class="how">proteins packaged in <em>secretory vesicles</em></p>
+            <span class="role store"><img src="img/nature/icon-sequencing.png" alt="" style="height:12px">Storage + sequencing</span></div>
+        </div>
+        <div class="plate">
+          <div class="pic"><img src="img/nature/velvet-worm.png" alt="Illustration of a velvet worm ejecting slime"></div>
+          <div class="label"><h3>Velvet worm</h3><p class="how">proteins stored in <em>nanoglobules</em></p>
+            <span class="role trig"><img src="img/nature/icon-triggering.png" alt="">Triggered delivery</span></div>
+        </div>
+      </div>
+      <div class="rule3">
+        <div><span class="k">Store</span><b>Keep it unreacted</b><span>The protein waits in a condensed form.</span></div>
+        <div><span class="k">Sort</span><b>Put it in place</b><span>It moves into position while still fluid.</span></div>
+        <div><span class="k">Trigger</span><b>Make the fiber</b><span>At the right place and time, it solidifies.</span></div>
+      </div>
+      <p class="credit">Illustrations © Gretchen Hooker / Pixel Naturalist · <a href="https://iflab.substack.com/p/humanity-makes-noodles-nature-makes" target="_blank" rel="noopener">Read the story: Humanity Makes Noodles. Nature Makes Machines. ↗</a></p>
+    </div>
+  </section>
+
+  <!-- 03 -->
+  <section class="stage night" id="open-science" data-stage="trigger">
+    <div class="inner">
+      <p class="tag"><span class="dot trig"></span>Open science platform</p>
+      <h2>Four areas we work on <em>in the open</em></h2>
+      <ol class="areas">
+        <li><div class="row"><span class="n">1</span><b>AI-assisted chip design</b><span>Designing microfluidic chips for protein dopes with AI.</span><span class="st">Page coming</span></div></li>
+        <li><div class="row"><span class="n">2</span><b>Predictive fiber models</b><span>From a protein's molecules to its fiber's strength.</span><span class="st">Page coming</span></div></li>
+        <li><a href="bio-inspired-manufacturing.html"><span class="n">3</span><b>Bio-inspired manufacturing</b><span>Encapsulated dopes: store, sort, spin.</span><span class="st">Explore →</span></a></li>
+        <li><div class="row"><span class="n">4</span><b>The future of fibers</b><span>Fibers that sense and compute: our white paper.</span><span class="st">Page coming</span></div></li>
+      </ol>
+      <p class="more"><a href="open-science.html">Our open science policy →</a></p>
+    </div>
+  </section>
+
+  <!-- 04 -->
+  <section class="stage end" data-stage="fiber">
+    <div class="inner">
+      <p class="tag"><span class="dot trig"></span>Work with us</p>
+      <h2>We partner with researchers, industrial teams and funders</h2>
+      <a class="mail" href="mailto:info@impossiblefibers.com">info@impossiblefibers.com</a>
+      <div class="links">
+        <a href="assembly-required/">Assembly Required</a><a href="about.html">About</a><a href="open-science.html">Open science policy</a><a href="https://zenodo.org/communities/if" target="_blank" rel="noopener">Zenodo ↗</a>
+      </div>
+    </div>
+  </section>
+  <footer>© 2026 Impossible Fibers · The line at the left is a schematic simulation: droplets line up, trigger as the pH falls, and are aligned into a fiber by the flow.</footer>
+
+  <script>
+  // The spinning line: a small particle simulation drawn in document coordinates, so the part
+  // you see depends on where you have scrolled. Stages come from the sections' data-stage.
+  (() => {
+    const cv = document.getElementById("spine"), g = cv.getContext("2d"), out = document.querySelector(".readout");
+    const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+    const C = {teal:css("--teal"), light:css("--teal-light"), orange:css("--orange"), ink:css("--ink"),
+               rule:css("--rule"), paper:css("--paper"), nightRule:"#3A4449", night:css("--night"), nightInk:css("--night-ink")};
+    const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const ss = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+    const randn = () => Math.sqrt(-2 * Math.log(Math.random() || 1e-9)) * Math.cos(2 * Math.PI * Math.random());
+
+    let W = 0, H = 0, CX = 0, S = [0, 1, 2, 3, 4], night = [0, 0], big = 60;
+    const NARROW = 7, FIB = 2.6, R = 3.4, VN = 80;   // channel half-widths (px), droplet radius, speed in the narrow channel (px/s)
+
+    // channel half-width along the page
+    function hw(y){
+      if (y < S[2]) {
+        const open = ss(S[0] + 40, S[0] + 260, y);                    // rounded top of the reservoir
+        return Math.max(2, NARROW + (big - NARROW) * (1 - ss(S[1] - 160, S[1] + 420, y)) * Math.sqrt(open));
+      }
+      return FIB + (NARROW - FIB) * (1 - ss(S[2] + 120, S[3] - 60, y));
+    }
+    const pH = y => 8 - 3 * ss(S[2] + 60, S[3] - 120, y);             // illustrative: 8 in storage, 5 at the fiber
+    const v = y => VN * NARROW / Math.max(hw(y), FIB);                  // same flux everywhere: faster where narrower
+    const isNight = y => y >= night[0] && y < night[1];
+
+    let P = [];
+    function spawn(y){ return {y, u:(Math.random() * 2 - 1) * .9, type:Math.random() < .5 ? 0 : 1, trig:false, ang:0, age:0}; }
+    function seed(){
+      // Steady state: linear density ∝ 1/v. Sample y by rejection, then run the flow for a few seconds.
+      P = []; const top = S[0] + 50, end = S[4], vmin = v(S[0] + 300);
+      const target = Math.round((S[1] - S[0]) * big * 2 * 0.011 + 40);   // ~1 droplet per 90 px² of reservoir
+      let guard = 0;
+      while (P.length < target && guard++ < target * 60){
+        const y = top + Math.random() * (end - top);
+        if (Math.random() < vmin / v(y)) P.push(spawn(y));
+      }
+      for (let k = 0; k < 240; k++) step(1 / 30);
+    }
+
+    function step(dt){
+      const top = S[0] + 50, end = S[4] - 10;
+      for (const p of P){
+        p.y += v(p.y) * dt;
+        const h = hw(p.y);
+        if (!p.trig){
+          p.u += randn() * 0.5 * Math.sqrt(dt);                          // Brownian wander across the channel
+          const lim = Math.max(0, 1 - R / Math.max(h, R + 0.5));
+          p.u = Math.max(-lim, Math.min(lim, p.u));
+          if (pH(p.y) < 6.4 && Math.random() < dt * 4){ p.trig = true; p.ang = (Math.random() - .5) * Math.PI; }
+        } else {
+          p.age += dt;
+          const k = 1.5 + 9 * ss(S[2], S[3], p.y);                       // stretching flow aligns chains along the line
+          p.ang += -p.ang * k * dt + randn() * 0.25 * Math.sqrt(dt);
+          p.u *= 1 - Math.min(1, 3 * dt);
+        }
+        if (p.y > end){ Object.assign(p, spawn(top + Math.random() * 30)); }
+      }
+    }
+
+    function bounds(){   // section positions move as fonts and images load, so re-read them
+      const st = [...document.querySelectorAll("[data-stage]")].map(e => e.getBoundingClientRect().top + scrollY);
+      S = [st[0], st[1], st[2], st[3], document.documentElement.scrollHeight];
+      const n = document.querySelector(".night").getBoundingClientRect();
+      night = [n.top + scrollY, n.bottom + scrollY];
+    }
+    function measure(){
+      const dpr = Math.min(2, devicePixelRatio || 1);
+      W = cv.clientWidth; H = innerHeight; CX = W / 2; big = W * 0.36;
+      cv.width = W * dpr; cv.height = H * dpr; g.setTransform(dpr, 0, 0, dpr, 0, 0);
+      bounds(); seed();
+    }
+    setInterval(bounds, 1000);
+
+    function draw(){
+      const y0 = scrollY, y1 = y0 + H;
+      g.clearRect(0, 0, W, H);
+      // channel walls
+      for (const side of [-1, 1]){
+        g.beginPath(); let first = true;
+        for (let y = Math.max(S[0] + 40, y0 - 10); y < Math.min(S[3] + 40, y1 + 10); y += 5){
+          const x = CX + side * (hw(y) + 1.5), sy = y - y0;
+          first ? g.moveTo(x, sy) : g.lineTo(x, sy); first = false;
+        }
+        g.strokeStyle = C.rule; g.lineWidth = 1.2; g.stroke();
+      }
+      // the solid fiber, from where the chains have aligned to the bottom of the page
+      const f0 = Math.max(S[3] - 80, y0), f1 = Math.min(S[4], y1);
+      if (f1 > f0){
+        const grad = g.createLinearGradient(0, S[3] - 80 - y0, 0, S[3] + 60 - y0);
+        grad.addColorStop(0, "rgba(234,88,12,0)"); grad.addColorStop(1, C.orange);
+        g.fillStyle = grad; g.fillRect(CX - 2.5, f0 - y0, 5, f1 - f0);
+      }
+      // particles
+      let n = 0, order = 0;
+      for (const p of P){
+        if (p.y < y0 - 20 || p.y > y1 + 20 || p.y > S[3] + 60) continue;
+        const h = hw(p.y), x = CX + p.u * h, sy = p.y - y0;
+        if (!p.trig){
+          g.beginPath(); g.arc(x, sy, R, 0, 7);
+          g.fillStyle = p.type ? C.light : C.teal; g.fill();
+          g.lineWidth = 1; g.strokeStyle = isNight(p.y) ? C.night : C.paper; g.stroke();
+        } else {
+          const L = 7, dx = Math.sin(p.ang) * L, dy = Math.cos(p.ang) * L;
+          g.beginPath(); g.moveTo(x - dx, sy - dy); g.lineTo(x + dx, sy + dy);
+          g.strokeStyle = C.orange; g.lineWidth = 2.2; g.lineCap = "round"; g.stroke();
+          order += Math.max(0, Math.cos(2 * p.ang));
+        }
+        if (sy > 0 && sy < H) n++;
+      }
+      // stage labels, drawn beside the line where each stage starts
+      if (W > 100){
+        g.font = "500 10px 'DM Mono', monospace"; g.textAlign = "left";
+        [["STORE", S[0] + 140], ["SORT", S[1] + 60], ["TRIGGER", S[2] + 80], ["FIBER", S[3] + 70]].forEach(([t, y]) => {
+          const sy = y - y0; if (sy < -20 || sy > H + 20) return;
+          g.fillStyle = isNight(y) ? "#8E979C" : C.ink; g.fillText(t, 10, sy);
+        });
+      }
+      // readout for the middle of the screen
+      const mid = y0 + H * 0.5, align = n ? order / n : 0;
+      out.classList.toggle("on-night", isNight(y0 + H - 30));
+      out.innerHTML = `pH <b>${pH(mid).toFixed(1)}</b> · alignment <b>${align.toFixed(2)}</b><br>${pH(mid) < 6.4 ? "<i>triggered</i>" : "stored"} · schematic`;
+    }
+
+    let last = 0;
+    function frame(t){
+      const dt = Math.min(0.05, (t - (last || t)) / 1000); last = t;
+      if (!calm) step(dt);
+      draw(); requestAnimationFrame(frame);
+    }
+    function start(){ measure(); requestAnimationFrame(frame); }
+    addEventListener("resize", () => { clearTimeout(start.t); start.t = setTimeout(measure, 150); });
+    addEventListener("load", measure);
+    document.fonts.ready.then(start);
+  })();
+  </script>
+</body>
+</html>
