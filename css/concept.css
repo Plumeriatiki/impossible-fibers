@@ -174,3 +174,11 @@ body.plain{--spine:0px}
   .commit{grid-template-columns:1fr}
 }
 .stage.tight h2{max-width:34ch}
+.read{margin:14px 0 0;font:12px/1.7 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.read a{color:var(--teal);text-decoration:none;border-bottom:1px solid transparent}
+.read a:hover{border-color:currentColor}
+.read a + a::before{content:"·";color:var(--muted);margin:0 10px;display:inline-block}
+.night .read{color:var(--night-muted)}
+.night .read a{color:var(--teal-light)}
+.rows .read{grid-column:3;margin-top:6px}
+@media (max-width:900px){.rows .read{grid-column:2}}
