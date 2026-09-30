@@ -180,5 +180,6 @@ body.plain{--spine:0px}
 .read a + a::before{content:"·";color:var(--muted);margin:0 10px;display:inline-block}
 .night .read{color:var(--night-muted)}
 .night .read a{color:var(--teal-light)}
-.rows .read{grid-column:2;margin-top:4px}
+.rows .read{grid-column:2 / -1;margin-top:4px}
 @media (max-width:900px){.rows .read{grid-column:2}}
+.rows b.step{display:inline;font:600 1em var(--sans);color:var(--ink)}
