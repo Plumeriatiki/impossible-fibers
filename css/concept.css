@@ -216,3 +216,13 @@ body.plain{--spine:0px}
 @media (max-width:640px){.big-mail{font-size:1.2rem;overflow-wrap:anywhere}}
 .rows.nonum li > a,.rows.nonum .row{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) 160px}
 @media (max-width:900px){.rows.nonum li > a,.rows.nonum .row{grid-template-columns:1fr}.rows.nonum span:not(.n),.rows.nonum .st{grid-column:1}}
+.process{margin:32px 0 0}
+.process img{width:100%;height:auto;mix-blend-mode:multiply}
+.process-steps{list-style:none;padding:0;margin:8px 0 0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:20px;counter-reset:p}
+.process-steps li{counter-increment:p;border-top:1px solid var(--ink);padding-top:12px}
+.process-steps b{display:block;font-family:var(--serif);font-weight:400;font-size:1.12rem;line-height:1.2;margin-bottom:6px}
+.process-steps b::before{content:counter(p) ". ";color:var(--orange)}
+.process-steps span{display:block;font-size:.88rem;color:var(--ink2);line-height:1.5}
+.process figcaption{margin-top:18px;font:11px var(--mono);color:var(--muted)}
+.process figcaption a{color:inherit}
+@media (max-width:900px){.process-steps{grid-template-columns:1fr;gap:14px}}
