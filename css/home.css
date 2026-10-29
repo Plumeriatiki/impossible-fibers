@@ -60,8 +60,6 @@ h1 em,h2 em{font-style:italic;text-transform:none;color:var(--teal-l)}
 .wheel-cap a{color:var(--teal-l);text-decoration:none;margin-left:18px}
 
 .mail{font-family:var(--serif);font-size:clamp(1.3rem,3vw,2.4rem);color:var(--orange);text-decoration:none;border-bottom:2px solid currentColor;margin-top:30px;display:inline-block}
-.foot{position:relative;z-index:2;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:22px 8vw 28px;
-  font:11px var(--mono);letter-spacing:.06em;color:var(--muted);border-top:1px solid #ffffff18;background:var(--ink)}
 
 @media (max-width:760px){
   .top{flex-direction:column;align-items:flex-start;gap:8px;padding:14px 18px}
@@ -72,6 +70,5 @@ h1 em,h2 em{font-style:italic;text-transform:none;color:var(--teal-l)}
   .dots{right:8px}
   .wheel-cap{left:22px}
   .mail{font-size:1.2rem;overflow-wrap:anywhere}
-  .foot{padding:20px 22px}
-}
+  }
 @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}

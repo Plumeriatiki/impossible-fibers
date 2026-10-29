@@ -226,3 +226,16 @@ body.plain{--spine:0px}
 .process figcaption{margin-top:18px;font:11px var(--mono);color:var(--muted)}
 .process figcaption a{color:inherit}
 @media (max-width:900px){.process-steps{grid-template-columns:1fr;gap:14px}}
+
+/* Dark theme (Oct 2026), matching the home page's 3D scene. These override the light tokens above;
+   delete this block to return the inner pages to the light design. */
+:root{
+  --paper:#0b0f12; --ink:#EDEBE6; --ink2:#C9CDD0; --muted:#8E979C; --rule:#ffffff22;
+  --teal:#7FCFCB; --teal-deep:#7FCFCB;
+  --fg:#EDEBE6; --fg2:#C9CDD0; --bg:#0b0f12; --panel:#141b20;          /* read by the animated charts */
+}
+.top{background:linear-gradient(var(--paper) 35%,rgba(11,15,18,0))}
+.top .mark img{filter:invert(1)}
+.process img{mix-blend-mode:normal;background:#fff;border-radius:14px;padding:14px 8px}
+.split > img{background:#F6F4EF;border-radius:14px;padding:16px}
+footer{border-top-color:#ffffff18}
