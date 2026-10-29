@@ -6,28 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Impossible Fibers makes advanced materials from commonly available ingredients, using nature's manufacturing strategies.">
   <link rel="icon" href="img/if-mark.png">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/concept.css">
-  <style>
-    .mech-head{display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;margin-top:48px}
-    .mech-head p{margin:0;font:12px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-    .mech-head a{font:12px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-decoration:none}
-    .mech-head a:hover{color:var(--orange)}
-    .mech{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-top:18px;border-top:1px solid var(--ink)}
-    .mech div{padding:16px 22px 0 0}
-    .mech .k{font:500 12px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--teal)}
-    .mech div:nth-child(n+3) .k{color:var(--orange)}
-    .mech b{display:block;font-family:var(--serif);font-weight:400;font-size:1.2rem;line-height:1.2;margin:6px 0 4px}
-    .mech span{font-size:.9rem;color:var(--ink2)}
-    .mech .ours{margin:12px 0 0;padding-top:10px;border-top:1px dashed var(--rule);font-size:.9rem;color:var(--ink)}
-    .mech .ours em{font-style:normal;font:500 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:2px}
-    @media (max-width:900px){.mech{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:28px}}
-    @media (max-width:520px){.mech{grid-template-columns:1fr}}
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/home.css">
 </head>
 <body>
-  <canvas id="spine" aria-hidden="true"></canvas>
-  <div class="readout" aria-hidden="true"></div>
+  <canvas id="scene" aria-hidden="true"></canvas>
 
   <header class="top">
     <a class="mark" href="/"><img src="img/logo.png" alt="">Impossible Fibers</a>
@@ -40,80 +23,94 @@
       <a href="contact.html">Contact</a>
     </nav>
   </header>
+  <nav class="dots" aria-hidden="true"></nav>
 
-  <!-- Mission, and how: the mechanisms -->
-  <section class="stage" data-stage="store">
-    <div class="inner">
-      <h1>We make advanced materials from <em>commonly available</em> ingredients</h1>
-      <div class="mech-head">
-        <p>How: we're building nature's manufacturing strategies into tools, starting with encapsulated dopes</p>
-        <a href="bio-inspired-manufacturing.html">See them in spiders, mussels and velvet worms →</a>
+  <main>
+    <section class="sec" data-shape="0" data-side="left">
+      <div class="txt reveal">
+        <h1>We make advanced materials from <em>commonly available</em> ingredients</h1>
+        <p>How: we're building nature's manufacturing strategies into tools, starting with encapsulated dopes.</p>
+        <div class="links">
+          <a href="bio-inspired-manufacturing.html">See them in spiders, mussels and velvet worms →</a>
+          <a href="https://iflab.substack.com/p/humanity-makes-noodles-nature-makes" target="_blank" rel="noopener">Read Humanity Makes Noodles ↗</a>
+        </div>
+        <p class="hint">Scroll ↓</p>
       </div>
-      <div class="mech">
-        <div><span class="k">Store</span><b>Keep it unreacted</b><span>Nature holds proteins in micelles, vesicles and droplets.</span>
-          <p class="ours"><em>We build</em> encapsulated dopes, made in our custom microfluidic chips.</p></div>
-        <div><span class="k">Sort</span><b>Put it in place</b><span>They move into position while still fluid.</span>
-          <p class="ours"><em>We're researching</em> microfluidic sorting that sets the order of the droplets.</p></div>
-        <div><span class="k">Trigger</span><b>Start assembly</b><span>A change in pH, shear or ions locks them together.</span>
-          <p class="ours"><em>We're researching</em> triggering at the right place and time.</p></div>
-        <div><span class="k">Align</span><b>Draw the fiber</b><span>The flow lines the chains up into a solid fiber.</span>
-          <p class="ours"><em>We spin</em> by contact pulling, electrospinning and microfluidic spinning.</p></div>
-      </div>
-      <p class="read">Read <a href="https://iflab.substack.com/p/humanity-makes-noodles-nature-makes" target="_blank" rel="noopener">Humanity Makes Noodles. Nature Makes Machines. ↗</a></p>
-    </div>
-  </section>
+    </section>
 
-  <!-- 01 -->
-  <section class="stage area-block" data-stage="sort">
-    <div class="inner">
-      <span class="big-n">01</span>
-      <div>
-        <h2>Research &amp; development</h2>
-        <p class="sum">R&amp;D projects on protein fibers, with funders and partners.</p>
-        <ul class="sub"><li>Glass Noodle: hollow-core optical fibers from milk protein (ARIA)</li><li>Predicting fiber properties: from DARPA to a high-throughput dope machine</li><li>Open science projects</li></ul>
-        <a class="cta-link" href="projects.html">See our projects →</a>
+    <section class="sec right" data-shape="1" data-side="right">
+      <div class="txt reveal">
+        <h2>Store</h2>
+        <p>Nature holds proteins in micelles, vesicles and droplets, keeping them unreacted until they're needed.</p>
+        <div class="ours"><b>We build</b><span>Encapsulated dopes, made in our custom microfluidic chips.</span></div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- 02 -->
-  <section class="stage area-block" data-stage="trigger">
-    <div class="inner">
-      <span class="big-n">02</span>
-      <div>
-        <h2>Robotic sensor systems</h2>
-        <p class="sum">We're developing protein-fiber sensors for robotic touch.</p>
-        <a class="cta-link" href="sensors.html">Follow the work →</a>
+    <section class="sec" data-shape="2" data-side="left">
+      <div class="txt reveal">
+        <h2>Sort</h2>
+        <p>The droplets move into position while they're still fluid.</p>
+        <div class="ours"><b>We're researching</b><span>Microfluidic sorting that sets the order of the droplets.</span></div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- 03 -->
-  <section class="stage area-block night" id="open-science">
-    <div class="inner">
-      <span class="big-n">03</span>
-      <div>
-        <h2>Open science</h2>
-        <p class="sum">We publish our tools, methods and data in four areas.</p>
-        <ul class="sub"><li>AI-assisted chip design</li><li>Predictive fiber models</li><li>Bio-inspired manufacturing</li><li>The future of fibers</li></ul>
-        <a class="cta-link" href="open-science.html">Explore open science →</a>
+    <section class="sec right" data-shape="3" data-side="right">
+      <div class="txt reveal">
+        <h2>Trigger <em>&amp;</em> align</h2>
+        <p>A change in pH, shear or ions locks the proteins together, and the flow lines the chains up into a fiber.</p>
+        <div class="ours"><b>We're researching</b><span>Triggering at the right place and time.</span></div>
+        <div class="ours"><b>We spin</b><span>By contact pulling, electrospinning and microfluidic spinning.</span></div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Contact -->
-  <section class="stage end" data-stage="fiber">
-    <div class="inner">
-      <h2>Partner with us to turn proteins into advanced materials and products</h2>
-      <p class="sum">Researchers, industrial teams and funders: tell us what you're working on.</p>
-      <a class="mail" href="mailto:info@impossiblefibers.com">info@impossiblefibers.com</a>
-      <div class="links">
-        <a href="https://iflab.substack.com">Assembly Required</a><a href="about.html">About</a><a href="https://zenodo.org/communities/if" target="_blank" rel="noopener">Zenodo ↗</a>
+    <section class="sec" data-shape="4" data-side="left">
+      <div class="txt reveal">
+        <h2>Glass <em>Noodle</em></h2>
+        <p>Spinning milk proteins into hollow-core optical fibers. An R&amp;D project funded by ARIA.</p>
+        <div class="links"><a href="/glass-noodle">About the project →</a><a href="projects.html">All R&amp;D projects →</a></div>
       </div>
-    </div>
-  </section>
-  <footer>© 2026 Impossible Fibers · The line at the left is a schematic simulation of the four mechanisms: store, sort, trigger, align.</footer>
+    </section>
 
-  <script src="js/spine.js"></script>
+    <section class="sec right" data-shape="5" data-side="right">
+      <div class="txt reveal">
+        <h2>Robotic <em>touch</em></h2>
+        <p>We're developing protein-fiber sensors for robotic touch.</p>
+        <div class="links"><a href="sensors.html">Follow the work →</a></div>
+      </div>
+    </section>
+
+    <section class="sec" data-shape="6" data-side="left">
+      <div class="txt reveal">
+        <h2>Open <em>science</em></h2>
+        <p>We publish our tools, methods and data in four areas: AI-assisted chip design, predictive fiber models, bio-inspired manufacturing, and the future of fibers.</p>
+        <div class="links"><a href="open-science.html">Explore open science →</a></div>
+      </div>
+    </section>
+
+    <section class="wheel" data-shape="7" data-side="center">
+      <div class="wheel-pin">
+        <div class="ring">
+          <a href="/glass-noodle">Glass Noodle<small>ARIA · active research</small></a>
+          <a href="projects.html">Predicting fiber properties<small>DARPA · active research</small></a>
+          <a href="https://github.com/Plumeriatiki/microfluidic-onshape-library">AI chip design<small>Open science · code on GitHub</small></a>
+          <a href="bio-inspired-manufacturing.html">Bio-inspired manufacturing<small>Open science</small></a>
+          <a href="projects.html">The future of fibers<small>Open science · white paper</small></a>
+          <a href="sensors.html">Robotic touch<small>Sensors</small></a>
+        </div>
+        <p class="wheel-cap">Scroll to turn <a href="projects.html">All projects →</a></p>
+      </div>
+    </section>
+
+    <section class="sec" id="contact" data-shape="8" data-side="left">
+      <div class="txt reveal">
+        <h1>Partner with us to turn proteins into <em>advanced materials</em> and products</h1>
+        <a class="mail" href="mailto:info@impossiblefibers.com">info@impossiblefibers.com</a>
+      </div>
+    </section>
+  </main>
+  <footer class="foot"><span>© 2026 Impossible Fibers</span><span>The particles are illustrative, not a simulation.</span></footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="js/home.js"></script>
 </body>
 </html>
