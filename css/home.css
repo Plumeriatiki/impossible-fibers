@@ -47,10 +47,6 @@ h2{font-size:clamp(2.6rem,6vw,5.4rem)}
 .art{margin:26px 0 0;max-width:340px;background:#F6F4EF;border-radius:14px;padding:18px}
 .art img{max-height:170px;margin:0 auto}
 .art figcaption{margin-top:12px;font-size:.85rem;line-height:1.45;color:#3b4348}
-.plate{margin:0 8vw 16vh;max-width:1180px;background:#fff;border-radius:14px;padding:18px 14px 12px}
-.plate .strip{overflow-x:auto}
-.plate figcaption{margin:10px 6px 0;font-size:.8rem;color:#5b6368}
-.plate figcaption a{color:inherit;text-decoration:underline}
 
 .reveal{opacity:0;transform:translateY(34px);transition:opacity 1s,transform 1s cubic-bezier(.2,.7,.2,1)}
 .reveal.in{opacity:1;transform:none}
@@ -63,7 +59,5 @@ h2{font-size:clamp(2.6rem,6vw,5.4rem)}
   .sec.right{justify-content:flex-start}
   .dots{right:8px}
   .mail{font-size:1.2rem;overflow-wrap:anywhere}
-  .plate{margin:0 22px 12vh}
-  .plate .strip img{min-width:760px}
 }
 @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
