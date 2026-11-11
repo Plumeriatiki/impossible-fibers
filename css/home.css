@@ -1,13 +1,15 @@
-/* Home page: a fixed 3D particle scene (js/home.js) behind normal, scrolling sections.
-   Scrolling turns the camera and reshapes the particles into each step of the process. */
+/* Home, approach and sensors pages: a fixed 3D particle scene (js/scene.js) behind normal, scrolling sections.
+   Scrolling turns the camera and reshapes the particles into each section's shape.
+   Type: DM Serif Display for headings, DM Sans for everything else. Teal marks links; there is no other accent. */
 :root{
-  --ink:#0b0f12; --paper:#EDEBE6; --soft:#C9CDD0; --muted:#8E979C;
-  --teal:#0E7C7B; --teal-l:#7FCFCB; --orange:#EA580C;
-  --serif:'DM Serif Display',Georgia,serif; --sans:'DM Sans',system-ui,sans-serif; --mono:'DM Mono',ui-monospace,monospace;
+  --ink:#0b0f12; --paper:#EDEBE6; --soft:#C9CDD0; --muted:#8E979C; --teal-l:#7FCFCB;
+  --serif:'DM Serif Display',Georgia,serif; --sans:'DM Sans',system-ui,sans-serif;
 }
 *{box-sizing:border-box}
-html,body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--sans);-webkit-font-smoothing:antialiased}
-a{color:inherit}
+html,body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--sans);font-size:17px;-webkit-font-smoothing:antialiased}
+a{color:var(--teal-l);text-decoration:none}
+a:hover{text-decoration:underline}
+img{display:block;max-width:100%}
 
 #scene{position:fixed;inset:0;width:100vw;height:100vh;display:block;z-index:0}
 /* Without WebGL the page still reads: a quiet gradient instead of the scene */
@@ -17,58 +19,51 @@ a{color:inherit}
 /* Header: the site's own menu */
 .top{position:fixed;top:0;left:0;right:0;z-index:5;display:flex;justify-content:space-between;align-items:center;gap:20px;
   padding:18px 32px;background:linear-gradient(var(--ink) 30%,rgba(11,15,18,0))}
-.top .mark{display:flex;align-items:center;gap:10px;text-decoration:none;font:500 12px var(--mono);letter-spacing:.14em;text-transform:uppercase}
+.top .mark{display:flex;align-items:center;gap:10px;color:var(--paper);font-weight:500;font-size:16px}
 .top .mark img{height:24px;filter:invert(1)}
-.top nav{display:flex;gap:22px;flex-wrap:wrap;justify-content:flex-end}
-.top nav a{font:12px var(--mono);letter-spacing:.1em;text-transform:uppercase;text-decoration:none;color:var(--soft)}
-.top nav a:hover{color:var(--teal-l)}
+.top nav{display:flex;gap:26px;flex-wrap:wrap;justify-content:flex-end}
+.top nav a{font-size:15px;color:var(--soft)}
+.top a:hover{text-decoration:none}
+.top nav a:hover,.top nav a.here{color:var(--teal-l)}
 
 .dots{position:fixed;right:24px;top:50%;transform:translateY(-50%);z-index:5;display:flex;flex-direction:column;gap:12px}
 .dots i{width:6px;height:6px;border-radius:50%;background:#ffffff30;display:block;transition:background .3s,transform .3s}
-.dots i.on{background:var(--orange);transform:scale(1.5)}
+.dots i.on{background:var(--paper);transform:scale(1.5)}
 
 main{position:relative;z-index:2}
 .sec{min-height:100vh;display:flex;align-items:center;padding:0 8vw}
 .sec.right{justify-content:flex-end}
 .txt{max-width:600px}
-h1,h2{font-family:var(--serif);font-weight:400;margin:0;line-height:.95;letter-spacing:-.01em;text-transform:uppercase}
-h1{font-size:clamp(2.4rem,5.2vw,5rem)}
-h2{font-size:clamp(3rem,8.4vw,7.6rem)}
-h1 em,h2 em{font-style:italic;text-transform:none;color:var(--teal-l)}
-.sec p{font-size:1.05rem;line-height:1.6;color:var(--soft);max-width:42ch;margin:22px 0 0}
-.ours{margin-top:18px;padding-top:14px;border-top:1px solid #ffffff22;max-width:42ch}
-.ours b{display:block;font:500 11px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
-.ours span{color:var(--paper);font-size:1rem;line-height:1.55}
-.links{display:flex;flex-wrap:wrap;gap:10px 26px;margin-top:26px;font:12px var(--mono);letter-spacing:.1em;text-transform:uppercase}
-.links a{color:var(--teal-l);text-decoration:none;border-bottom:1px solid transparent}
-.links a:hover{border-color:currentColor}
-.hint{margin-top:36px;font:12px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+h1,h2{font-family:var(--serif);font-weight:400;margin:0;line-height:1.02;letter-spacing:-.01em;text-wrap:balance}
+h1{font-size:clamp(2.4rem,5vw,4.6rem)}
+h2{font-size:clamp(2.6rem,6vw,5.4rem)}
+.sec p{font-size:1.1rem;line-height:1.6;color:var(--soft);max-width:44ch;margin:22px 0 0}
+.sec p.go a{display:inline-block;margin-right:28px;white-space:nowrap}
+.sec p.quiet{font-size:.9rem;color:var(--muted);margin-top:34px}
+.mail{font-family:var(--serif);font-size:clamp(1.3rem,3vw,2.4rem);border-bottom:2px solid currentColor;margin-top:30px;display:inline-block}
+.mail:hover{text-decoration:none}
+
+/* Gretchen Hooker's illustrations sit on light panels, the way she drew them */
+.art{margin:26px 0 0;max-width:340px;background:#F6F4EF;border-radius:14px;padding:18px}
+.art img{max-height:170px;margin:0 auto}
+.art figcaption{margin-top:12px;font-size:.85rem;line-height:1.45;color:#3b4348}
+.plate{margin:0 8vw 16vh;max-width:1180px;background:#fff;border-radius:14px;padding:18px 14px 12px}
+.plate .strip{overflow-x:auto}
+.plate figcaption{margin:10px 6px 0;font-size:.8rem;color:#5b6368}
+.plate figcaption a{color:inherit;text-decoration:underline}
 
 .reveal{opacity:0;transform:translateY(34px);transition:opacity 1s,transform 1s cubic-bezier(.2,.7,.2,1)}
 .reveal.in{opacity:1;transform:none}
 
-/* The turning wheel of projects */
-.wheel{height:340vh;position:relative}
-.wheel-pin{position:sticky;top:0;height:100vh;overflow:hidden;perspective:1100px}
-.ring{position:absolute;left:0;right:0;top:50%;height:0;transform-style:preserve-3d}
-.ring a{position:absolute;left:0;right:0;transform-origin:50% 50%;text-align:center;text-decoration:none;color:var(--paper);
-  font-family:var(--serif);font-size:clamp(1.6rem,4.4vw,4.4rem);line-height:1;text-transform:uppercase;white-space:nowrap;
-  margin-top:-.5em;backface-visibility:hidden}
-.ring a small{display:block;font:12px var(--mono);letter-spacing:.16em;color:var(--orange);margin-top:12px}
-.ring a:hover{color:var(--teal-l)}
-.wheel-cap{position:absolute;left:8vw;bottom:13vh;margin:0;font:12px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-.wheel-cap a{color:var(--teal-l);text-decoration:none;margin-left:18px}
-
-.mail{font-family:var(--serif);font-size:clamp(1.3rem,3vw,2.4rem);color:var(--orange);text-decoration:none;border-bottom:2px solid currentColor;margin-top:30px;display:inline-block}
-
 @media (max-width:760px){
   .top{flex-direction:column;align-items:flex-start;gap:8px;padding:14px 18px}
-  .top nav{justify-content:flex-start;gap:6px 14px}
-  .top nav a{font-size:11px}
+  .top nav{justify-content:flex-start;gap:6px 16px}
+  .top nav a{font-size:14px}
   .sec{padding:0 22px 12vh;align-items:flex-end}
   .sec.right{justify-content:flex-start}
   .dots{right:8px}
-  .wheel-cap{left:22px}
   .mail{font-size:1.2rem;overflow-wrap:anywhere}
-  }
+  .plate{margin:0 22px 12vh}
+  .plate .strip img{min-width:760px}
+}
 @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}

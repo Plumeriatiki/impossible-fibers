@@ -239,3 +239,33 @@ body.plain{--spine:0px}
 .process img{mix-blend-mode:normal;background:#fff;border-radius:14px;padding:14px 8px}
 .split > img{background:#F6F4EF;border-radius:14px;padding:16px}
 footer{border-top-color:#ffffff18}
+
+/* Plain type (Nov 2026 review). One serif for headings and one sans for everything else: no monospace,
+   no small uppercase labels, no italic coloured words in headings. Teal marks links; orange is not used in text. */
+:root{--mono:var(--sans); --orange:var(--teal)}
+h1 em,h2 em{font-style:normal;color:inherit}
+.top .mark,.top nav a,.rows b small,.rows .st,.linkrow,.read,.replay,.steps em,.cta-link,.sub,.role{text-transform:none;letter-spacing:0;font-size:15px}
+.top .mark{font-size:16px}
+.note,.credit,.fig figcaption,.process figcaption,footer{font-size:13px}
+.plate .pic{background:#F6F4EF;border-radius:14px;padding:18px}
+
+/* Writing: one featured piece with its illustration, then the rest as a plain list */
+.feature{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:40px;align-items:center;margin-top:8px;text-decoration:none;color:inherit}
+.feature img{width:100%;max-height:300px;object-fit:contain;background:#F6F4EF;border-radius:14px;padding:24px}
+.feature h2{max-width:none;font-size:clamp(1.9rem,3.2vw,2.8rem)}
+.posts{list-style:none;padding:0;margin:44px 0 0;border-top:1px solid var(--rule)}
+.posts li{border-bottom:1px solid var(--rule)}
+.posts a{display:block;padding:24px 0;text-decoration:none;color:inherit}
+.posts h3{font-size:clamp(1.4rem,2.2vw,1.9rem)}
+.feature p,.posts p{color:var(--ink2);max-width:60ch;margin:10px 0 0}
+.feature .meta,.posts .meta{font-size:14px;color:var(--muted)}
+.feature:hover h2,.posts a:hover h3{color:var(--teal)}
+
+/* About: the team */
+.team{list-style:none;padding:0;margin:32px 0 0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:32px}
+.team img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;background:var(--panel)}
+.team b{display:block;font-family:var(--serif);font-weight:400;font-size:1.35rem;line-height:1.15;margin-top:16px}
+.team i{display:block;font-style:normal;font-size:14px;color:var(--muted);margin:4px 0 10px}
+.team span{display:block;color:var(--ink2);font-size:.95rem;line-height:1.5}
+@media (max-width:900px){.feature{grid-template-columns:1fr;gap:20px}.feature img{max-height:240px}.team{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.team{grid-template-columns:1fr}.team img{max-width:260px}}
