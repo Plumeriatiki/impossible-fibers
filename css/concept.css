@@ -273,7 +273,7 @@ h1 em,h2 em{font-style:normal;color:inherit}
 .data{margin:-18px 0 0}
 .data a{color:var(--teal);text-decoration:none}
 .data a:hover{text-decoration:underline}
-.piece:hover h3{color:var(--teal)}
+a.piece:hover h3{color:var(--teal)}
 .thread + .linkrow{margin-top:40px}
 @media (max-width:820px){
   .sides{display:none}
