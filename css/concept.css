@@ -288,6 +288,7 @@ a.piece:hover h3{color:var(--teal)}
 
 /* Lab photos on the inner pages */
 .photo{margin:0;max-width:820px}
+.papers .photo{max-width:360px}
 .photo img{width:100%;border-radius:14px}
 .photo figcaption{margin-top:10px;font-size:14px;color:var(--muted)}
 
